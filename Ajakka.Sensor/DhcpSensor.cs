@@ -4,10 +4,11 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.NetworkInformation;
+using Ajakka.Net;
 
 namespace Ajakka.Sensor{
     class DhcpSensor{
-        UdpClient client;
+
         bool stop = false;
 
         public DhcpSensor()
@@ -33,6 +34,8 @@ namespace Ajakka.Sensor{
                     while (!stop)
                     {
                         var receivedResults = await udpClient.ReceiveAsync();
+                        var packet = new Ajakka.Net.DhcpPacket(receivedResults.Buffer);
+                        Console.WriteLine("Received packet. Actual DHCP: " + packet.IsActualDhcp);
                         loggingEvent += Encoding.ASCII.GetString(receivedResults.Buffer);
                         Console.WriteLine(loggingEvent);
                     }
