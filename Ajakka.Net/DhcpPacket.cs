@@ -78,11 +78,11 @@ namespace Ajakka.Net{
             HType = (HardwareType)bytes[index++];
             HLen = bytes[index++];
             Hops = bytes[index++];
-            XId = ByteOps.CreateUInt32(bytes[index], bytes[index + 1], bytes[index + 2], bytes[index + 3]);
+            XId = BitConverter.ToUInt32(new[]{bytes[index + 3],bytes[index + 2],bytes[index + 1],bytes[index]},0);
             index += 4;
-            Secs = ByteOps.CreateUShort(bytes[index], bytes[index + 1]);
+            Secs = BitConverter.ToUInt16(new[]{bytes[index + 1],bytes[index]},0);
             index += 2;
-            BootPFlags = ByteOps.CreateUShort(bytes[index], bytes[index + 1]);
+            BootPFlags = BitConverter.ToUInt16(new[]{bytes[index + 1],bytes[index]},0);
             index += 2;
             CIAddr = new IPAddress(new byte[] { bytes[index], bytes[index + 1], bytes[index + 2], bytes[index + 3] });
             index += 4;
@@ -112,7 +112,7 @@ namespace Ajakka.Net{
             BootFileName = ByteOps.GetAsciiString(bytes, index, 128);
             index += 128;
 
-            MagicCookie = ByteOps.CreateUInt32(bytes[index], bytes[index + 1], bytes[index + 2], bytes[index + 3]);
+            MagicCookie = BitConverter.ToUInt32(new[]{bytes[index + 3],bytes[index + 2],bytes[index + 1],bytes[index]},0);
             IsActualDhcp = MagicCookie == 0x63825363;
             return index;
         }
