@@ -28,29 +28,5 @@ namespace Ajakka.Net{
             Array.Copy(data, index, result, 0, length);
             return result;
         }
-
-        public static bool IsEmpty(this MacAddress address)
-        {
-            foreach(var b in address.GetAddressBytes())
-            {
-                if (b != 0)
-                    return false;
-            }
-            return true;
-        }
-
-        public static byte[] GetBytes(uint v)
-        {
-            byte[] result = new byte[]
-            {
-                (byte)(v & 0xff),
-                (byte)((v & 0xff00) / 0x100),
-                (byte)((v & 0xff0000) / 0x10000),
-                (byte)((v & 0xff000000) / 0x1000000)
-            };
-            return result;
-        }
-
-      
     }
 }

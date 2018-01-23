@@ -36,22 +36,8 @@ namespace Ajakka.Net.UnitTest
             Assert.Equal(expected2, actual2);
         }
 
-        [Fact]
-        public void CanGetBytesFromInt()
-        {
-            var bytes = ByteOps.GetBytes(0x12345678);
-            Assert.Equal(0x78, bytes[0]);
-            Assert.Equal(0x56, bytes[1]);
-            Assert.Equal(0x34, bytes[2]);
-            Assert.Equal(0x12, bytes[3]);
-        }
 
-        [Fact]
-        public void CanGetBytesAndCreateInt32Again()
-        {
-            var bytes = ByteOps.GetBytes(0x12345678);
-            var result = ByteOps.CreateUInt32(bytes[3], bytes[2], bytes[1], bytes[0]);
-            Assert.Equal(0x12345678u, result);
-        }
+
+
     }
 }
