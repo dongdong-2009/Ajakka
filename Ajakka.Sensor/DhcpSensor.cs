@@ -29,15 +29,17 @@ namespace Ajakka.Sensor{
                 using (var udpClient = new UdpClient(67)){
                     
                     udpClient.EnableBroadcast = true;
-                    string loggingEvent = "";
+                    //string loggingEvent = "";
                     Console.WriteLine("Starting to listen on " + udpClient.Client.LocalEndPoint);
                     while (!stop)
                     {
                         var receivedResults = await udpClient.ReceiveAsync();
                         var packet = new Ajakka.Net.DhcpPacket(receivedResults.Buffer);
                         Console.WriteLine("Received packet. Actual DHCP: " + packet.IsActualDhcp);
-                        loggingEvent += Encoding.ASCII.GetString(receivedResults.Buffer);
-                        Console.WriteLine(loggingEvent);
+                        Console.WriteLine("MAC: " + packet.GetClientMac());
+                        Console.WriteLine("Hostname: " + packet.GetHostName());
+                        //loggingEvent += Encoding.ASCII.GetString(receivedResults.Buffer);
+                        //Console.WriteLine(loggingEvent);
                     }
                 }
             }
