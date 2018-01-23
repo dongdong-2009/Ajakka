@@ -1,3 +1,4 @@
+using System;
 using System.Net.NetworkInformation;
 
 namespace Ajakka.Net{
@@ -47,6 +48,22 @@ namespace Ajakka.Net{
         
         public MacAddress(){
 
+        }
+
+        public static MacAddress Parse(string text)
+        {
+            if(string.IsNullOrEmpty(text)){
+                throw new System.ArgumentNullException("text");
+            }
+            text = text.Replace("-","");
+            if(text.Length != 12){
+                throw new System.ArgumentException("Invalid MAC address length.");
+            }
+            var number = ulong.Parse(text, System.Globalization.NumberStyles.HexNumber);
+            var bytes = BitConverter.GetBytes(number);
+            Array.Reverse(bytes);
+            var mac = new MacAddress(bytes.SubArray(2,6));
+            return mac;
         }
 
     }
