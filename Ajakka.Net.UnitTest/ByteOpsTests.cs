@@ -2,7 +2,7 @@
 using Xunit;
 using Ajakka.Net;
 
-namespace Tests
+namespace Ajakka.Net.UnitTest
 {
     public class Tests
     {
