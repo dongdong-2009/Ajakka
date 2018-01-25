@@ -11,12 +11,15 @@ namespace Ajakka.Sensor{
 
         bool stop = false;
 
-        public DhcpSensor()
+        public DhcpSensor():this(null)
         {
+            
+        }
+
+        public DhcpSensor(IPEndPoint localEndpoint){
             Task.Run(async ()=>{
-                await SensorLoop();
+                await SensorLoop(localEndpoint);
             });
-        
         }
 
         public void Stop()
@@ -24,12 +27,12 @@ namespace Ajakka.Sensor{
             stop = true;
         }
 
-        private async Task SensorLoop(){
+        private async Task SensorLoop(IPEndPoint localEndpoint){
             try{
-                using (var udpClient = new UdpClient(67)){
+                
+                using (var udpClient = GetClient(localEndpoint)){
                     
                     udpClient.EnableBroadcast = true;
-                    //string loggingEvent = "";
                     Console.WriteLine("Starting to listen on " + udpClient.Client.LocalEndPoint);
                     while (!stop)
                     {
@@ -38,8 +41,6 @@ namespace Ajakka.Sensor{
                         Console.WriteLine("Received packet. Actual DHCP: " + packet.IsActualDhcp);
                         Console.WriteLine("MAC: " + packet.GetClientMac());
                         Console.WriteLine("Hostname: " + packet.GetHostName());
-                        //loggingEvent += Encoding.ASCII.GetString(receivedResults.Buffer);
-                        //Console.WriteLine(loggingEvent);
                     }
                 }
             }
@@ -47,5 +48,15 @@ namespace Ajakka.Sensor{
                 Console.WriteLine(ex);
             }
         }
+
+        private UdpClient GetClient(IPEndPoint localEndpoint)
+        {
+            if(localEndpoint != null){
+                return new UdpClient(localEndpoint);
+            }
+            return new UdpClient(67);
+        }
+
+
     }
 }
