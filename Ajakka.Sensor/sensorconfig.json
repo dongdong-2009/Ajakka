@@ -1,3 +1,4 @@
 {
-    "channelName":"dhcpSensor"
+    "channelName":"dhcpSensor",
+    "interfaceId":"en0"
 }

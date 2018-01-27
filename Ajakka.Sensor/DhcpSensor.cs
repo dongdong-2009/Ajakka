@@ -29,7 +29,7 @@ namespace Ajakka.Sensor{
 
         private async Task SensorLoop(SensorConfiguration configuration){
             var localEndpoint = GetSensorEndpoint(configuration);
-            
+
             try{
                 
                 using (var udpClient = GetClient(localEndpoint)){
@@ -99,7 +99,7 @@ namespace Ajakka.Sensor{
             return null;
         }
 
-        private static IPEndpoint GetSensorEndpoint(SensorConfiguration configuration){
+        private static IPEndPoint GetSensorEndpoint(SensorConfiguration configuration){
             IPEndPoint endPoint = null;
             if(!string.IsNullOrEmpty(configuration.IpAddress)){
                 endPoint = GetEndPointByIpString(configuration.IpAddress);
