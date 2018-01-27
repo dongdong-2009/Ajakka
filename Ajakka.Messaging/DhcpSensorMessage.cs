@@ -10,5 +10,7 @@ namespace Ajakka.Messaging{
         public string DeviceMacAddress;
         [DataMember]
         public string DeviceIpAddress;
+        [DataMember]
+        public DateTime TimeStamp;
     }
 }

@@ -117,7 +117,8 @@ namespace Ajakka.Sensor{
             {
                 DeviceName = deviceName,
                 DeviceIpAddress = ip == null ? string.Empty: ip.ToString(),
-                DeviceMacAddress = mac == null ? string.Empty : mac.ToString()
+                DeviceMacAddress = mac == null ? string.Empty : mac.ToString(),
+                TimeStamp = DateTime.UtcNow
             };
             var ms = new MemoryStream();  
 
