@@ -18,17 +18,8 @@ namespace Ajakka.Sensor{
 
             configuration = builder.Build();
         }
-
-        public string InterfaceId{
-            get{return configuration["interfaceId"];}
-        }
-
         public string QueueName{
             get{return configuration["queueName"];}
-        }
-
-        public string IpAddress{
-            get{return configuration["ipAddress"];}
         }
 
         public string MessageQueueHost{
