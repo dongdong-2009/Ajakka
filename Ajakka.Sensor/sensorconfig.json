@@ -1,4 +1,6 @@
 {
     "channelName":"dhcpSensor",
-    "interfaceId":"en0"
+    "enableMessaging":"true",
+    "queueName":"ajakka",
+    "messageQueueRoutingKey":"ajakka"
 }

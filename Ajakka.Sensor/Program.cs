@@ -12,7 +12,7 @@ namespace Ajakka.Sensor
             var sensorConfiguration = new SensorConfiguration();
             DhcpSensor sensor = new DhcpSensor(sensorConfiguration);
 
-            Console.WriteLine("Sensor started. Press [Enter] to exit");
+            Console.WriteLine("Press [Enter] to exit");
             Console.ReadLine();
             sensor.Stop();
         }

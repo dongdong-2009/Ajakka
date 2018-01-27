@@ -5,18 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.NetworkInformation;
 using Ajakka.Net;
+using RabbitMQ.Client;
+using Ajakka.Messaging;
+using System.IO;
+using System.Runtime.Serialization.Json;
 
 namespace Ajakka.Sensor{
     class DhcpSensor{
 
         bool stop = false;
 
-        public DhcpSensor():this(null)
-        {
-            
-        }
-
         public DhcpSensor(SensorConfiguration configuration){
+            bool valid = ValidateAndLogConfiguration(configuration);
+            if(!valid){
+                Console.WriteLine("Configuration is not valid. Sensor cannot start.");
+                return;
+            }
             Task.Run(async ()=>{
                 await SensorLoop(configuration);
             });
@@ -27,12 +31,33 @@ namespace Ajakka.Sensor{
             stop = true;
         }
 
-        private async Task SensorLoop(SensorConfiguration configuration){
-            var localEndpoint = GetSensorEndpoint(configuration);
+        private bool ValidateAndLogConfiguration(SensorConfiguration configuration){
+            Console.WriteLine("queueName: " + configuration.QueueName);
+            if(string.IsNullOrEmpty(configuration.QueueName))
+            {
+                return false;
+            }
+            Console.WriteLine("messageQueueRoutingKey: " + configuration.MessageQueueRoutingKey);
+            if(string.IsNullOrEmpty(configuration.MessageQueueRoutingKey))
+            {
+                return false;
+            }
 
+            Console.WriteLine("messageQueueExchangeName: " + configuration.MessageQueueExchangeName);
+
+            Console.WriteLine("messageQueueHost: " + configuration.MessageQueueHost);
+            if(string.IsNullOrEmpty(configuration.MessageQueueHost))
+            {
+                Console.WriteLine("messageQueueHost address empty, using localhost");
+            }
+            Console.WriteLine("enableMessaging: " + configuration.EnableMessaging);
+            return true;
+        }
+
+        private async Task SensorLoop(SensorConfiguration configuration){
             try{
                 
-                using (var udpClient = GetClient(localEndpoint)){
+                using (var udpClient = new UdpClient(new IPEndPoint(0,67))){
                     
                     udpClient.EnableBroadcast = true;
                     Console.WriteLine("Starting to listen on " + udpClient.Client.LocalEndPoint);
@@ -43,6 +68,10 @@ namespace Ajakka.Sensor{
                         Console.WriteLine("Received packet. Actual DHCP: " + packet.IsActualDhcp);
                         Console.WriteLine("MAC: " + packet.GetClientMac());
                         Console.WriteLine("Hostname: " + packet.GetHostName());
+                        if(configuration.EnableMessaging)
+                        {
+                            SendNotification(configuration, packet);
+                        }
                     }
                 }
             }
@@ -51,66 +80,56 @@ namespace Ajakka.Sensor{
             }
         }
 
-        private UdpClient GetClient(IPEndPoint localEndpoint)
+        private void SendNotification(SensorConfiguration configuration, DhcpPacket packet)
         {
-            if(localEndpoint != null){
-                return new UdpClient(localEndpoint);
-            }
-            return new UdpClient(67);
-        }
-
-        private static IPEndPoint GetEndPointByIpString(string localIp)
-        {
-            IPAddress ip;
-            if(IPAddress.TryParse(localIp, out ip)){
-                var endpoint = GetEndPointByIp(ip);
-                return endpoint;
-            }
-            return null;
-        }
-
-        private static IPEndPoint GetEndPointByIp(IPAddress localIp)
-        {
-            foreach(var ni in NetworkInterface.GetAllNetworkInterfaces()){
-                var prop = ni.GetIPProperties();
-                foreach(var addr in prop.UnicastAddresses)
+            var factory = new ConnectionFactory() { 
+                HostName = string.IsNullOrEmpty(configuration.MessageQueueHost) ? 
+                    "localhost" :
+                    configuration.MessageQueueHost 
+            };
+            using(var connection = factory.CreateConnection()){
+                using(var channel = connection.CreateModel())
                 {
-                    if(addr.Address.Equals(localIp))
-                        return new IPEndPoint(localIp, 67);
+                    channel.QueueDeclare(queue: configuration.QueueName,
+                                        durable: false,
+                                        exclusive: false,
+                                        autoDelete: false,
+                                        arguments: null);
+
+                    string message = BuildMessage(packet);
+                    var body = Encoding.UTF8.GetBytes(message);
+
+                    channel.BasicPublish(exchange: string.IsNullOrEmpty(configuration.MessageQueueExchangeName) ? "": configuration.MessageQueueExchangeName,
+                                        routingKey: configuration.MessageQueueRoutingKey,
+                                        basicProperties: null,
+                                        body: body);
                 }
             }
-            Console.WriteLine("No interface found with IP " + localIp);
-            return null;
         }
 
-        private static IPEndPoint GetEndPointById(string id)
+        private string BuildMessage(DhcpPacket packet)
         {
-            foreach(var ni in NetworkInterface.GetAllNetworkInterfaces()){
-                if(ni.Id == id){
-                    var prop = ni.GetIPProperties();
-                    foreach(var addr in prop.UnicastAddresses)
-                    {
-                        if(addr.Address.AddressFamily == AddressFamily.InterNetwork)
-                            return new IPEndPoint(addr.Address, 67);
-                    }
-                }
-            }
-            Console.WriteLine("No interface found ipv4 IP and with id " + id);
-            return null;
+            var deviceName = packet.GetHostName();
+            var ip = packet.GetClientIp();
+            var mac = packet.GetClientMac();
+
+            var message = new DeviceDescriptorMessage
+            {
+                DeviceName = deviceName,
+                DeviceIpAddress = ip == null ? string.Empty: ip.ToString(),
+                DeviceMacAddress = mac == null ? string.Empty : mac.ToString()
+            };
+            var ms = new MemoryStream();  
+
+            // Serializer the User object to the stream.  
+            var serializer = new DataContractJsonSerializer(typeof(DeviceDescriptorMessage));  
+            serializer.WriteObject(ms, message);  
+            byte[] json = ms.ToArray();  
+            ms.Close();  
+            return Encoding.UTF8.GetString(json, 0, json.Length);  
         }
 
-        private static IPEndPoint GetSensorEndpoint(SensorConfiguration configuration){
-            IPEndPoint endPoint = null;
-            if(!string.IsNullOrEmpty(configuration.IpAddress)){
-                endPoint = GetEndPointByIpString(configuration.IpAddress);
-            }
-            if(endPoint == null && !string.IsNullOrEmpty(configuration.InterfaceId)){
-                endPoint = GetEndPointById(configuration.InterfaceId);
-            }
-            if(endPoint == null){
-                endPoint = new IPEndPoint(0,67);
-            }
-            return endPoint;
-        }
+
+
     }
 }

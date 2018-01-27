@@ -2,11 +2,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ajakka.Net\Ajakka.Net.csproj" />
+    <ProjectReference Include="..\Ajakka.Messaging\Ajakka.Messaging.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+    <PackageReference Include="RabbitMQ.Client" Version="5.0.1" />
   </ItemGroup>
 
   <PropertyGroup>

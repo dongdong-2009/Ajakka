@@ -23,12 +23,26 @@ namespace Ajakka.Sensor{
             get{return configuration["interfaceId"];}
         }
 
-        public string ChannelName{
-            get{return configuration["channelName"];}
+        public string QueueName{
+            get{return configuration["queueName"];}
         }
 
         public string IpAddress{
             get{return configuration["ipAddress"];}
+        }
+
+        public string MessageQueueHost{
+            get{return configuration["messageQueueHost"];}
+        }
+
+        public string MessageQueueExchangeName{
+            get{return configuration["messageQueueExchangeName"];}
+        }
+        public string MessageQueueRoutingKey{
+            get{return configuration["messageQueueRoutingKey"];}
+        }
+        public bool EnableMessaging{
+            get{return configuration["enableMessaging"] == "true";}
         }
     }
 }
