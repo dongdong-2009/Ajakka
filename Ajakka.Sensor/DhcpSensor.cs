@@ -16,9 +16,9 @@ namespace Ajakka.Sensor{
             
         }
 
-        public DhcpSensor(IPEndPoint localEndpoint){
+        public DhcpSensor(SensorConfiguration configuration){
             Task.Run(async ()=>{
-                await SensorLoop(localEndpoint);
+                await SensorLoop(configuration);
             });
         }
 
@@ -27,7 +27,9 @@ namespace Ajakka.Sensor{
             stop = true;
         }
 
-        private async Task SensorLoop(IPEndPoint localEndpoint){
+        private async Task SensorLoop(SensorConfiguration configuration){
+            var localEndpoint = GetSensorEndpoint(configuration);
+            
             try{
                 
                 using (var udpClient = GetClient(localEndpoint)){
@@ -57,6 +59,58 @@ namespace Ajakka.Sensor{
             return new UdpClient(67);
         }
 
+        private static IPEndPoint GetEndPointByIpString(string localIp)
+        {
+            IPAddress ip;
+            if(IPAddress.TryParse(localIp, out ip)){
+                var endpoint = GetEndPointByIp(ip);
+                return endpoint;
+            }
+            return null;
+        }
 
+        private static IPEndPoint GetEndPointByIp(IPAddress localIp)
+        {
+            foreach(var ni in NetworkInterface.GetAllNetworkInterfaces()){
+                var prop = ni.GetIPProperties();
+                foreach(var addr in prop.UnicastAddresses)
+                {
+                    if(addr.Address.Equals(localIp))
+                        return new IPEndPoint(localIp, 67);
+                }
+            }
+            Console.WriteLine("No interface found with IP " + localIp);
+            return null;
+        }
+
+        private static IPEndPoint GetEndPointById(string id)
+        {
+            foreach(var ni in NetworkInterface.GetAllNetworkInterfaces()){
+                if(ni.Id == id){
+                    var prop = ni.GetIPProperties();
+                    foreach(var addr in prop.UnicastAddresses)
+                    {
+                        if(addr.Address.AddressFamily == AddressFamily.InterNetwork)
+                            return new IPEndPoint(addr.Address, 67);
+                    }
+                }
+            }
+            Console.WriteLine("No interface found ipv4 IP and with id " + id);
+            return null;
+        }
+
+        private static IPEndpoint GetSensorEndpoint(SensorConfiguration configuration){
+            IPEndPoint endPoint = null;
+            if(!string.IsNullOrEmpty(configuration.IpAddress)){
+                endPoint = GetEndPointByIpString(configuration.IpAddress);
+            }
+            if(endPoint == null && !string.IsNullOrEmpty(configuration.InterfaceId)){
+                endPoint = GetEndPointById(configuration.InterfaceId);
+            }
+            if(endPoint == null){
+                endPoint = new IPEndPoint(0,67);
+            }
+            return endPoint;
+        }
     }
 }
