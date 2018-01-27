@@ -3,15 +3,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using System.IO;
 
-namespace Ajakka.Sensor{
+namespace Ajakka.Collector{
 
-    class SensorConfiguration{
+    class CollectorConfiguration{
         
         IConfiguration configuration;
         
-        public SensorConfiguration(){
+        public CollectorConfiguration(){
             var jsonSource = new JsonConfigurationSource();
-            jsonSource.Path = "sensorconfig.json";
+            jsonSource.Path = "collectorconfig.json";
             
             var builder = new ConfigurationBuilder();
             builder.Add(jsonSource);
@@ -26,9 +26,9 @@ namespace Ajakka.Sensor{
         public string MessageQueueExchangeName{
             get{return configuration["messageQueueExchangeName"];}
         }
-
-        public bool EnableMessaging{
-            get{return configuration["enableMessaging"] == "true";}
+        public string MessageQueueRoutingKey{
+            get{return configuration["messageQueueRoutingKey"];}
         }
+       
     }
 }

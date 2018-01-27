@@ -1,6 +1,4 @@
 {
-    "enableMessaging":"true",
-    "queueName":"ajakka.sensor",
     "messageQueueRoutingKey":"",
     "messageQueueExchangeName":"ajakkaExchange"
 }

@@ -32,17 +32,7 @@ namespace Ajakka.Sensor{
         }
 
         private bool ValidateAndLogConfiguration(SensorConfiguration configuration){
-            Console.WriteLine("queueName: " + configuration.QueueName);
-            if(string.IsNullOrEmpty(configuration.QueueName))
-            {
-                return false;
-            }
-            Console.WriteLine("messageQueueRoutingKey: " + configuration.MessageQueueRoutingKey);
-            if(string.IsNullOrEmpty(configuration.MessageQueueRoutingKey))
-            {
-                return false;
-            }
-
+           
             Console.WriteLine("messageQueueExchangeName: " + configuration.MessageQueueExchangeName);
 
             Console.WriteLine("messageQueueHost: " + configuration.MessageQueueHost);
@@ -70,7 +60,7 @@ namespace Ajakka.Sensor{
                         Console.WriteLine("Hostname: " + packet.GetHostName());
                         if(configuration.EnableMessaging)
                         {
-                            SendNotification(configuration, packet);
+                            Task.Run(()=>{SendNotification(configuration, packet);});
                         }
                     }
                 }
@@ -90,17 +80,13 @@ namespace Ajakka.Sensor{
             using(var connection = factory.CreateConnection()){
                 using(var channel = connection.CreateModel())
                 {
-                    channel.QueueDeclare(queue: configuration.QueueName,
-                                        durable: false,
-                                        exclusive: false,
-                                        autoDelete: false,
-                                        arguments: null);
-
+                    channel.ExchangeDeclare(exchange: configuration.MessageQueueExchangeName, type: "fanout");
+                    
                     string message = BuildMessage(packet);
                     var body = Encoding.UTF8.GetBytes(message);
 
                     channel.BasicPublish(exchange: string.IsNullOrEmpty(configuration.MessageQueueExchangeName) ? "": configuration.MessageQueueExchangeName,
-                                        routingKey: configuration.MessageQueueRoutingKey,
+                                        routingKey: "",
                                         basicProperties: null,
                                         body: body);
                 }
