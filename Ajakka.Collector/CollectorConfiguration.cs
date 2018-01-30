@@ -26,9 +26,6 @@ namespace Ajakka.Collector{
         public string MessageQueueExchangeName{
             get{return configuration["messageQueueExchangeName"];}
         }
-        public string MessageQueueRoutingKey{
-            get{return configuration["messageQueueRoutingKey"];}
-        }
        
     }
 }

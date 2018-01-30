@@ -11,7 +11,7 @@ namespace Ajakka.Collector
         {
             var config = new CollectorConfiguration();
 
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory() { HostName = config.MessageQueueHost };
             using(var connection = factory.CreateConnection())
             using(var channel = connection.CreateModel())
             {

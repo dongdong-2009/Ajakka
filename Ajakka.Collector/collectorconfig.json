@@ -1,4 +1,4 @@
 {
-    "messageQueueRoutingKey":"",
-    "messageQueueExchangeName":"ajakkaExchange"
+    "messageQueueExchangeName":"ajakkaExchange",
+    "messageQueueHost":"localhost"
 }
