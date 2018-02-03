@@ -16,5 +16,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+ <ItemGroup>
+    <None Update="sensorconfig.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 
 </Project>

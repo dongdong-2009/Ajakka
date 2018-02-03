@@ -1,6 +1,6 @@
 {
     "enableMessaging":"true",
     "queueName":"ajakka.sensor",
-    "messageQueueRoutingKey":"",
+    "messageQueueHost":"localhost",
     "messageQueueExchangeName":"ajakkaExchange"
 }
