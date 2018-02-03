@@ -10,36 +10,20 @@ namespace Ajakka.Collector
 {
     public class Collector
     {
-        static void Main(string[] args)
-        {
-            var config = new CollectorConfiguration();
+        ICollectorDAL dal;
 
-            var factory = new ConnectionFactory() { HostName = config.MessageQueueHost };
-            using(var connection = factory.CreateConnection())
-            using(var channel = connection.CreateModel())
-            {
-                channel.ExchangeDeclare(exchange: config.MessageQueueExchangeName, type: "fanout");
+        private Collector(){
 
-                var queueName = channel.QueueDeclare().QueueName;
-                channel.QueueBind(queue: queueName,
-                                exchange: config.MessageQueueExchangeName,
-                                routingKey: "");
-
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
-                {
-                    ProcessMessage(ea.Body);
-                };
-                channel.BasicConsume(queue: queueName,
-                                    autoAck: true,
-                                    consumer: consumer);
-
-                Console.WriteLine(" Press [enter] to exit.");
-                Console.ReadLine();
-            }
         }
 
-        static void ProcessMessage(byte[] body)
+        public Collector(ICollectorDAL dal){
+            if(dal == null){
+                throw new ArgumentNullException("dal");
+            }
+            this.dal = dal;
+        }
+
+        public void ProcessMessage(byte[] body)
         {
             try{
                 var deviceDescriptor = ParseMesage(body);
@@ -59,9 +43,11 @@ namespace Ajakka.Collector
             }
         }
 
-        static void StoreDeviceInfo(DeviceDescriptorMessage deviceInfo){
-            ICollectorDAL dal = new DAL();
-            dal.StoreDhcpEndpoint(deviceInfo.DeviceMacAddress, deviceInfo.DeviceIpAddress, deviceInfo.DeviceName);
+        void StoreDeviceInfo(DeviceDescriptorMessage deviceInfo){
+            dal.StoreDhcpEndpoint(deviceInfo.DeviceMacAddress, 
+            deviceInfo.DeviceIpAddress, 
+            deviceInfo.DeviceName, 
+            deviceInfo.TimeStamp);
         }
     }
 }
