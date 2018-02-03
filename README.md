@@ -2,16 +2,49 @@
 Monitors local network for DHCP packets and detects new devices connecting in.
 
 ## Requirements
-Message broker requires Rabbit MQ: https://www.rabbitmq.com/install-standalone-mac.html
+Services communicate over Rabbit MQ: https://www.rabbitmq.com/install-standalone-mac.html
 
 ## Ajakka.Sensor
 Standalone DHCP (IPv4) Sensor, sends messages to RabbitMQ when a DHCP packet is detected.
+~~~~
+sudo dotnet run 
+~~~~
 
-`sudo dotnet run `
-
-Exchange: ajakkaExchange
+Configured by sensorconfig.json:
+~~~~
+{
+    "enableMessaging":"true",
+    "queueName":"ajakka.sensor",
+    "messageQueueHost":"localhost",,
+    "messageQueueExchangeName":"ajakkaExchange"
+}
+~~~~
 
 ## Ajakka.Collector
-Collects messages from ajakkaExchange and stores them in a database (TBD).
+Collects messages from the configured exchange and stores them in a database.
 
-`sudo dotnet run `
+~~~~
+dotnet run
+~~~~
+
+Requires MySql database connection string in AjakkaConnection environment variable
+
+Additional configuration in collectorconfig.json:
+~~~~
+{
+    "messageQueueExchangeName":"ajakkaExchange",
+    "messageQueueHost":"localhost"
+}
+~~~~
+## Ajakka.Collector.Tests
+Requires MySql database connection string in AjakkaTestConnection environment variable
+
+~~~~
+dotnet xunit
+~~~~
+
+## Ajakka.DbInit
+Creates required tables in the target mysql database. The database has to exist and the connection string needs to contain its name.
+~~~~
+dotnet run [environment variable storing connection string]
+~~~~
