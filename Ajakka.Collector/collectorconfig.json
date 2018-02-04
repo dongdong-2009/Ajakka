@@ -1,4 +1,4 @@
 {
-    "messageQueueExchangeName":"ajakkaExchange",
+    "messageQueueExchangeName":"ajakkaSensorExchange",
     "messageQueueHost":"localhost"
 }
