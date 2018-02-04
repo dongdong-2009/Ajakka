@@ -11,19 +11,48 @@ namespace Ajakka.Collector
     public class Collector
     {
         ICollectorDAL dal;
+        ICollectorConfiguration collectorConfiguration;
 
         private Collector(){
 
         }
 
-        public Collector(ICollectorDAL dal){
+        public Collector(ICollectorDAL dal, ICollectorConfiguration collectorConfiguration){
             if(dal == null){
                 throw new ArgumentNullException("dal");
             }
             this.dal = dal;
+
+            if(collectorConfiguration == null){
+                throw new ArgumentNullException("collectorConfiguration");
+            }
+            this.collectorConfiguration = collectorConfiguration;
         }
 
-        public void ProcessMessage(byte[] body)
+        public void Listen(){
+            var factory = new ConnectionFactory() { HostName = collectorConfiguration.MessageQueueHost };
+            using(var connection = factory.CreateConnection())
+            using(var channel = connection.CreateModel())
+            {
+                channel.ExchangeDeclare(exchange: collectorConfiguration.MessageQueueExchangeName, type: "fanout");
+
+                var queueName = channel.QueueDeclare().QueueName;
+                channel.QueueBind(queue: queueName,
+                                exchange: collectorConfiguration.MessageQueueExchangeName,
+                                routingKey: "");
+
+                var consumer = new EventingBasicConsumer(channel);
+                consumer.Received += (model, ea) =>
+                {
+                    ProcessMessage(ea.Body);
+                };
+                channel.BasicConsume(queue: queueName,
+                                    autoAck: true,
+                                    consumer: consumer);
+            }
+        }
+
+        private void ProcessMessage(byte[] body)
         {
             try{
                 var deviceDescriptor = ParseMesage(body);
