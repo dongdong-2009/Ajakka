@@ -1,6 +1,7 @@
 
 using System;
 using System.Data;
+using System.Collections.Generic;
 
 namespace Ajakka.Collector{
     public class DAL:ICollectorDAL{
@@ -24,6 +25,35 @@ namespace Ajakka.Collector{
                 command.ExecuteNonQuery();
                 
             }
+        }
+
+        public EndpointDescriptor[] GetEndpoints(int pageNumber, int pageSize){
+            List<EndpointDescriptor> result = new List<EndpointDescriptor>();
+
+            using (var connection = new MySql.Data.MySqlClient.MySqlConnection(connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "SELECT * FROM endpoint_latest";
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var record = (IDataRecord)reader;
+                        var mac = record[0].ToString();
+                        var ip = record[1].ToString();
+                        var hostname = record[2].ToString();
+                        var timestamp = (DateTime)record[3];
+                        result.Add(new EndpointDescriptor{
+                            DeviceName = hostname,
+                            DeviceMacAddress = mac,
+                            DeviceIpAddress = ip,
+                            TimeStamp = timestamp
+                        });
+                    }
+                }
+            }
+            return result.ToArray();
         }
     }
 }

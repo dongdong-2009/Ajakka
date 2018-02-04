@@ -32,8 +32,9 @@ Requires MySql database connection string in AjakkaConnection environment variab
 Additional configuration in collectorconfig.json:
 ~~~~
 {
-    "messageQueueExchangeName":"ajakkaExchange",
-    "messageQueueHost":"localhost"
+    "messageQueueExchangeName":"ajakkaSensorExchange",
+    "messageQueueHost":"localhost",
+    "dalServerRpcQueueName":"collector_dal_rpc_queue"
 }
 ~~~~
 ## Ajakka.Collector.Tests

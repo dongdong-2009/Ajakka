@@ -103,5 +103,29 @@ namespace Ajakka.Collector.Tests
                 }
             }
         }
+        
+        [Fact]
+        public void ShouldReturnFirstPageWithEndpoints(){
+            ClearEndpointsTable();
+            ICollectorDAL dal = new DAL(testDbConnectionString);
+            var expectedTimestamp = DateTime.Now;
+            dal.StoreDhcpEndpoint("012345678901","192.168.1.0","mike0",expectedTimestamp);
+            dal.StoreDhcpEndpoint("112345678901","192.168.1.1","mike1",expectedTimestamp);
+            dal.StoreDhcpEndpoint("212345678901","192.168.1.2","mike2",expectedTimestamp);
+            dal.StoreDhcpEndpoint("312345678901","192.168.1.3","mike3",expectedTimestamp);
+            dal.StoreDhcpEndpoint("412345678901","192.168.1.4","mike4",expectedTimestamp);
+            dal.StoreDhcpEndpoint("512345678901","192.168.1.5","mike5",expectedTimestamp);
+            dal.StoreDhcpEndpoint("612345678901","192.168.1.6","mike6",expectedTimestamp);
+            dal.StoreDhcpEndpoint("712345678901","192.168.1.7","mike7",expectedTimestamp);
+            expectedTimestamp = expectedTimestamp.ToUniversalTime();
+
+            var endpoints = dal.GetEndpoints(0,5);
+            for(int i = 0; i < 5; i ++){
+                Assert.Equal(i + "12345678901",endpoints[i].DeviceMacAddress);
+                Assert.Equal("192.168.1."+i,endpoints[i].DeviceIpAddress);
+                Assert.Equal("mike"+i,endpoints[i].DeviceName);
+                Assert.True(expectedTimestamp - endpoints[i].TimeStamp < TimeSpan.FromSeconds(1));
+            }
+        }
     }
 }

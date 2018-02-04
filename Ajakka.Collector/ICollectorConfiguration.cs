@@ -3,5 +3,7 @@ namespace Ajakka.Collector{
         string MessageQueueHost {get;}
        
         string MessageQueueExchangeName {get;}
+
+        string DALServerRpcQueueName{get;}
     }
 }

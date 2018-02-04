@@ -27,5 +27,8 @@ namespace Ajakka.Collector{
             get{return configuration["messageQueueExchangeName"];}
         }
        
+        public string DALServerRpcQueueName{
+            get{return configuration["dalServerRpcQueueName"];}
+        }
     }
 }

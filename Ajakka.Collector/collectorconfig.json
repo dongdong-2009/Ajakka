@@ -1,4 +1,5 @@
 {
     "messageQueueExchangeName":"ajakkaSensorExchange",
-    "messageQueueHost":"localhost"
+    "messageQueueHost":"localhost",
+    "dalServerRpcQueueName":"collector_dal_rpc_queue"
 }
