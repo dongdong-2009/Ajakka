@@ -34,7 +34,7 @@ namespace Ajakka.Collector{
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT * FROM endpoint_latest";
+                command.CommandText = string.Format("SELECT * FROM endpoint_latest LIMIT {0} OFFSET {1}",pageSize, (pageNumber * pageSize) );
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
