@@ -8,10 +8,12 @@ using System.IO;
 using Newtonsoft.Json;
 
 namespace Ajakka.Collector{
-    class DALServer{
+    class DALServer:IDisposable{
 
         ICollectorConfiguration configuration;
         ICollectorDAL dal;
+        IConnection connection;
+        IModel channel;
 
         public DALServer(ICollectorConfiguration configuration, ICollectorDAL dal){
             if(configuration == null){
@@ -28,28 +30,23 @@ namespace Ajakka.Collector{
 
         public void Start(){
             var factory = new ConnectionFactory() { HostName = configuration.MessageQueueHost };
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            connection = factory.CreateConnection();
+            channel = connection.CreateModel();
+        
+            channel.QueueDeclare(queue: configuration.DALServerRpcQueueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+            channel.BasicQos(0, 1, false);
+            var consumer = new EventingBasicConsumer(channel);
+            channel.BasicConsume(queue: configuration.DALServerRpcQueueName, autoAck: false, consumer: consumer);
+
+            consumer.Received += (model, ea) =>
             {
-                channel.QueueDeclare(queue: configuration.DALServerRpcQueueName,
-                    durable: false,
-                    exclusive: false, 
-                    autoDelete: false, 
-                    arguments: null);
-
-                channel.BasicQos(0, 1, false);
-                var consumer = new EventingBasicConsumer(channel);
-                channel.BasicConsume(queue: configuration.DALServerRpcQueueName,
-                    autoAck: false, 
-                    consumer: consumer);
-
-                consumer.Received += (model, ea) => {
-                    OnRequestReceived(ea, channel);
-                    };
-            }
+                OnRequestReceived(ea, channel);
+            };
+    
         }
 
         private void OnRequestReceived(BasicDeliverEventArgs eventArgs, IModel channel){
+            Console.WriteLine("Received request");
             string response = null;
 
             var body = eventArgs.Body;
@@ -105,6 +102,33 @@ namespace Ajakka.Collector{
                 return Encoding.UTF8.GetString(json, 0, json.Length);  
             }  
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if(connection != null){
+                        connection.Dispose();
+                    }
+                    if(channel != null){
+                        channel.Dispose();
+                    }
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
 
     }
 }

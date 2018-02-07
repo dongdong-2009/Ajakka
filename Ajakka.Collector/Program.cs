@@ -13,17 +13,24 @@ namespace Ajakka.Collector{
 
             ICollectorDAL dal = new DAL(connString);
             var config = new CollectorConfiguration();
-            var collector = new Collector(new DAL(connString), config);
 
+            Console.WriteLine("MessageQueueExchangeName: " + config.MessageQueueExchangeName);
+            Console.WriteLine("MessageQueueHost: " + config.MessageQueueHost);
+            Console.WriteLine("DALServerRpcQueueName: " + config.DALServerRpcQueueName);
+            
+            var collector = new Collector(new DAL(connString), config);
             collector.Listen();
+            
             Console.WriteLine("Collector started");
 
-            var dalServer = new DALServer(config, dal);
-            dalServer.Start();
-            Console.WriteLine("DALServer started");
-
-            Console.WriteLine(" Press [enter] to exit.");
-            Console.ReadLine();
+            using(var dalServer = new DALServer(config, dal)){
+                dalServer.Start();
+                Console.WriteLine("DALServer started");
+                Console.WriteLine(" Press [enter] to exit.");
+                Console.ReadLine();
+            }
+            
+            
         }
 
     }
