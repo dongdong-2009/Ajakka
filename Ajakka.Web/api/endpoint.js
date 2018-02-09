@@ -3,6 +3,7 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true }));
 var amqp = require('amqplib/callback_api');
+var configuration = require('../config/ajakkaConfiguration');
 
 function generateUuid() {
     return Math.random().toString() +
@@ -20,7 +21,7 @@ router.post('/', function (req, res) {
     if(!pageNumber){
         pageNumber = 0;
     }
-    amqp.connect('amqp://localhost', function(err, conn) {
+    amqp.connect(configuration.messageQueueHostAddress, function(err, conn) {
     conn.createChannel(function(err, ch) {
         ch.assertQueue('', {exclusive: true}, function(err, q) {
         var corr = generateUuid();
@@ -32,8 +33,8 @@ router.post('/', function (req, res) {
             setTimeout(function() { conn.close(); }, 500);
             }
         }, {noAck: true});
-
-        ch.sendToQueue('collector_dal_rpc_queue',
+       
+        ch.sendToQueue(configuration.collectorRpcQueue,
         new Buffer('{"FunctionName": "GetLatest", "PageNumber": "'+pageNumber+'", "PageSize": "'+pageSize+'"}'),
         { correlationId: corr, replyTo: q.queue });
         });

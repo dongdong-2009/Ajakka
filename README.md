@@ -49,3 +49,9 @@ Creates required tables in the target mysql database. The database has to exist 
 ~~~~
 dotnet run [environment variable storing connection string]
 ~~~~
+
+## Ajakka.Web
+Website
+~~~~
+npm run start
+~~~~
