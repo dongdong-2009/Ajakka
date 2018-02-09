@@ -19,9 +19,11 @@ Configured by sensorconfig.json:
 }
 ~~~~
 
-enableMessaging - when set to "true", sensor sends information about new endpoints to message queue.
-messageQueueHost - server hosting the message queue.
-messageQueueExchangeName - name of the exchange the Collector is listening on for Sensor messages. Sensor sends messages about new endpoints to this exchange.
+*enableMessaging* - when set to "true", sensor sends information about new endpoints to message queue.
+
+*messageQueueHost* - server hosting the message queue.
+
+*messageQueueExchangeName* - name of the exchange the Collector is listening on for Sensor messages. Sensor sends messages about new endpoints to this exchange.
 
 ## Ajakka.Collector
 Collects messages from the configured exchange and stores them in a database.
@@ -41,9 +43,11 @@ Additional configuration in collectorconfig.json:
 }
 ~~~~
 
-messageQueueHost - server hosting the message queue.
-messageQueueExchangeName - name of the exchange the Collector is listening on. Sensor sends messages about new endpoints to this exchange. This value needs to match the "messageQueueExchangeName" configuration for Ajakka.Sensor.
-dalServerRpcQueueName - name of the queue the Collector uses for listening to RPC requests for information stored in the Collector database.
+*messageQueueHost* - server hosting the message queue.
+
+*messageQueueExchangeName* - name of the exchange the Collector is listening on. Sensor sends messages about new endpoints to this exchange. This value needs to match the "messageQueueExchangeName" configuration for Ajakka.Sensor.
+
+*dalServerRpcQueueName* - name of the queue the Collector uses for listening to RPC requests for information stored in the Collector database.
 
 ## Ajakka.Collector.Tests
 Requires MySql database connection string in AjakkaTestConnection environment variable
@@ -67,8 +71,10 @@ Connection configuration is in /config/ajakkaConfiguration.js:
 module.exports.messageQueueHostAddress= 'amqp://localhost';
 module.exports.collectorRpcQueue = 'collector_dal_rpc_queue';
 ~~~~
-messageQueueHostAddress - server hosting the message queue.
-collectorRpcQueue - name of the queue the Collector uses for listening to RPC requests for information stored in the Collector database. This should match the value of dalServerRpcQueueName in Ajakka.Collector's configuration file.
+
+*messageQueueHostAddress* - server hosting the message queue.
+
+*collectorRpcQueue* - name of the queue the Collector uses for listening to RPC requests for information stored in the Collector database. This should match the value of dalServerRpcQueueName in Ajakka.Collector's configuration file.
 
 Start as:
 ~~~~
