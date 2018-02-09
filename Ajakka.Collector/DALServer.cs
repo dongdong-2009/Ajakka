@@ -46,7 +46,6 @@ namespace Ajakka.Collector{
         }
 
         private void OnRequestReceived(BasicDeliverEventArgs eventArgs, IModel channel){
-            Console.WriteLine("Received request");
             string response = null;
 
             var body = eventArgs.Body;
