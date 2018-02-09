@@ -10,21 +10,22 @@ function generateUuid() {
            Math.random().toString();
   }
 
-// 
-router.get('/', function (req, res) {
 
-    var args = process.argv.slice(2);
-
+router.post('/', function (req, res) {
+    var pageNumber = req.body.pageNumber;
+    var pageSize = req.body.pageSize;
+    if(!pageSize){
+        pageSize = 10;
+    }
+    if(!pageNumber){
+        pageNumber = 0;
+    }
     amqp.connect('amqp://localhost', function(err, conn) {
     conn.createChannel(function(err, ch) {
         ch.assertQueue('', {exclusive: true}, function(err, q) {
         var corr = generateUuid();
-        var num = parseInt(args[0]);
-
-        console.log(' Requesting list');
-
         ch.consume(q.queue, function(msg) {
-            console.log('got some message');
+           
             if (msg.properties.correlationId == corr) {
                 res.status(200).send(msg.content.toString());
            
@@ -33,7 +34,7 @@ router.get('/', function (req, res) {
         }, {noAck: true});
 
         ch.sendToQueue('collector_dal_rpc_queue',
-        new Buffer('{"FunctionName": "GetLatest", "PageNumber": "0", "PageSize": "0"}'),
+        new Buffer('{"FunctionName": "GetLatest", "PageNumber": "'+pageNumber+'", "PageSize": "'+pageSize+'"}'),
         { correlationId: corr, replyTo: q.queue });
         });
     });
