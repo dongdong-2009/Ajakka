@@ -21,8 +21,8 @@ namespace Ajakka.Sensor{
                 Console.WriteLine("Configuration is not valid. Sensor cannot start.");
                 return;
             }
-            Task.Run(async ()=>{
-                await SensorLoop(configuration);
+            Task.Run(()=>{
+                SensorLoop(configuration);
             });
         }
 
@@ -44,7 +44,7 @@ namespace Ajakka.Sensor{
             return true;
         }
 
-        private async Task SensorLoop(SensorConfiguration configuration){
+        private async void SensorLoop(SensorConfiguration configuration){
             try{
                 
                 using (var udpClient = new UdpClient(new IPEndPoint(0,67))){
@@ -60,7 +60,7 @@ namespace Ajakka.Sensor{
                         Console.WriteLine("Hostname: " + packet.GetHostName());
                         if(configuration.EnableMessaging)
                         {
-                            Task.Run(()=>{SendNotification(configuration, packet);});
+                            var task = Task.Run(()=>{SendNotification(configuration, packet);});
                         }
                     }
                 }
