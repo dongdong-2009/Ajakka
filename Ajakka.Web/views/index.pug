@@ -1,5 +1,21 @@
 extends layout
-
+block header
+  script(src='./js/formatting.js')
+  script(src='./js/moment.js')
 block content
   h1= title
-  p Welcome to #{title}
+  
+  div.table-responsive-sm
+    table.table.table-striped.table-hover
+      caption Detected endpoints
+      thead.thead-dark
+        tr
+          th MAC
+          th IP
+          th Name
+          th Timestamp
+      tbody#endpointListContainer
+        tr
+          td(colspan='4')
+            i.fa.fa-circle-o-notch.fa-spin
+  script(src='./js/index/endpoints.js')
