@@ -1,0 +1,23 @@
+extends layout
+block header
+  link(rel='stylesheet', href='/stylesheets/login.css')
+block content
+  script.
+    --$('body').addClass('login_body')
+  .main.container
+    .row
+      .col-md-6.col-md-offset-3
+        div.loginFormContainer
+          div.innerLoginFormContainer
+            h1.display-4.m-b-2 #{title}
+            if (error != '')
+              div(class="alert-danger") #{error}
+            form(method="post" enctype="application/x-www-form-urlencoded")
+              div(class="form-group loginForm")
+                label(for="email") Email:
+                input(class="form-control" name="email" id="email")
+                div(class="form-group")
+                  label(for="password") Password:
+                  input(class="form-control" type="password" name="password" id="password")
+
+                button(type="submit" class="btn btn-info" name="login") Login

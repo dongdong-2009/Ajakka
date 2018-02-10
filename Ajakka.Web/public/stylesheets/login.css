@@ -1,0 +1,16 @@
+
+.login_body{
+    background-color:rgba(58,110, 165, 0.7);
+    background-size:cover;
+  }
+  
+  .loginFormContainer{
+    background-color: rgba(255,255,255,0.7);
+    padding:40px;
+    border-width: thin;
+    border-style:solid;
+    border-color:darkgray;
+  }
+  .innerLoginFormContainer{
+    opacity: 1;
+  }

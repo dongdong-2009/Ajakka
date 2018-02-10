@@ -4,13 +4,18 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var helmet = require('helmet')
+var session = require('express-session')
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var login = require('./routes/login');
+const uuidv1 = require('uuid/v1');
 
 var endpointApi = require('./api/endpoint');
 
 var app = express();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -18,15 +23,33 @@ app.set('view engine', 'pug');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(helmet());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
+
+app.use(session({
+  secret:'double o seven',
+  cookie:{secure: false,
+     httpOnly: true,
+     maxAge:1000*60*60*12
+  },
+  genid: function(req) {
+    return uuidv1() // use UUIDs for session IDs
+  },
+  resave:true,
+  saveUninitialized:true
+}));
+
+app.use('/', login);
+app.use('/index',requireLogin, index);
 app.use('/users', users);
-app.use('/api/endpoints', endpointApi);
+app.use('/login', login);
+app.use('/api/endpoints', blockApi, endpointApi);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -45,5 +68,31 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+function blockApi(req,res,next)
+{
+  if (!req.session.user) {
+    var err = new Error('Not Authorized');
+    err.status = 401;
+    next(err);
+  }
+  next();
+}
+
+function requireLogin (req, res, next) {
+  if (!req.session.user) {
+    res.redirect('/login');
+    return;
+  }
+  next();
+
+};
+
+function logout(req,res,next)
+{
+  req.session.reset();
+  res.redirect('/');
+}
+
 
 module.exports = app;
