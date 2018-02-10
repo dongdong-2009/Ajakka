@@ -21,7 +21,9 @@ function fillTableWithEndpoints(endpoints){
     $('#endpointListContainer').empty();
     
     endpoints.forEach(function(endpoint){
-        var timestamp = moment(endpoint.TimeStamp).format('dddd, MMMM Do YYYY, h:mm:ss a ZZ');
+        var timestampUtc = moment.utc(endpoint.TimeStamp);
+        var local = timestampUtc.add(moment().utcOffset(), "minutes");
+        var timestamp = local.local().format('YYYY/MM/DD, h:mm:ss A');
         var row = '<tr>';
         row += '<td>' + formatMac(endpoint.DeviceMacAddress) + '</td>';
         row += '<td>' + endpoint.DeviceIpAddress + '</td>';

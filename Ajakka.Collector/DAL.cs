@@ -48,7 +48,7 @@ namespace Ajakka.Collector{
                             DeviceName = hostname,
                             DeviceMacAddress = mac,
                             DeviceIpAddress = ip,
-                            TimeStamp = timestamp
+                            TimeStamp = timestamp.ToUniversalTime()
                         });
                     }
                 }
