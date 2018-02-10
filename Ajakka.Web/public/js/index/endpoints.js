@@ -1,6 +1,5 @@
 function loadEndpoints(){
     var currentPage = $('#currentPage').text();
-    console.log(currentPage);
     if(!currentPage){
         currentPage = 0;
     }
