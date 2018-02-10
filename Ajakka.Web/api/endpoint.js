@@ -21,29 +21,38 @@ router.post('/', function (req, res) {
     if(!pageNumber){
         pageNumber = 0;
     }
-    amqp.connect(configuration.messageQueueHostAddress, function(err, conn) {
-    conn.createChannel(function(err, ch) {
-        ch.assertQueue('', {exclusive: true}, function(err, q) {
-        var corr = generateUuid();
-        ch.consume(q.queue, function(msg) {
-           
-            if (msg.properties.correlationId == corr) {
-                res.status(200).send(msg.content.toString());
-           
-            setTimeout(function() { conn.close(); }, 500);
-            }
-        }, {noAck: true});
-       
-        ch.sendToQueue(configuration.collectorRpcQueue,
-        new Buffer('{"FunctionName": "GetLatest", "PageNumber": "'+pageNumber+'", "PageSize": "'+pageSize+'"}'),
-        { correlationId: corr, replyTo: q.queue });
-        });
-    });
-    });
-
-
-
-  
+    SendMessageToQueue(res, '{"FunctionName": "GetLatest", "PageNumber": "'+pageNumber+'", "PageSize": "'+pageSize+'"}');
 });
+
+router.get('/pageCount', function (req, res) {
+    var pageSize = req.query.pageSize;
+    if(!pageSize){
+        pageSize = 10;
+    }
+    SendMessageToQueue(res, '{"FunctionName": "GetDhcpEndpointPageCount", "PageSize": "'+pageSize+'"}');
+    
+});
+
+function SendMessageToQueue(response, message){
+    amqp.connect(configuration.messageQueueHostAddress, function(err, conn) {
+        conn.createChannel(function(err, ch) {
+            ch.assertQueue('', {exclusive: true}, function(err, q) {
+            var corr = generateUuid();
+            ch.consume(q.queue, function(msg) {
+               
+                if (msg.properties.correlationId == corr) {
+                    response.status(200).send(msg.content.toString());
+               
+                setTimeout(function() { conn.close(); }, 500);
+                }
+            }, {noAck: true});
+           
+            ch.sendToQueue(configuration.collectorRpcQueue,
+            new Buffer(message),
+            { correlationId: corr, replyTo: q.queue });
+            });
+        });
+        });
+}
 
 module.exports = router;

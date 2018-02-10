@@ -64,7 +64,7 @@ namespace Ajakka.Collector{
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
                 response = ex.Message;
             }
             finally
@@ -87,6 +87,10 @@ namespace Ajakka.Collector{
                 case "GetLatest":
                     var endpoints = dal.GetEndpoints(request.PageNumber, request.PageSize);
                     return SerializeResponse<EndpointDescriptor[]>(endpoints);
+
+                case "GetDhcpEndpointPageCount":
+                    return dal.GetDhcpEndpointPageCount(request.PageSize).ToString();
+
                 default:
                     throw new InvalidOperationException("Function name not found: " +request.FunctionName);
             }
