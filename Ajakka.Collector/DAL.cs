@@ -27,6 +27,10 @@ namespace Ajakka.Collector{
             }
         }
 
+        public int GetPageCount(int pageSize){
+            return 0;
+        }
+
         public EndpointDescriptor[] GetEndpoints(int pageNumber, int pageSize){
             List<EndpointDescriptor> result = new List<EndpointDescriptor>();
 
@@ -44,11 +48,18 @@ namespace Ajakka.Collector{
                         var ip = record[1].ToString();
                         var hostname = record[2].ToString();
                         var timestamp = (DateTime)record[3];
+                        var timestampUtc = new DateTime(timestamp.Year,
+                            timestamp.Month,
+                            timestamp.Day, 
+                            timestamp.Hour, 
+                            timestamp.Minute,
+                            timestamp.Second,
+                            DateTimeKind.Utc);
                         result.Add(new EndpointDescriptor{
                             DeviceName = hostname,
                             DeviceMacAddress = mac,
                             DeviceIpAddress = ip,
-                            TimeStamp = timestamp.ToUniversalTime()
+                            TimeStamp = timestampUtc
                         });
                     }
                 }
