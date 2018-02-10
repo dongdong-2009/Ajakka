@@ -8,6 +8,6 @@ namespace Ajakka.Collector{
         void StoreDhcpEndpoint(string mac, string ip, string hostname, DateTime timestamp);
 
         EndpointDescriptor[] GetEndpoints(int pageNumber, int pageSize);
-        int GetPageCount(int pageSize);
+        int GetDhcpEndpointPageCount(int pageSize);
     }
 }

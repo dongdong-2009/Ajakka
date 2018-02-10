@@ -195,13 +195,13 @@ namespace Ajakka.Collector.Tests
             dal.StoreDhcpEndpoint("612345678901","192.168.1.6","mike6",DateTime.Now);
             dal.StoreDhcpEndpoint("712345678901","192.168.1.7","mike7",DateTime.Now);
 
-            var pageCount = dal.GetPageCount(3);
-            Assert.Equal(3, pageCount);
+            var pageCount = dal.GetDhcpEndpointPageCount(2);
+            Assert.Equal(4, pageCount);
 
-            pageCount = dal.GetPageCount(5);
+            pageCount = dal.GetDhcpEndpointPageCount(5);
             Assert.Equal(2, pageCount);
 
-            pageCount = dal.GetPageCount(10);
+            pageCount = dal.GetDhcpEndpointPageCount(10);
             Assert.Equal(1, pageCount);
         }
     }

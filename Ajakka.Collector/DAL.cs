@@ -27,8 +27,19 @@ namespace Ajakka.Collector{
             }
         }
 
-        public int GetPageCount(int pageSize){
-            return 0;
+        public int GetDhcpEndpointPageCount(int pageSize){
+            using (var connection = new MySql.Data.MySqlClient.MySqlConnection(connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = string.Format("SELECT count(*) FROM endpoint_latest" );
+                var result = Convert.ToInt32(command.ExecuteScalar());
+                int add = 0;
+                if(result % pageSize != 0){
+                    add = 1;
+                }
+                return add + result/pageSize;
+            }
         }
 
         public EndpointDescriptor[] GetEndpoints(int pageNumber, int pageSize){
