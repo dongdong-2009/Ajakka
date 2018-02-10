@@ -8,8 +8,16 @@ function loadEndpoints(){
         success: fillTableWithEndpoints,
         error:showError
       });
-    
-}   
+    $.get({
+        url:'./api/endpoints/pageCount?pageSize=10',
+        success:showPageCount
+    })
+} 
+
+function showPageCount(pageCount){
+    var currentPage = 1;
+    $('#pageCount').append('page ' + currentPage + '/' + pageCount);
+}
 
 function showError(error){
     console.log(error);
