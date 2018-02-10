@@ -49,7 +49,7 @@ namespace Ajakka.Collector{
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = string.Format("SELECT * FROM endpoint_latest LIMIT {0} OFFSET {1}",pageSize, (pageNumber * pageSize) );
+                command.CommandText = string.Format("SELECT * FROM endpoint_latest order by lastseen desc LIMIT {0} OFFSET {1}",pageSize, (pageNumber * pageSize) );
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
