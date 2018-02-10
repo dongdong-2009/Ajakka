@@ -2,9 +2,10 @@ extends layout
 block header
   script(src='./js/formatting.js')
   script(src='./js/moment.js')
+  link(rel="stylesheet", href="./stylesheets/index.css")
 block content
   h1= title
-  
+  #currentPage=page
   div.table-responsive-sm
     table.table.table-striped.table-hover
       caption Detected endpoints

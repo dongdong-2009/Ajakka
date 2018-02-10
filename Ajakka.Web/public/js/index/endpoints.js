@@ -1,9 +1,14 @@
 function loadEndpoints(){
+    var currentPage = $('#currentPage').text();
+    console.log(currentPage);
+    if(!currentPage){
+        currentPage = 0;
+    }
 
     $.ajax({
         type: 'POST',
         url: './api/endpoints',
-        data:{pageNumber:0, pageSize:10},
+        data:{pageNumber:currentPage, pageSize:10},
         dataType: 'json',
         success: fillTableWithEndpoints,
         error:showError
@@ -15,8 +20,22 @@ function loadEndpoints(){
 } 
 
 function showPageCount(pageCount){
-    var currentPage = 1;
-    $('#pageCount').append('page ' + currentPage + '/' + pageCount);
+    var currentPage = $('#currentPage').text();
+    if(!currentPage){
+        currentPage = 0;
+    }
+    
+    if(currentPage > 0){
+        var previousPage = currentPage - 1;
+        $('#pageCount').append('<a href="./index?page='+previousPage+'">&lt;&lt; ');    
+    }
+    currentPage++;
+    $('#pageCount').append(' ' + currentPage + '/' + pageCount);
+
+    if(currentPage < pageCount){
+        var nextPage = currentPage;
+        $('#pageCount').append('<a href="./index?page='+nextPage+'"> &gt;&gt; ');    
+    }
 }
 
 function showError(error){
