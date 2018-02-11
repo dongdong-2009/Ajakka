@@ -65,10 +65,16 @@ namespace Ajakka.Collector{
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                response = ex.Message;
+                var serverResponse = new DALServerResponse<string>{
+                    Error = true,
+                    Message = ex.Message,
+                    Content = ex.Message
+                };
+                response = SerializeResponse<DALServerResponse<string>>(serverResponse);
             }
             finally
             {
+                Console.WriteLine("Sending response: " + response);
                 var responseBytes = Encoding.UTF8.GetBytes(response);
                 channel.BasicPublish(exchange: "", routingKey: props.ReplyTo,
                 basicProperties: replyProps, body: responseBytes);
@@ -86,10 +92,16 @@ namespace Ajakka.Collector{
             switch(request.FunctionName){
                 case "GetLatest":
                     var endpoints = dal.GetEndpoints(request.PageNumber, request.PageSize);
-                    return SerializeResponse<EndpointDescriptor[]>(endpoints);
+                    var res1 = new DALServerResponse<EndpointDescriptor[]>{
+                        Content = endpoints
+                    };
+                    return SerializeResponse<DALServerResponse<EndpointDescriptor[]>>(res1);
 
                 case "GetDhcpEndpointPageCount":
-                    return dal.GetDhcpEndpointPageCount(request.PageSize).ToString();
+                    var res2 = new DALServerResponse<int>{
+                        Content = dal.GetDhcpEndpointPageCount(request.PageSize)
+                    };
+                    return SerializeResponse<DALServerResponse<int>>(res2);
 
                 default:
                     throw new InvalidOperationException("Function name not found: " +request.FunctionName);

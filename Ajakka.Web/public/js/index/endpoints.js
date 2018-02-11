@@ -18,7 +18,8 @@ function loadEndpoints(){
     })
 } 
 
-function showPageCount(pageCount){
+function showPageCount(pageCountResponse){
+    var pageCount = pageCountResponse.Content;
     var currentPage = $('#currentPage').text();
     if(!currentPage){
         currentPage = 0;
@@ -43,7 +44,8 @@ function showError(error){
     $('#endpointListContainer').append('<tr class="table-danger"><td colspan="4">Request error: '+error.statusText+'</td></tr>');
 }
 
-function fillTableWithEndpoints(endpoints){
+function fillTableWithEndpoints(endpointsResponse){
+    var endpoints = endpointsResponse.Content;
     $('#endpointListContainer').empty();
     
     endpoints.forEach(function(endpoint){

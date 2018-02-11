@@ -39,10 +39,17 @@ function SendMessageToQueue(response, message){
             ch.assertQueue('', {exclusive: true}, function(err, q) {
             var corr = generateUuid();
             ch.consume(q.queue, function(msg) {
-               
                 if (msg.properties.correlationId == corr) {
-                    response.status(200).send(msg.content.toString());
-               
+                    var responseObject = JSON.parse(msg.content.toString());
+                    console.log(responseObject);
+                    if(responseObject.Error){
+                        console.log("Received error: " + responseObject.Message);
+                        response.status(500).send(responseObject);
+                    }
+                    else{
+                        response.status(200).send(responseObject);
+                    }
+                    
                 setTimeout(function() { conn.close(); }, 500);
                 }
             }, {noAck: true});
