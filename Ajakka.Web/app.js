@@ -13,6 +13,7 @@ var login = require('./routes/login');
 const uuidv1 = require('uuid/v1');
 
 var endpointApi = require('./api/endpoint');
+var userApi = require('./api/user');
 
 var app = express();
 
@@ -49,7 +50,7 @@ app.use('/index',requireLogin, index);
 app.use('/users', users);
 app.use('/login', login);
 app.use('/api/endpoints', blockApi, endpointApi);
-
+app.use('/api/users',blockApi, userApi);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
