@@ -47,7 +47,7 @@ app.use(session({
 
 app.use('/', login);
 app.use('/index',requireLogin, index);
-app.use('/users', users);
+app.use('/users',requireLogin, users);
 app.use('/login', login);
 app.use('/api/endpoints', blockApi, endpointApi);
 app.use('/api/users',blockApi, userApi);
