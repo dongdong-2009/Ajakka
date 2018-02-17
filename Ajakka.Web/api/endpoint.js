@@ -41,7 +41,6 @@ function SendMessageToQueue(response, message){
             ch.consume(q.queue, function(msg) {
                 if (msg.properties.correlationId == corr) {
                     var responseObject = JSON.parse(msg.content.toString());
-                    console.log(responseObject);
                     if(responseObject.Error){
                         console.log("Received error: " + responseObject.Message);
                         response.status(500).send(responseObject);
