@@ -12,7 +12,7 @@ function createConnection(){
 }
 
 describe('User', function() {
-    describe('#findAll()',function(){
+    describe('searching',function(){
         before(function(done){
             var connection = createConnection();
             
@@ -43,68 +43,107 @@ describe('User', function() {
             });
         });
 
-        it('should find first five users',function(done){
-            userController.findAll(5,0).then(function(users){
-                assert.equal(users.length, 5);
-                for(var i=1; i < 6; i++){
-                    assert.equal(users[i-1].name,'user' + i);
-                    assert.ok(users[i-1].id);
-                    assert.equal(users[i-1].pwdHash, '');
-                }
-                done();
-            }).catch(function(err){
-                done(err);
+        describe('#findAll()',function(){
+            
+    
+            it('should find first five users',function(done){
+                userController.findAll(5,0).then(function(users){
+                    assert.equal(users.length, 5);
+                    for(var i=1; i < 6; i++){
+                        assert.equal(users[i-1].name,'user' + i);
+                        assert.ok(users[i-1].id);
+                        assert.equal(users[i-1].pwdHash, '');
+                    }
+                    done();
+                }).catch(function(err){
+                    done(err);
+                });
             });
-        });
-
-        it('should find second page with three users',function(done){
-            userController.findAll(3,1).then(function(users){
-                assert.equal(users.length, 3);
-                for(var i=4; i < 7; i++){
-                    assert.equal(users[i-4].name,'user' + i);
-                    assert.ok(users[i-4].id);
-                    assert.equal(users[i-4].pwdHash, '');
-                }
-                done();
-            }).catch(function(err){
-                done(err);
+    
+            it('should find second page with three users',function(done){
+                userController.findAll(3,1).then(function(users){
+                    assert.equal(users.length, 3);
+                    for(var i=4; i < 7; i++){
+                        assert.equal(users[i-4].name,'user' + i);
+                        assert.ok(users[i-4].id);
+                        assert.equal(users[i-4].pwdHash, '');
+                    }
+                    done();
+                }).catch(function(err){
+                    done(err);
+                });
             });
-        });
-
-        it('should return empty array',function(done){
-            userController.findAll(5,10).then(function(users){
-                
-                assert.equal(users.length, 0);
-                done();
-
-            }).catch(function(err){
-                done(err);
-            });
-        });
-    });
-
-    describe('#findById()',function(){
-        before(function(done){
-            var connection = createConnection();
-            connection.query('delete from users', function (err, result, fields) {
-                if (err){ 
-                    throw err;
-                }
-                connection.end();
-                const makeRequest = async()=>{
-                    await userController.createUser('user1','password');
-                    await userController.createUser('user2','password');
-                    await userController.createUser('user3','password');
-                    await userController.createUser('user4','password');
-                    await userController.createUser('user5','password');
-                    await userController.createUser('user6','password');
-                    await userController.createUser('user7','password');
-                    await userController.createUser('user8','password');
-                    await userController.createUser('user9','password');
+    
+            it('should return empty array',function(done){
+                userController.findAll(5,10).then(function(users){
                     
-                };
-                makeRequest().then(function(){
+                    assert.equal(users.length, 0);
                     done();
+    
+                }).catch(function(err){
+                    done(err);
+                });
+            });
+        });
+    
+        describe('#findById()',function(){
+    
+            it('should find user by id', function(done){
+                userController.findAll(3,1).then(function(users){
+                    var idToFind = users[2].id;
+                    userController.findById(idToFind).then(function(user){
+                        assert.equal(user.name, users[2].name);
+                        assert.equal(user.id, users[2].id);
+                        assert.equal(user.pwdHash, '');
+                        done();
+                    })
+                    .catch(function(err){
+                        done(err);
+                    });
+                })
+                .catch(function(err){
+                    done(err);
+                });
+                
+            });
+    
+            it('should not find user by id', function(done){
+                userController.findById('1234').then(function(user){
+                    assert.equal(user, null);
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+            });
+    
+            it('should not find user (sql injection attack)', function(done){
+                userController.findAll(3,1).then(function(users){
+                    var idToFind = users[2].id;
+                    userController.findById('\' or 1=1 or 1=\'').then(function(user){
+                        assert.equal(user, null);
+                        done();
+                    })
+                    .catch(function(err){
+                        done(err);
+                    });
+                })
+                .catch(function(err){
+                    done(err);
+                });
+                
+            });
+    
+            it('should not drop table users (sql injection attack)', function(done){
+                userController.findAll(3,1).then(function(users){
+                    var idToFind = users[2].id;
+                    userController.findById(';drop table users;--').then(function(user){
+                        assert.equal(user, null);
+                        done();
+                    })
+                    .catch(function(err){
+                        done(err);
+                    });
                 })
                 .catch(function(err){
                     done(err);
@@ -112,93 +151,65 @@ describe('User', function() {
                 
             });
         });
-
-        it('should find user by id', function(done){
-            userController.findAll(3,1).then(function(users){
-                var idToFind = users[2].id;
-                userController.findById(idToFind).then(function(user){
-                    assert.equal(user.name, users[2].name);
-                    assert.equal(user.id, users[2].id);
-                    assert.equal(user.pwdHash, '');
-                    done();
+    
+        describe('#findByName()',function(){
+    
+            it('should find user by name', function(done){
+                userController.findAll(3,1).then(function(users){
+                    var nameToFind = users[2].name;
+                    userController.findByName(nameToFind).then(function(user){
+                        assert.equal(user.name, users[2].name);
+                        assert.equal(user.id, users[2].id);
+                        assert.equal(user.pwdHash, '');
+                        done();
+                    })
+                    .catch(function(err){
+                        done(err);
+                    });
                 })
                 .catch(function(err){
                     done(err);
                 });
-            })
-            .catch(function(err){
-                done(err);
+                
             });
-            
-        });
-
-        it('should not find user by id', function(done){
-            userController.findById('1234').then(function(user){
-                assert.equal(user, null);
-                done();
-            })
-            .catch(function(err){
-                done(err);
-            });
-        });
-
-        it('should not find user (sql injection attack)', function(done){
-            userController.findAll(3,1).then(function(users){
-                var idToFind = users[2].id;
-                userController.findById('\' or 1=1 or 1=\'').then(function(user){
+    
+            it('should not find user by nameToFind', function(done){
+                userController.findByName('1234').then(function(user){
                     assert.equal(user, null);
                     done();
                 })
                 .catch(function(err){
                     done(err);
                 });
-            })
-            .catch(function(err){
-                done(err);
             });
-            
-        });
-
-        it('should not drop table users (sql injection attack)', function(done){
-            userController.findAll(3,1).then(function(users){
-                var idToFind = users[2].id;
-                userController.findById(';drop table users;--').then(function(user){
-                    assert.equal(user, null);
-                    done();
+    
+            it('should not find user (sql injection attack)', function(done){
+                userController.findAll(3,1).then(function(users){
+                    var idToFind = users[2].id;
+                    userController.findByName('\' or 1=1 or 1=\'').then(function(user){
+                        assert.equal(user, null);
+                        done();
+                    })
+                    .catch(function(err){
+                        done(err);
+                    });
                 })
                 .catch(function(err){
                     done(err);
                 });
-            })
-            .catch(function(err){
-                done(err);
+                
             });
-            
-        });
-    });
-
-    describe('#findByName()',function(){
-        before(function(done){
-            var connection = createConnection();
-            connection.query('delete from users', function (err, result, fields) {
-                if (err){ 
-                    throw err;
-                }
-                connection.end();
-                const makeRequest = async()=>{
-                    await userController.createUser('user1','password');
-                    await userController.createUser('user2','password');
-                    await userController.createUser('user3','password');
-                    await userController.createUser('user4','password');
-                    await userController.createUser('user5','password');
-                    await userController.createUser('user6','password');
-                    await userController.createUser('user7','password');
-                    await userController.createUser('user8','password');
-                    await userController.createUser('user9','password');
-                    
-                };
-                makeRequest().then(function(){
-                    done();
+    
+            it('should not drop table users (sql injection attack)', function(done){
+                userController.findAll(3,1).then(function(users){
+                    var idToFind = users[2].id;
+                    userController.findByName(';drop table users;--').then(function(user){
+                        assert.equal(user, null);
+                        done();
+                    })
+                    .catch(function(err){
+                        done(err);
+                    });
                 })
                 .catch(function(err){
                     done(err);
@@ -206,70 +217,8 @@ describe('User', function() {
                 
             });
         });
-
-        it('should find user by name', function(done){
-            userController.findAll(3,1).then(function(users){
-                var nameToFind = users[2].name;
-                userController.findByName(nameToFind).then(function(user){
-                    assert.equal(user.name, users[2].name);
-                    assert.equal(user.id, users[2].id);
-                    assert.equal(user.pwdHash, '');
-                    done();
-                })
-                .catch(function(err){
-                    done(err);
-                });
-            })
-            .catch(function(err){
-                done(err);
-            });
-            
-        });
-
-        it('should not find user by nameToFind', function(done){
-            userController.findByName('1234').then(function(user){
-                assert.equal(user, null);
-                done();
-            })
-            .catch(function(err){
-                done(err);
-            });
-        });
-
-        it('should not find user (sql injection attack)', function(done){
-            userController.findAll(3,1).then(function(users){
-                var idToFind = users[2].id;
-                userController.findByName('\' or 1=1 or 1=\'').then(function(user){
-                    assert.equal(user, null);
-                    done();
-                })
-                .catch(function(err){
-                    done(err);
-                });
-            })
-            .catch(function(err){
-                done(err);
-            });
-            
-        });
-
-        it('should not drop table users (sql injection attack)', function(done){
-            userController.findAll(3,1).then(function(users){
-                var idToFind = users[2].id;
-                userController.findByName(';drop table users;--').then(function(user){
-                    assert.equal(user, null);
-                    done();
-                })
-                .catch(function(err){
-                    done(err);
-                });
-            })
-            .catch(function(err){
-                done(err);
-            });
-            
-        });
     });
+    
 
     describe('#create()', function() {
         beforeEach(function(done){ 
@@ -402,6 +351,7 @@ describe('User', function() {
                 connection.end();
                 const makeRequest = async()=>{
                     await userController.createUser('user1','password1');
+                    await userController.createUser('user3','');
                 };
                 makeRequest().then(function(){
                     done();
@@ -428,7 +378,7 @@ describe('User', function() {
                 done(user);
             })
             .catch(function(err){
-                assert.equal(err, 'User name or password is not valid');
+                assert.equal(err.message, 'User name or password is not valid');
                 done();
             });
         });
@@ -438,8 +388,39 @@ describe('User', function() {
                 done(user);
             })
             .catch(function(err){
-                assert.equal(err, 'User name or password is not valid');
+                assert.equal(err.message, 'User name or password is not valid');
                 done();
+            });
+        });
+
+        it('should validate user password password is empty', function(done){
+            userController.validateLogin('user3','').then(function(user){
+                done(user);
+            })
+            .catch(function(err){
+                assert.equal(err.message, 'User name or password is not valid');
+                done();
+            });
+        });
+
+        it('should validate password when pwdHash is null', function(done){
+            var connection = createConnection();
+    
+            var values = [['admin', 'admin', null]];
+            
+            connection.query('insert into users (id, name, pwdHash) values (?)', values, function (err, result, fields) {
+                connection.end();
+                if(err){
+                    done(err);
+                    return;
+                }
+                userController.validateLogin('admin','').then(function(user){
+                    assert.equal(user.name,'admin');
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
             });
         });
     });
@@ -484,7 +465,7 @@ describe('User', function() {
                done('password change should have failed');
             })
             .catch(function(err){
-                assert.equal(err,'User name or password is not valid');
+                assert.equal(err.message,'User name or password is not valid');
                 done();
             });
         });
@@ -494,7 +475,7 @@ describe('User', function() {
                 done('password change should have failed');
             })
             .catch(function(err){
-                assert.equal(err,'User name or password is not valid');
+                assert.equal(err.message,'User name or password is not valid');
                 done();
             });
         });

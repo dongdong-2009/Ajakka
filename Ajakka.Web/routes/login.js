@@ -5,7 +5,6 @@ var passwordHash = require('password-hash');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    console.log("render get");
   renderResult(res);
 });
 
@@ -16,7 +15,7 @@ router.post('/', function(req, res, next){
     res.redirect('./index');
   })
   .catch(function(error){
-    renderError(res, 'Invalid email or password.');
+    renderError(res, error.message);
     return;
   });
 });

@@ -15,16 +15,18 @@ function _validateLogin(name, password, resolve, reject){
             }
             connection.end();
             if(result.length == 0){
-                reject('User name or password is not valid');
+                reject({message:'User name or password is not valid'});
                 return;
             }
-            if(passwordHash.verify(password, result[0].pwdHash))
+            var user = new User(result[0].id,result[0].name,'');
+            
+            if(result[0].pwdHash == null || passwordHash.verify(password, result[0].pwdHash))
             {
-                var user = new User(result[0].id,result[0].name,'');
                 resolve(user);
                 return;
             }
-            reject('User name or password is not valid');
+            
+            reject({message:'User name or password is not valid'});
         });
     },
     2000);

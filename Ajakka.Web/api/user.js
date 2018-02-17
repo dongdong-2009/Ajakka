@@ -76,13 +76,13 @@ router.delete('/:id', function (req, res) {
 // });
 
 //UPDATES USER PASSWORD 
-router.put('/password/:id', function (req, res) {
-	userController.changeUserPassword(req.params.id, req.body.oldPassword, req.body.newPassword)
+router.put('/password/:name', function (req, res) {
+	userController.changeUserPassword(req.params.name, req.body.oldPassword, req.body.newPassword)
 	.then(function(){
 		res.status(200).send({result:'ok'});
 	})
 	.catch(function(error){
-		return res.status(500).send("There was a problem updating the user. " + error.message);
+		return res.status(500).send("There was a problem updating the user. " + error);
 	});
 });
 
