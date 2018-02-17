@@ -70,6 +70,24 @@ function _findById(id, resolve, reject){
     });
 }
 
+function _findByName(name, resolve, reject){
+    var connection = createConnection();
+    var query = 'select * from users where name=?';
+    connection.query(query, name, function(err,result,fields){
+        if(err){
+            reject(err);
+            return;
+        }
+        connection.end();
+        if(result.length == 0){
+            resolve(null);
+            return;
+        }
+        var user = new User(result[0].id,result[0].name,'');
+        resolve(user);
+    });
+}
+
 function _deleteUser(id, resolve, reject){
     reject('not implemented');
 }
@@ -102,6 +120,12 @@ function findById(id){
     })
 }
 
+function findByName(name){
+    return new Promise(function(resolve, reject){
+        _findByName(name, resolve, reject);
+    });
+}
+
 function deleteUser(id){
     return new Promise(function(resolve, reject){
         _deleteUser(id, resolve, reject);
@@ -125,3 +149,4 @@ module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.deleteUser = deleteUser;
 module.exports.changeUserPassword = changeUserPassword;
+module.exports.findByName = findByName;
