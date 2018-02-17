@@ -5,3 +5,4 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY (id),
   UNIQUE KEY name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO users (id,name,pwdHash) values ('admin','admin',NULL);
