@@ -391,5 +391,55 @@ describe('User', function() {
             });
         });
     });
+
+    describe('#validatePassword()',function(){
+        before(function(done){
+            var connection = createConnection();
+            connection.query('delete from users', function (err, result, fields) {
+                if (err){ 
+                    throw err;
+                }
+                connection.end();
+                const makeRequest = async()=>{
+                    await userController.createUser('user1','password1');
+                };
+                makeRequest().then(function(){
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+                
+            });
+        });
+
+        it('should validate user password', function(done){
+            userController.validateLogin('user1','password1').then(function(user){
+                assert.equal(user.name,'user1');
+                done();
+            })
+            .catch(function(err){
+                done(err);
+            });
+        });
+
+        it('should not validate user password when password is incorrect', function(done){
+            userController.validateLogin('user1','password2').then(function(user){
+                done(user);
+            })
+            .catch(function(err){
+                done(err);
+            });
+        });
+
+        it('should not validate user password when user name is incorrect', function(done){
+            userController.validateLogin('user2','password1').then(function(user){
+                done(user);
+            })
+            .catch(function(err){
+                done(err);
+            });
+        });
+    });
 });
 
