@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MySql.Data.MySqlClient;
 
 namespace Ajakka.DbInit
 {
@@ -22,19 +23,38 @@ namespace Ajakka.DbInit
         }
 
         static void CreateEndpointLatestTable(){
-            using (var connection = new MySql.Data.MySqlClient.MySqlConnection(connectionString))
+            using (var connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText = LoadCommand("endpointLatest.sql");
-                Console.WriteLine(command.CommandText);
-                command.ExecuteNonQuery();
+                RunScript(connection,"endpointLatest.sql");
+                RunScript(connection,"users.sql");
             }
         }
 
         static string LoadCommand(string fileName){
             using(var reader = new StreamReader(fileName)){
                 return reader.ReadToEnd();
+            }
+        }
+
+        static void RunScript(MySqlConnection connection, string fileName){
+            var defaultColor = Console.ForegroundColor;
+            try{
+                var command = connection.CreateCommand();
+                command.CommandText = LoadCommand(fileName);
+                command.ExecuteNonQuery();
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("SUCCESS: ");
+                Console.ForegroundColor = defaultColor;
+                Console.WriteLine(fileName);
+                
+            }
+            catch(Exception ex){
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("FAILURE: ");
+                Console.ForegroundColor = defaultColor;
+                Console.WriteLine(fileName);
+                Console.WriteLine(ex.Message);
             }
         }
     }

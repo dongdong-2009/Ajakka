@@ -9,5 +9,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="endpointLatest.sql" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="users.sql" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-CREATE TABLE endpoint_latest (
+CREATE TABLE IF NOT EXISTS endpoint_latest (
   mac char(12),
   ip varchar(39),
   hostname varchar(255),
