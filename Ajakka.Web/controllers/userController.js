@@ -5,26 +5,30 @@ var mysql = require('mysql');
 var config = require('../config/ajakkaConfiguration');
 
 function _validateLogin(name, password, resolve, reject){
-    var connection = createConnection();
-    var query = 'select * from users where name=?';
-    connection.query(query, name, function(err,result,fields){
-        if(err){
-            reject(err);
-            return;
-        }
-        connection.end();
-        if(result.length == 0){
+    setTimeout(function(){
+        var connection = createConnection();
+        var query = 'select * from users where name=?';
+        connection.query(query, name, function(err,result,fields){
+            if(err){
+                reject(err);
+                return;
+            }
+            connection.end();
+            if(result.length == 0){
+                resolve(null);
+                return;
+            }
+            if(passwordHash.verify(password, result[0].pwdHash))
+            {
+                var user = new User(result[0].id,result[0].name,'');
+                resolve(user);
+                return;
+            }
             resolve(null);
-            return;
-        }
-        if(passwordHash.verify(password, result[0].pwdHash))
-        {
-            var user = new User(result[0].id,result[0].name,'');
-            resolve(user);
-            return;
-        }
-        resolve(null);
-    });
+        });
+    },
+    2000);
+    
 }
 
 function _createUser(name, password, resolve, reject){
