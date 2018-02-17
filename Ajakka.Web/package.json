@@ -3,17 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "debug": "node --inspect ./bin/www",
+    "test": "NODE_ENV=unittests mocha tests --timeout 120000 --recursive",
+    "test_windows": "set NODE_ENV=unittests&&mocha tests --timeout 120000 --recursive",
+    "test_windows_debug": "set NODE_ENV=unittests&&mocha tests --timeout 120000 --recursive --inspect-brk "
   },
   "dependencies": {
     "amqplib": "^0.5.2",
     "body-parser": "~1.18.2",
+    "chai": "^4.1.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "express-session": "^1.15.6",
     "helmet": "^3.11.0",
     "morgan": "~1.9.0",
+    "mysql": "^2.15.0",
     "password-hash": "^1.2.2",
     "pug": "2.0.0-beta11",
     "serve-favicon": "~2.4.5",

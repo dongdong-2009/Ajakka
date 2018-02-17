@@ -64,8 +64,14 @@ dotnet run [environment variable storing connection string]
 
 ## Ajakka.Web
 Website
+MySql connection configuration is expected in environment variables:
 
-Connection configuration is in /config/ajakkaConfiguration.js:
+~~~~
+export AjakkaWebMySql="mysql://user:pass@host/db"
+export AjakkaWebTestMySql="mysql://user:pass@host/db"
+~~~~
+
+Message queue connection configuration is in /config/ajakkaConfiguration.js:
 
 ~~~~
 module.exports.messageQueueHostAddress= 'amqp://localhost';

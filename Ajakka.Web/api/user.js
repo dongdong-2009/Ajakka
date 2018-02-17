@@ -7,7 +7,7 @@ var userController = require('../controllers/userController');
 // CREATES A NEW USER
 // requires email, pwd
 router.post('/', function (req, res) {
-	userController.createUser(req.body.email, req.body.pwd).then(function(created){
+	userController.createUser(req.body.name, req.body.pwd).then(function(created){
 		res.status(200).send(created);
 	},function(error){
 		return res.status(500).send("There was a problem adding the information to the database.");
