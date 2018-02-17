@@ -27,14 +27,14 @@ function showPageCount(pageCountResponse){
     
     if(currentPage > 0){
         var previousPage = currentPage - 1;
-        $('#pageCount').append('<a href="./index?page='+previousPage+'">&lt;&lt; ');    
+        $('#pageCount').append('<a href="./index?page='+previousPage+'"><i class="fas fa-caret-left"> ');    
     }
     currentPage++;
     $('#pageCount').append(' ' + currentPage + '/' + pageCount);
 
     if(currentPage < pageCount){
         var nextPage = currentPage;
-        $('#pageCount').append('<a href="./index?page='+nextPage+'"> &gt;&gt; ');    
+        $('#pageCount').append('<a href="./index?page='+nextPage+'"> <i class="fas fa-caret-right"> ');    
     }
 }
 
