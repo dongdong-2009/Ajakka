@@ -1,0 +1,22 @@
+extends dashboardlayout
+block header
+  script(src='./js/formatting.js')
+  script(src='./js/moment.js')
+  link(rel="stylesheet", href="./stylesheets/index.css")
+block content
+  script.
+      $('#usersNav').addClass('active')
+  #currentPage=page
+  div.table-responsive-sm
+    table.table.table-striped.table-hover
+      caption Users
+      thead.thead-dark
+        tr
+          th Name
+          th &nbsp;
+      tbody#userListContainer
+        tr
+          td(colspan='2')
+            i.fa.fa-circle-o-notch.fa-spin
+  div#pageCount
+  script(src='./js/users/users.js')
