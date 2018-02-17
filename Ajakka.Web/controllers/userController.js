@@ -75,6 +75,22 @@ function _findAll(pageSize, pageNumber, resolve, reject){
     });
 }
 
+function _getPageCount(pageSize, resolve, reject){
+    var connection = createConnection();
+    var query = 'select count(id) as c from users';
+   
+    connection.query(query, function(err,result,fields){
+        if(err){
+            reject(err);
+            return;
+        }
+        var pageCount = Math.ceil(result[0].c/pageSize);
+        
+        connection.end();
+        resolve(pageCount);
+    });
+}
+
 function _findById(id, resolve, reject){
     var connection = createConnection();
     var query = 'select * from users where id=?';
@@ -178,6 +194,12 @@ function deleteUser(id){
     })
 }
 
+function getPageCount(pageSize){
+    return new Promise(function(resolve, reject){
+        _getPageCount(pageSize, resolve, reject);
+    })
+}
+
 function changeUserPassword(name, oldPassword, newPassword){
     return new Promise(function(resolve, reject){
         _changeUserPassword(name, oldPassword, newPassword, resolve, reject);
@@ -196,3 +218,4 @@ module.exports.findById = findById;
 module.exports.deleteUser = deleteUser;
 module.exports.changeUserPassword = changeUserPassword;
 module.exports.findByName = findByName;
+module.exports.getPageCount = getPageCount;

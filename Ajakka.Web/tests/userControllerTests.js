@@ -217,6 +217,32 @@ describe('User', function() {
                 
             });
         });
+
+        describe('getPageCount()',function(){
+            it('should return 3 pages',function(done){
+                userController.getPageCount(3)
+                .then(function(pageCount){
+                    assert.equal(pageCount, 3);
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+            });
+        });
+
+        describe('getPageCount()',function(){
+            it('should return 2 pages',function(done){
+                userController.getPageCount(5)
+                .then(function(pageCount){
+                    assert.equal(pageCount, 2);
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+            });
+        });
     });
     
 

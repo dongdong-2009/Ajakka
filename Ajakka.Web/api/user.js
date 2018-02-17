@@ -25,6 +25,21 @@ router.get('/', function (req, res) {
 	});
 });
 
+router.get('/pageCount', function (req, res) {
+    var pageSize = req.query.pageSize;
+    if(!pageSize){
+        pageSize = 10;
+    }
+	userController.getPageCount(pageSize)
+	.then(function(pageCount){
+		res.status(200).send({pageCount:pageCount});
+	})
+	.catch(function(error){
+		console.log(error);
+		return res.status(500).send("There was a problem getting the page count");
+	});
+});
+
 // RETURNS ALL THE USERS IN THE DATABASE
 router.get('/:pageNumber/:pageSize', function (req, res) {
 	var pageSize = req.params.pageSize;
