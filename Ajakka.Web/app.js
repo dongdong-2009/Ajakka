@@ -46,6 +46,7 @@ app.use(session({
 }));
 
 app.use('/', login);
+app.use('/logout', logout);
 app.use('/index',requireLogin, index);
 app.use('/users',requireLogin, users);
 app.use('/login', login);
@@ -91,7 +92,7 @@ function requireLogin (req, res, next) {
 
 function logout(req,res,next)
 {
-  req.session.reset();
+  req.session.destroy();
   res.redirect('/');
 }
 
