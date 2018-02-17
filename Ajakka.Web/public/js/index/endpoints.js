@@ -63,5 +63,5 @@ function fillTableWithEndpoints(endpointsResponse){
     });
 }
 
-setTimeout(loadEndpoints, 1000);
+setTimeout(loadEndpoints, 100);
 
