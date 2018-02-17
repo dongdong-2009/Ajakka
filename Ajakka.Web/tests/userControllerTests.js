@@ -325,6 +325,71 @@ describe('User', function() {
         });
     });
 
-    
+    describe('#deleteUser()',function(){
+        before(function(done){
+            var connection = createConnection();
+            connection.query('delete from users', function (err, result, fields) {
+                if (err){ 
+                    throw err;
+                }
+                connection.end();
+                const makeRequest = async()=>{
+                    await userController.createUser('user1','password');
+                    await userController.createUser('user2','password');
+                    await userController.createUser('user3','password');
+                    await userController.createUser('user4','password');
+                    await userController.createUser('user5','password');
+                    await userController.createUser('user6','password');
+                    await userController.createUser('user7','password');
+                    await userController.createUser('user8','password');
+                    await userController.createUser('user9','password');
+                    
+                };
+                makeRequest().then(function(){
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+                
+            });
+        });
+
+        it('should delete user by id', function(done){
+            userController.findAll(3,1).then(function(users){
+                var idToDelete = users[2].id;
+                userController.deleteUser(idToDelete).then(function(){
+                    userController.findById(idToDelete).then(function(user){
+                        assert.equal(user,null);
+                        done();
+                    })
+                    .catch(function(err){
+                        done(err);
+                    });
+                })
+                .catch(function(err){
+                    done(err);
+                });
+            })
+            .catch(function(err){
+                done(err);
+            });
+            
+        });
+
+        it('should not delete all users (sql injection attack)', function(done){
+            userController.deleteUser('\' or 1=1 or 1=\'').then(function(){
+                userController.findAll(3,1).then(function(users){
+                    assert.equal(users.length, 3);
+                    done();
+                }).catch(function(err){
+                    done(err);
+                });
+            })
+            .catch(function(err){
+                done(err);
+            });
+        });
+    });
 });
 

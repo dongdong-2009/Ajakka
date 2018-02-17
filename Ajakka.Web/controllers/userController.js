@@ -89,7 +89,16 @@ function _findByName(name, resolve, reject){
 }
 
 function _deleteUser(id, resolve, reject){
-    reject('not implemented');
+    var connection = createConnection();
+    var query = 'delete from users where id=?';
+    var q = connection.query(query, id, function(err,result,fields){
+        if(err){
+            reject(err);
+            return;
+        }
+        connection.end();
+        resolve(id);
+    });
 }
 
 function _changeUserPassword(id, oldPassword, newPassword, resolve, reject){
