@@ -9,14 +9,17 @@ block content
   #currentPage=page
   div.table-responsive-sm
     table.table.table-striped.table-hover
-      caption Users
       thead.thead-dark
         tr
           th Name
-          th &nbsp;
+          th(style='text-align:right')
+            span#pageCount
       tbody#userListContainer
         tr
           td(colspan='2')
             i.fa.fa-circle-o-notch.fa-spin
-  div#pageCount
+  
+  div
+    button.btn.btn-secondary
+      span Add new
   script(src='./js/users/users.js')
