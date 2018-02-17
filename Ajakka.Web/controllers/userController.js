@@ -53,7 +53,22 @@ function _findAll(pageSize, pageNumber, resolve, reject){
 }
 
 function _findById(id, resolve, reject){
-    reject('not implemented');
+    var connection = createConnection();
+    var query = 'select * from users where id=?';
+   
+    connection.query(query, id, function(err,result,fields){
+        if(err){
+            reject(err);
+            return;
+        }
+        connection.end();
+        if(result.length == 0){
+            resolve(null);
+            return;
+        }
+        var user = new User(result[0].id,result[0].name,'');
+        resolve(user);
+    });
 }
 
 function _deleteUser(id, resolve, reject){

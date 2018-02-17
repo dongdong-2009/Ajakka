@@ -83,7 +83,65 @@ describe('User', function() {
         });
     });
 
+    describe('#findById()',function(){
+        before(function(done){
+            var connection = createConnection();
+            connection.query('delete from users', function (err, result, fields) {
+                if (err){ 
+                    throw err;
+                }
+                connection.end();
+                const makeRequest = async()=>{
+                    await userController.createUser('user1','password');
+                    await userController.createUser('user2','password');
+                    await userController.createUser('user3','password');
+                    await userController.createUser('user4','password');
+                    await userController.createUser('user5','password');
+                    await userController.createUser('user6','password');
+                    await userController.createUser('user7','password');
+                    await userController.createUser('user8','password');
+                    await userController.createUser('user9','password');
+                    
+                };
+                makeRequest().then(function(){
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+                
+            });
+        });
 
+        it('should find user by id', function(done){
+            userController.findAll(3,1).then(function(users){
+                var idToFind = users[2].id;
+                userController.findById(idToFind).then(function(user){
+                    assert.equal(user.name, users[2].name);
+                    assert.equal(user.id, users[2].id);
+                    assert.equal(user.pwdHash, '');
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+            })
+            .catch(function(err){
+                done(err);
+            });
+            
+        });
+
+        it('should not find user by id', function(done){
+            userController.findById('1234').then(function(user){
+                assert.equal(user, null);
+                done();
+            })
+            .catch(function(err){
+                done(err);
+            });
+        });
+    });
 
     describe('#create()', function() {
         beforeEach(function(done){ 
