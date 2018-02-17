@@ -9,6 +9,11 @@
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+h3#product-logo{
+  color:#aaaaaa;
+  padding-top:10px;
+}
+
 #wrapper {
   padding-left: 0;
   -webkit-transition: all 0.5s ease;
@@ -141,7 +146,7 @@
     width: 0;
   }
   #wrapper.toggled #sidebar-wrapper {
-    width: 50px;
+    width: 60px;
   }
   #page-content-wrapper {
     padding: 20px;
