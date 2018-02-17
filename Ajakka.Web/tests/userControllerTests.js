@@ -141,6 +141,23 @@ describe('User', function() {
                 done(err);
             });
         });
+
+        it('should not find user (sql injection attack)', function(done){
+            userController.findAll(3,1).then(function(users){
+                var idToFind = users[2].id;
+                userController.findById('\' or 1=1 or 1=\'').then(function(user){
+                    assert.equal(user, null);
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+            })
+            .catch(function(err){
+                done(err);
+            });
+            
+        });
     });
 
     describe('#create()', function() {

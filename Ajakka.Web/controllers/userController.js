@@ -55,7 +55,6 @@ function _findAll(pageSize, pageNumber, resolve, reject){
 function _findById(id, resolve, reject){
     var connection = createConnection();
     var query = 'select * from users where id=?';
-   
     connection.query(query, id, function(err,result,fields){
         if(err){
             reject(err);
