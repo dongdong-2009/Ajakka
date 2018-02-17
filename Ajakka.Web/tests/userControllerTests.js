@@ -158,6 +158,23 @@ describe('User', function() {
             });
             
         });
+
+        it('should not drop table users (sql injection attack)', function(done){
+            userController.findAll(3,1).then(function(users){
+                var idToFind = users[2].id;
+                userController.findById(';drop table users;--').then(function(user){
+                    assert.equal(user, null);
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+            })
+            .catch(function(err){
+                done(err);
+            });
+            
+        });
     });
 
     describe('#create()', function() {
