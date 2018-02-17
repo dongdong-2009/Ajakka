@@ -15,7 +15,7 @@ function _validateLogin(name, password, resolve, reject){
             }
             connection.end();
             if(result.length == 0){
-                resolve(null);
+                reject('User name or password is not valid');
                 return;
             }
             if(passwordHash.verify(password, result[0].pwdHash))
@@ -24,7 +24,7 @@ function _validateLogin(name, password, resolve, reject){
                 resolve(user);
                 return;
             }
-            resolve(null);
+            reject('User name or password is not valid');
         });
     },
     2000);
@@ -122,8 +122,22 @@ function _deleteUser(id, resolve, reject){
     });
 }
 
-function _changeUserPassword(id, oldPassword, newPassword, resolve, reject){
-    reject('not implemented');
+function _changeUserPassword(name, oldPassword, newPassword, resolve, reject){
+    validateLogin(name,oldPassword).then(function(user){
+        var connection = createConnection();
+        var newHash = passwordHash.generate(newPassword);
+        var query = 'update users set pwdHash=? where name=?';
+        var q = connection.query(query, [newHash,name], function(err,result,fields){
+            if(err){
+                reject(err);
+                return;
+            }
+            connection.end();
+            resolve(name);
+        });
+    }).catch(function(err){
+        reject(err);
+    });
 }
 
 function validateLogin(name, password){
@@ -162,9 +176,9 @@ function deleteUser(id){
     })
 }
 
-function changeUserPassword(id, oldPassword, newPassword){
+function changeUserPassword(name, oldPassword, newPassword){
     return new Promise(function(resolve, reject){
-        _changeUserPassword(id, oldPassword, newPassword, resolve, reject);
+        _changeUserPassword(name, oldPassword, newPassword, resolve, reject);
     })
 }
 

@@ -428,7 +428,8 @@ describe('User', function() {
                 done(user);
             })
             .catch(function(err){
-                done(err);
+                assert.equal(err, 'User name or password is not valid');
+                done();
             });
         });
 
@@ -437,7 +438,64 @@ describe('User', function() {
                 done(user);
             })
             .catch(function(err){
+                assert.equal(err, 'User name or password is not valid');
+                done();
+            });
+        });
+    });
+
+    describe('#changeUserPassword()',function(){
+        before(function(done){
+            var connection = createConnection();
+            connection.query('delete from users', function (err, result, fields) {
+                if (err){ 
+                    throw err;
+                }
+                connection.end();
+                const makeRequest = async()=>{
+                    await userController.createUser('user1','oldPassword');
+                };
+                makeRequest().then(function(){
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+                
+            });
+        });
+
+        it('should change user password', function(done){
+            userController.changeUserPassword('user1','oldPassword','newPassword').then(function(user){
+                userController.validateLogin('user1','newPassword').then(function(user){
+                    assert.equal(user.name,'user1');
+                    done();
+                }).catch(function(err){
+                    done(err);
+                });
+            })
+            .catch(function(err){
                 done(err);
+            });
+        });
+
+        it('should not change user password when old password is incorrect', function(done){
+            userController.changeUserPassword('user1','oldPassword2','newPassword').then(function(user){
+               done('password change should have failed');
+            })
+            .catch(function(err){
+                assert.equal(err,'User name or password is not valid');
+                done();
+            });
+        });
+
+        it('should not validate user password when user name is incorrect', function(done){
+            userController.changeUserPassword('user2','oldPassword','newPassword').then(function(user){
+                done('password change should have failed');
+            })
+            .catch(function(err){
+                assert.equal(err,'User name or password is not valid');
+                done();
             });
         });
     });
