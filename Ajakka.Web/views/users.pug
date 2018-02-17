@@ -2,7 +2,7 @@ extends dashboardlayout
 block header
   script(src='./js/formatting.js')
   script(src='./js/moment.js')
-  link(rel="stylesheet", href="./stylesheets/index.css")
+  link(rel="stylesheet", href="./stylesheets/users.css")
 block content
   script.
       $('#usersNav').addClass('active')
@@ -20,6 +20,23 @@ block content
             i.fa.fa-circle-o-notch.fa-spin
   
   div
-    button.btn.btn-secondary
-      span Add new
+    button#addNewButton.btn.btn-secondary(onclick='toggleAddUserForm()')
+      span Add new user
+  #addNewUser
+    form
+      div.form-group
+        label(for='newUserName') Name
+        input.form-control#newUserName(type='text', placeholder='user name')
+        div.invalid-feedback Please choose a username.
+      div.form-group
+        label(for='newUserName') Password
+        input.form-control#password(type='password')
+        div.invalid-feedback Password cannot not be empty
+      div.form-group
+        label(for='newUserName') Repeat password
+        input.form-control#passwordRepeat(type='password')
+        div.invalid-feedback Passwords do not match
+      button.btn.btn-primary(onclick='return addNewUser()', type='button')
+        span Add
+    div.text-danger#addNewUserError
   script(src='./js/users/users.js')

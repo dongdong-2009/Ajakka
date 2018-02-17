@@ -1,4 +1,4 @@
-function loadEndpoints(){
+function loadUsers(){
     var currentPage = $('#currentPage').text();
     if(!currentPage){
         currentPage = 0;
@@ -16,6 +16,7 @@ function loadEndpoints(){
 } 
 
 function showPageCount(pageCountResponse){
+    $('#pageCount').text('');
     var pageCount = pageCountResponse.pageCount;
     var currentPage = $('#currentPage').text();
     if(!currentPage){
@@ -48,12 +49,73 @@ function fillTableWithUsers(users){
       
         var row = '<tr>';
         row += '<td>' + user.name + '</td>';
-        row += '<td><a href="">delete</a></td>';
+        row += '<td style="text-align:right"><button class="btn btn-secondary" href="#" onclick="deleteUser(\''+user.id+'\')"><i class="fas fa-trash-alt"/><span> delete</span></a></td>';
         row += '</tr>';
         $('#userListContainer').append(row);
         
     });
 }
 
-setTimeout(loadEndpoints, 1000);
+function deleteUser(id){
+    $.get({
+        method:'DELETE',
+        url: './api/users/'+id,
+        success: loadUsers,
+        error:showError
+      });
+}
+
+function toggleAddUserForm(){
+    $('#addNewUser').show();
+    $('#addNewButton').hide();
+}
+
+function addNewUser(){
+    $('#newUserName').removeClass('is-invalid');
+    $('#password').removeClass('is-invalid');
+    $('#passwordRepeat').removeClass('is-invalid');
+    $('#addNewUserError').hide();
+
+    var name = $('#newUserName').val();
+    if(name == '' || name == null){
+        $('#newUserName').addClass('is-invalid');
+        return false;
+    }
+    var password = $('#password').val();
+    if(password == '' || password == null){
+        $('#password').addClass('is-invalid');
+        return false;
+    }
+    var passwordRepeat = $('#passwordRepeat').val();
+    if(password != passwordRepeat){
+        $('#passwordRepeat').addClass('is-invalid');
+        return false;
+    }
+    
+    var post = new Promise(function(resolve, reject){
+        $.post({
+            url: './api/users/',
+            data:{name:name, pwd:password},
+            dataType:'json',
+            success: resolve,
+            error:reject
+        });
+    });
+    post.then(function(result){
+        $('#addNewUser').hide();
+        $('#addNewButton').show();  
+        loadUsers(); 
+    }).catch(function(error){
+        showUserCreationError(error);
+        
+    });
+}
+
+function showUserCreationError(error){
+    console.log(error);
+    $('#addNewUserError').text(error.responseText);
+    $('#addNewUserError').show();
+}
+
+setTimeout(loadUsers, 100);
 
