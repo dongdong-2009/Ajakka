@@ -16,7 +16,26 @@ router.post('/', function (req, res) {
 
 // RETURNS ALL THE USERS IN THE DATABASE
 router.get('/', function (req, res) {
-	userController.findAll()
+	userController.findAll(10,0)
+	.then(function(users){
+		res.status(200).send(users);
+	})
+	.catch(function(error){
+		return res.status(500).send("There was a problem finding the users.");
+	});
+});
+
+// RETURNS ALL THE USERS IN THE DATABASE
+router.get('/:pageNumber/:pageSize', function (req, res) {
+	var pageSize = req.params.pageSize;
+	var pageNumber = req.params.pageNumber;
+	if(!pageSize){
+		pageSize = 10;
+	}
+	if(!pageNumber){
+		pageNumber = 0;
+	}
+	userController.findAll(pageSize, pageNumber)
 	.then(function(users){
 		res.status(200).send(users);
 	})

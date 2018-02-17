@@ -11,7 +11,6 @@ function _validateLogin(name, password, resolve, reject){
 }
 
 function _createUser(name, password, resolve, reject){
-    console.log('_createUser');
     var id = uuidv1();
     var pwdHash = passwordHash.generate(password);
     var user = new User(id, name, pwdHash);
@@ -33,20 +32,36 @@ function _createUser(name, password, resolve, reject){
 }
 
 
-function _findAll(resolve, reject){
-
+function _findAll(pageSize, pageNumber, resolve, reject){
+    var connection = createConnection();
+    var offset = pageSize * pageNumber;
+    var query = 'select * from users order by name limit '+ pageSize + ' offset ' + offset;
+   
+    connection.query(query, function(err,result,fields){
+        if(err){
+            reject(err);
+            return;
+        }
+        
+        var users = new Array();
+        result.forEach(function(item){
+            var user = new User(item.id, item.name, '');
+            users.push(user);
+        });
+        resolve(users);
+    });
 }
 
 function _findById(id, resolve, reject){
-    
+    reject('not implemented');
 }
 
 function _deleteUser(id, resolve, reject){
-
+    reject('not implemented');
 }
 
 function _changeUserPassword(id, oldPassword, newPassword, resolve, reject){
-    
+    reject('not implemented');
 }
 
 function validateLogin(name, password){
@@ -61,9 +76,9 @@ function createUser(name, password){
     })
 }
 
-function findAll(){
+function findAll(pageSize, pageNumber){
     return new Promise(function(resolve, reject){
-        _findAll(resolve, reject);
+        _findAll(pageSize, pageNumber, resolve, reject);
     })
 }
 

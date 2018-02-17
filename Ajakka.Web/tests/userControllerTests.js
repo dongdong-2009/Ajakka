@@ -5,7 +5,86 @@ const assert = require('assert');
 var mysql = require('mysql');
 var config = require('../config/ajakkaConfiguration');
 
+
+function createConnection(){
+    return mysql.createConnection(config.getMySqlUrl());
+
+}
+
 describe('User', function() {
+    describe('#findAll()',function(){
+        before(function(done){
+            var connection = createConnection();
+            
+            connection.query('delete from users', function (err, result, fields) {
+                if (err){ 
+                    throw err;
+                }
+                connection.end();
+                const makeRequest = async()=>{
+                    await userController.createUser('user1','password');
+                    await userController.createUser('user2','password');
+                    await userController.createUser('user3','password');
+                    await userController.createUser('user4','password');
+                    await userController.createUser('user5','password');
+                    await userController.createUser('user6','password');
+                    await userController.createUser('user7','password');
+                    await userController.createUser('user8','password');
+                    await userController.createUser('user9','password');
+                    
+                };
+                makeRequest().then(function(){
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+                
+            });
+        });
+
+        it('should find first five users',function(done){
+            userController.findAll(5,0).then(function(users){
+                assert.equal(users.length, 5);
+                for(var i=1; i < 6; i++){
+                    assert.equal(users[i-1].name,'user' + i);
+                    assert.ok(users[i-1].id);
+                    assert.equal(users[i-1].pwdHash, '');
+                }
+                done();
+            }).catch(function(err){
+                done(err);
+            });
+        });
+
+        it('should find second page with three users',function(done){
+            userController.findAll(3,1).then(function(users){
+                assert.equal(users.length, 3);
+                for(var i=4; i < 7; i++){
+                    assert.equal(users[i-4].name,'user' + i);
+                    assert.ok(users[i-4].id);
+                    assert.equal(users[i-4].pwdHash, '');
+                }
+                done();
+            }).catch(function(err){
+                done(err);
+            });
+        });
+
+        it('should return empty array',function(done){
+            userController.findAll(5,10).then(function(users){
+                
+                assert.equal(users.length, 0);
+                done();
+
+            }).catch(function(err){
+                done(err);
+            });
+        });
+    });
+
+
+
     describe('#create()', function() {
         beforeEach(function(done){ 
             var connection = createConnection();
@@ -59,11 +138,7 @@ describe('User', function() {
             .catch((reason)=>{done(reason);});
         });
     });
+
+    
 });
 
-
-
-function createConnection(){
-    return mysql.createConnection(config.getMySqlUrl());
-
-}
