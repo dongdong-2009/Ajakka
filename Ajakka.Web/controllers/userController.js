@@ -42,7 +42,7 @@ function _findAll(pageSize, pageNumber, resolve, reject){
             reject(err);
             return;
         }
-        
+        connection.end();
         var users = new Array();
         result.forEach(function(item){
             var user = new User(item.id, item.name, '');
