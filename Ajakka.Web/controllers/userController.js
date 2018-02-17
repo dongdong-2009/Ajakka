@@ -22,7 +22,6 @@ function _createUser(name, password, resolve, reject){
     
     connection.query('insert into users (id, name, pwdHash) values (?)', values, function (err, result, fields) {
         connection.end();
-        console.log(err);
         if(err){
             reject(err);
             return;
