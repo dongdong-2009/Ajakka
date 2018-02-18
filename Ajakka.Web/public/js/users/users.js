@@ -78,8 +78,8 @@ function deleteUser(id, name){
 }
 
 function toggleAddUserForm(){
-    $('#addNewUser').show();
-    $('#addNewButton').hide();
+    $('#addNewUser').toggle();
+    $('#addNewButton').toggle();
 }
 
 function addNewUser(){

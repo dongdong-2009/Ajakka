@@ -37,7 +37,9 @@ block content
         label(for='newUserName') Repeat password
         input.form-control#passwordRepeat(type='password')
         div.invalid-feedback Passwords do not match
-      button.btn.btn-primary(onclick='return addNewUser()', type='button')
+      button#addButton.btn.btn-primary(onclick='return addNewUser();', type='button')
         span Add
+      button#cancelButton.btn.btn-secondary(onclick='toggleAddUserForm();', type='button')
+        span Cancel
     div.text-danger#addNewUserError
   script(src='./js/users/users.js')

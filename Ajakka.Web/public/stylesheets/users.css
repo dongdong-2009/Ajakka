@@ -14,3 +14,7 @@
     visibility: collapse;
     height: 0;
 }
+
+#cancelButton{
+    margin-left:15px;
+}
