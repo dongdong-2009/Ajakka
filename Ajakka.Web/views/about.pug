@@ -2,7 +2,7 @@ extends dashboardlayout
 block header
   script(src='./js/formatting.js')
   script(src='./js/moment.js')
-  link(rel="stylesheet", href="./stylesheets/index.css")
+  link(rel="stylesheet", href="./stylesheets/about.css")
 block content
   script.
       $('#aboutNav').addClass('active')
@@ -19,3 +19,6 @@ block content
   span 
     a(href='https://github.com/pilvikala/Ajakka/blob/master/LICENSE') https://github.com/pilvikala/Ajakka/blob/master/LICENSE
   span )
+  div.h4 Status
+  pre
+    div Current user: #{currentUser}
