@@ -23,7 +23,7 @@ router.post('/', function(req, res, next){
 
 function renderError(res, error)
 {
-  res.render('login', { title: 'Log in', error:error });
+  res.render('login', { error:error });
 }
 
 function renderResult(res)
