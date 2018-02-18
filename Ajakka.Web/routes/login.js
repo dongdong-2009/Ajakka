@@ -9,9 +9,9 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next){
-  userController.validateLogin(req.body.email, req.body.password)
+  userController.validateLogin(req.body.name, req.body.password)
   .then(function(user){
-    req.session.user = {email:user.email};
+    req.session.user = {name:user.name};
     res.redirect('./index');
   })
   .catch(function(error){
