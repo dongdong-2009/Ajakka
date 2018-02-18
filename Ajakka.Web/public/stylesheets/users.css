@@ -1,7 +1,16 @@
 #addNewUser{
     display:none;
 }
+
 #addNewUser{
     display:none;
 }
-#currentPage{visibility: hidden}
+
+#currentPage {
+    visibility: hidden;
+}
+
+#currentUserName {
+    visibility: collapse;
+    height: 0;
+}

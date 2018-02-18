@@ -44,19 +44,31 @@ function showError(error){
 
 function fillTableWithUsers(users){
     $('#userListContainer').empty();
-    
+    var currentUser = $('#currentUserName').text();
+
     users.forEach(function(user){
-      
+        let disabled = '';
+        let tooltip = 'Delete this user';
+        if(currentUser == user.name){
+            disabled = ' disabled';
+            tooltip = 'You cannot delete your own account';
+        }
         var row = '<tr>';
         row += '<td>' + user.name + '</td>';
-        row += '<td style="text-align:right"><button class="btn btn-secondary" href="#" onclick="deleteUser(\''+user.id+'\')"><i class="fas fa-trash-alt"/><span> delete</span></a></td>';
+        row += '<td style="text-align:right"><button class="btn btn-secondary" href="#" onclick="deleteUser(\''+user.id+'\',\''+user.name+'\')"'+disabled+'><i class="fas fa-trash-alt"/><span data-toggle="tooltip" title="'+tooltip+'"> delete</span></a></td>';
         row += '</tr>';
         $('#userListContainer').append(row);
         
     });
+    $('[data-toggle="tooltip"]').tooltip()
 }
 
-function deleteUser(id){
+function deleteUser(id, name){
+    var currentUser = $('#currentUserName').text();
+    if(currentUser == name){
+        alert('You cannot delete your own account.');
+        return;
+    }
     $.get({
         method:'DELETE',
         url: './api/users/'+id,
@@ -118,4 +130,3 @@ function showUserCreationError(error){
 }
 
 setTimeout(loadUsers, 100);
-
