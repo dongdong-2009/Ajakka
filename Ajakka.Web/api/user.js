@@ -81,7 +81,7 @@ router.delete('/:id', function (req, res) {
 		res.status(200).send("User was deleted.");
 	})
 	.catch(function(err){
-		return res.status(500).send("There was a problem deleting the user. " + err);
+		return res.status(500).send("There was a problem deleting the user. " + err.message);
 	});
 });
 
