@@ -352,6 +352,20 @@ describe('User', function() {
             
         });
 
+        it('should throw error when user does not exist', function(done){
+            
+            var idToDelete = '1234';
+            userController.deleteUser(idToDelete)
+            .then(function(){
+                done('function call should have not succeeded');
+                })
+            .catch(function(err){
+                assert.equal(err.message,'User with this id does not exist');
+                done();
+            });
+        });
+            
+
         it('should not delete all users (sql injection attack)', function(done){
             userController.deleteUser('\' or 1=1 or 1=\'').then(function(){
                 userController.findAll(3,1).then(function(users){
@@ -362,6 +376,10 @@ describe('User', function() {
                 });
             })
             .catch(function(err){
+                if(err.message == 'User with this id does not exist'){
+                    done();
+                    return;
+                }
                 done(err);
             });
         });

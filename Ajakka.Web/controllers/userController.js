@@ -131,11 +131,15 @@ function _deleteUser(id, resolve, reject){
     var connection = createConnection();
     var query = 'delete from users where id=?';
     var q = connection.query(query, id, function(err,result,fields){
+        connection.end();
         if(err){
             reject(err);
             return;
         }
-        connection.end();
+        if(result.affectedRows == 0){
+            reject({message:'User with this id does not exist'});
+            return;
+        }
         resolve(id);
     });
 }
