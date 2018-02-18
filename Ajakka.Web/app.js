@@ -10,6 +10,8 @@ var session = require('express-session')
 var index = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
+var about = require('./routes/about');
+
 const uuidv1 = require('uuid/v1');
 
 var endpointApi = require('./api/endpoint');
@@ -49,6 +51,7 @@ app.use('/', login);
 app.use('/logout', logout);
 app.use('/index',requireLogin, index);
 app.use('/users',requireLogin, users);
+app.use('/about', requireLogin, about)
 app.use('/login', login);
 app.use('/api/endpoints', blockApi, endpointApi);
 app.use('/api/users',blockApi, userApi);
