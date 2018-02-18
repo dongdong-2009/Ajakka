@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next){
   userController.validateLogin(req.body.name, req.body.password)
   .then(function(user){
-    req.session.user = {name:user.name};
+    req.session.user = {name:user.name, id:user.id};
     res.redirect('./index');
   })
   .catch(function(error){

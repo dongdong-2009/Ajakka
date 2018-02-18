@@ -72,6 +72,10 @@ router.get('/:id', function (req, res) {
 
 // DELETES A USER FROM THE DATABASE
 router.delete('/:id', function (req, res) {
+
+	if(req.session.user.id == req.params.id){
+		return res.status(403).send("User cannot delete his own account.");
+	}
 	userController.deleteUser(req.params.id)
 	.then(function(){
 		res.status(200).send("User was deleted.");
