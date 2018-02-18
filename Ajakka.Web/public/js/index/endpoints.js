@@ -56,7 +56,7 @@ function fillTableWithEndpoints(endpointsResponse){
         row += '<td>' + formatMac(endpoint.DeviceMacAddress) + '</td>';
         row += '<td>' + endpoint.DeviceIpAddress + '</td>';
         row += '<td>' + endpoint.DeviceName + '</td>';
-        row += '<td>' + timestamp + '</td>';
+        row += '<td colspan="2">' + timestamp + '</td>';
         row += '</tr>';
         $('#endpointListContainer').append(row);
         
