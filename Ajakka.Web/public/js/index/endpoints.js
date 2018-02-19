@@ -24,7 +24,7 @@ function showPageCount(pageCountResponse){
     if(!currentPage){
         currentPage = 0;
     }
-    
+    $('#pageCount').empty();
     if(currentPage > 0){
         var previousPage = currentPage - 1;
         $('#pageCount').append('<a href="./index?page='+previousPage+'"><i class="fas fa-caret-left"> ');    
@@ -61,6 +61,7 @@ function fillTableWithEndpoints(endpointsResponse){
         $('#endpointListContainer').append(row);
         
     });
+    setTimeout(loadEndpoints, 300000);
 }
 
 setTimeout(loadEndpoints, 100);
