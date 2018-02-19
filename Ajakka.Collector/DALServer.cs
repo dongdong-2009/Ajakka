@@ -8,7 +8,7 @@ using System.IO;
 using Newtonsoft.Json;
 
 namespace Ajakka.Collector{
-    class DALServer:IDisposable{
+    public class DALServer:IDisposable{
 
         ICollectorConfiguration configuration;
         ICollectorDAL dal;
@@ -88,7 +88,7 @@ namespace Ajakka.Collector{
             return JsonConvert.DeserializeAnonymousType(message, definition);
         }
 
-        private string ProcessRequest(dynamic request){
+        protected virtual string ProcessRequest(dynamic request){
             switch(request.FunctionName){
                 case "GetLatest":
                     var endpoints = dal.GetEndpoints(request.PageNumber, request.PageSize);
@@ -108,7 +108,7 @@ namespace Ajakka.Collector{
             }
         }
 
-        private string SerializeResponse<T>(T response){  
+        protected string SerializeResponse<T>(T response){  
             var serializer = new DataContractJsonSerializer(response.GetType());
             using(var ms = new MemoryStream()){
                 serializer.WriteObject(ms, response);  

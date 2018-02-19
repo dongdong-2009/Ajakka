@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Ajakka.Collector{
 
-    class CollectorConfiguration:ICollectorConfiguration{
+    public class CollectorConfiguration:ICollectorConfiguration{
         
         IConfiguration configuration;
         
