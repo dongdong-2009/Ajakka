@@ -41,7 +41,8 @@ npm install
 npm run start
 ~~~~
 
-## Ajakka.Sensor
+## Projects in the solution
+### Ajakka.Sensor
 Standalone DHCP (IPv4) Sensor, sends messages to RabbitMQ when a DHCP packet is detected. Requires elevated rights.
 ~~~~
 sudo dotnet run 
@@ -62,7 +63,7 @@ Configured by sensorconfig.json:
 
 *messageQueueExchangeName* - name of the exchange the Collector is listening on for Sensor messages. Sensor sends messages about new endpoints to this exchange.
 
-## Ajakka.Collector
+### Ajakka.Collector
 Collects messages from the configured exchange and stores them in a database.
 
 ~~~~
@@ -86,20 +87,20 @@ Additional configuration in collectorconfig.json:
 
 *dalServerRpcQueueName* - name of the queue the Collector uses for listening to RPC requests for information stored in the Collector database.
 
-## Ajakka.Collector.Tests
+### Ajakka.Collector.Tests
 Requires MySql database connection string in AjakkaTestConnection environment variable
 
 ~~~~
 dotnet xunit
 ~~~~
 
-## Ajakka.DbInit
+### Ajakka.DbInit
 Creates required tables in the target mysql database. The database has to exist and the connection string needs to contain its name.
 ~~~~
 dotnet run [environment variable storing connection string]
 ~~~~
 
-## Ajakka.Web
+### Ajakka.Web
 Website
 MySql connection configuration is expected in environment variables:
 
