@@ -4,6 +4,43 @@ Monitors local network for DHCP packets and detects new devices connecting in.
 ## Requirements
 Services communicate over Rabbit MQ: https://www.rabbitmq.com/install-standalone-mac.html
 
+## Setup
+Install Rabbit MQ.
+Install MySQL database.
+Configure Ajakka.Sensor (see below) to provide the address of the Rabbit MQ server (unless on localhost).
+Configure Ajakka.Collector to provide the address of the Rabbit MQ server (unless on localhost).
+Set environment variable AjakkaConnection to contain connection string to MySql database (including database name). 
+
+Example (Windows):
+~~~~
+server=127.0.0.1;uid=root;Password=mypassword;database=ajakka
+~~~~
+Example (Mac):
+~~~~
+server=127.0.0.1;uid=root;pwd=mypassword;database=ajakka
+~~~~
+
+Set environment variable AjakkaWebMySql to MySql URL:
+~~~~
+mysql://root:mypassword@127.0.0.1/ajakka
+~~~~
+
+Run Ajakka.Sensor:
+~~~~
+dotnet run
+~~~~
+
+Run Ajakka.Collector:
+~~~~
+dotnet run
+~~~~
+
+Install and run Ajakka.Web:
+~~~~
+npm install
+npm run start
+~~~~
+
 ## Ajakka.Sensor
 Standalone DHCP (IPv4) Sensor, sends messages to RabbitMQ when a DHCP packet is detected. Requires elevated rights.
 ~~~~
