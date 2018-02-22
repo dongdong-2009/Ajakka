@@ -17,6 +17,7 @@ namespace Ajakka.Collector.Tests
             this.output = output;
             testDbConnectionString = Environment.GetEnvironmentVariable("AjakkaTestConnection");
             if(string.IsNullOrEmpty(testDbConnectionString)){
+              //  testDbConnectionString = "server=35.195.71.90;uid=root;Password=jncnr5kinzo0HDwp;database=ajakka";
                 output.WriteLine("AjakkaTestConnection environment variable is not set.");
             }
         }

@@ -11,24 +11,14 @@ namespace Ajakka.CollectorMock{
             this.dal = dal;
         }
 
-        protected override string ProcessRequest(dynamic request){
-            switch(request.FunctionName){
-                case "GetLatest":
-                    var endpoints = dal.GetEndpoints(request.PageNumber, request.PageSize);
-                    var res1 = new DALServerResponse<EndpointDescriptor[]>{
-                        Content = endpoints
-                    };
-                    return SerializeResponse<DALServerResponse<EndpointDescriptor[]>>(res1);
-
-                case "GetDhcpEndpointPageCount":
-                    var res2 = new DALServerResponse<int>{
-                        Content = dal.GetDhcpEndpointPageCount(request.PageSize)
-                    };
-                    return SerializeResponse<DALServerResponse<int>>(res2);
-
-                default:
-                    throw new InvalidOperationException("Function name not found: " +request.FunctionName);
-            }
+         protected override DALServerResponse<int> GetDhcpEndpointPageCount(int pageSize){
+            return WrapResponse<int>(dal.GetDhcpEndpointPageCount(pageSize));
         }
+
+        protected override DALServerResponse<EndpointDescriptor[]> GetLatest(int pageNumber, int pageSize){
+            return WrapResponse<EndpointDescriptor[]>(dal.GetEndpoints(pageNumber, pageSize));
+           
+        }
+
     }
 }

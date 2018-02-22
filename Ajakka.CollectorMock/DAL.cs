@@ -30,16 +30,21 @@ namespace Ajakka.CollectorMock{
         }
 
         public void StoreDhcpEndpoint(string mac, string ip, string hostname, DateTime timestamp){
-
+            endpoints.Add(new EndpointDescriptor{
+                DeviceIpAddress = ip,
+                DeviceMacAddress = mac,
+                DeviceName = hostname,
+                TimeStamp = timestamp
+            });
         }
 
         public EndpointDescriptor[] GetEndpoints(int pageNumber, int pageSize){
             
-            return new EndpointDescriptor[]{};
+            return endpoints.ToArray();
         }
 
         public int GetDhcpEndpointPageCount(int pageSize){
-            return 0;
+            return 1;
         }
     }
 }

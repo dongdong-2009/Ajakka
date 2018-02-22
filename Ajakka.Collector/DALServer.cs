@@ -88,24 +88,30 @@ namespace Ajakka.Collector{
             return JsonConvert.DeserializeAnonymousType(message, definition);
         }
 
-        protected virtual string ProcessRequest(dynamic request){
+        private string ProcessRequest(dynamic request){
             switch(request.FunctionName){
                 case "GetLatest":
-                    var endpoints = dal.GetEndpoints(request.PageNumber, request.PageSize);
-                    var res1 = new DALServerResponse<EndpointDescriptor[]>{
-                        Content = endpoints
-                    };
-                    return SerializeResponse<DALServerResponse<EndpointDescriptor[]>>(res1);
+                    return SerializeResponse<DALServerResponse<EndpointDescriptor[]>>(GetLatest(request.PageNumber, request.PageSize));
 
                 case "GetDhcpEndpointPageCount":
-                    var res2 = new DALServerResponse<int>{
-                        Content = dal.GetDhcpEndpointPageCount(request.PageSize)
-                    };
-                    return SerializeResponse<DALServerResponse<int>>(res2);
+                    return SerializeResponse<DALServerResponse<int>>(GetDhcpEndpointPageCount(request.PageSize));
 
                 default:
                     throw new InvalidOperationException("Function name not found: " +request.FunctionName);
             }
+        }
+
+        protected virtual DALServerResponse<EndpointDescriptor[]> GetLatest(int pageNumber, int pageSize){
+            return WrapResponse<EndpointDescriptor[]>(dal.GetEndpoints(pageNumber, pageSize));
+           
+        }
+
+        protected virtual DALServerResponse<int> GetDhcpEndpointPageCount(int pageSize){
+            return WrapResponse<int>(dal.GetDhcpEndpointPageCount(pageSize));
+        }
+
+        protected DALServerResponse<T> WrapResponse<T>(T content){
+            return new DALServerResponse<T>(){Content = content};
         }
 
         protected string SerializeResponse<T>(T response){  
