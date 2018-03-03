@@ -5,6 +5,7 @@ using System.Collections.Generic;
 namespace Ajakka.Blacklist{
     class MemoryBlacklist:IBlacklist{
         readonly Dictionary<Guid, Rule> rules = new Dictionary<Guid, Rule>();
+        const int pageSize = 10;
 
         public Rule AddRule(Rule rule){
             if(string.IsNullOrEmpty(rule.Name)){
@@ -16,8 +17,22 @@ namespace Ajakka.Blacklist{
             rules.Add(id,add);
             return add;
         }
-        public IEnumerable GetRules(){
-            throw new NotImplementedException();
+        public Rule[] GetRules(int pageNumber){
+            var startIndex = pageSize *pageNumber;
+            if(startIndex > rules.Values.Count){
+                return new Rule[]{};
+            }
+            var values = new Rule[rules.Values.Count];
+            rules.Values.CopyTo(values,0);
+            var targetSize = pageSize;
+            if(startIndex + pageSize > values.Length){
+                targetSize = values.Length - startIndex;
+            }
+            var ret = new Rule[targetSize];
+            for(int i = startIndex, j = 0;i<startIndex + targetSize ;i++, j++ ){
+                ret[j] = values[i];
+            }
+            return ret;
         }
         public void DeleteRule(Guid id){
             throw new NotImplementedException();
@@ -26,7 +41,12 @@ namespace Ajakka.Blacklist{
             throw new NotImplementedException();
         }
         public Rule GetRule(Guid id){
-            return rules[id];
+            Rule rule;
+            if(rules.TryGetValue(id,out rule))
+            {
+                return rule;
+            }
+            return null;
         }
     }
 }

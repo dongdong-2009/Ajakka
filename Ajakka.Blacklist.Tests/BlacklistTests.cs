@@ -1,13 +1,14 @@
 using System;
 using Xunit;
 using Ajakka.Blacklist;
+using System.Collections.Generic;
 
 namespace Ajakka.Blacklist.Tests
 {
     public class BlacklistTests
     {
         [Fact]
-        public void ShouldAddRule()
+        public void ShouldAddandGetRule()
         {
             var blacklist = BlacklistFactory.CreateBlacklist();
             var expected = new Rule(){
@@ -60,6 +61,72 @@ namespace Ajakka.Blacklist.Tests
            Assert.Throws<ArgumentException>(()=>{
                 blacklist.AddRule(expected);
            });
+        }
+
+        [Fact]
+        public void ShouldReturnPage0WithRules(){
+            var blacklist = BlacklistFactory.CreateBlacklist();
+            for(int i=0;i<15;i++){
+                blacklist.AddRule(new Rule{
+                    Name = "r" + i,
+                    Pattern = "r" + i
+                });
+            }
+           
+            var rules = blacklist.GetRules(0);
+            Assert.Equal(10, rules.Length);
+            for(int i = 0; i < 10; i ++){
+                Assert.Equal("r"+i,rules[i].Name);
+                Assert.Equal("r"+i,rules[i].Name);
+            }
+        }
+
+        [Fact]
+        public void ShouldReturnPage1WithRules(){
+            var blacklist = BlacklistFactory.CreateBlacklist();
+            for(int i=0;i<15;i++){
+                blacklist.AddRule(new Rule{
+                    Name = "r" + i,
+                    Pattern = "r" + i
+                });
+            }
+           
+            var rules = blacklist.GetRules(1);
+            Assert.Equal(5, rules.Length);
+            for(int i = 0, j=10; i < 5; i ++, j++){
+                Assert.Equal("r"+j,rules[i].Name);
+                Assert.Equal("r"+j,rules[i].Name);
+            }
+            
+        }
+
+        [Fact]
+        public void ShouldReturnEmptyPageWithRules(){
+            var blacklist = BlacklistFactory.CreateBlacklist();
+            for(int i=0;i<15;i++){
+                blacklist.AddRule(new Rule{
+                    Name = "r" + i,
+                    Pattern = "r" + i
+                });
+            }
+           
+            var rules = blacklist.GetRules(2);
+            Assert.True(0 == rules.Length);
+            
+        }
+
+        [Fact]
+        public void ShouldNotGetRule(){
+            var blacklist = BlacklistFactory.CreateBlacklist();
+            var one = new Rule(){
+                Name = "rule 1",
+                Pattern = "123456",
+            };
+            one.AlertActionIds.AddRange(new[]{1,2,3,4,5});
+            var returnedRule = blacklist.AddRule(one);
+
+            var actual = blacklist.GetRule(Guid.NewGuid());
+            Assert.Null(actual);
         }
 
         void AssertRulesEqual(Rule expected, Rule actual, bool compareId){
