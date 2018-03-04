@@ -155,8 +155,55 @@ namespace Ajakka.Blacklist.Tests
                 Pattern = "123456",
             };
             one.AlertActionIds.AddRange(new[]{1,2,3,4,5});
+            blacklist.AddRule(one);
             Assert.Throws<InvalidOperationException>(()=>{blacklist.GetRule(Guid.NewGuid());});
         }
+        
+        [Fact]
+        public void ShouldThrowOnUpdateWhenRuleNotFound(){
+            var blacklist = BlacklistFactory.CreateBlacklist();
+            var one = new Rule(){
+                Name = "rule 1",
+                Pattern = "123456",
+            };
+            one.AlertActionIds.AddRange(new[]{1,2,3,4,5});
+            blacklist.AddRule(one);
+            Assert.Throws<InvalidOperationException>(()=>{blacklist.UpdateRule(Guid.NewGuid(),new Rule(){Name = "123"});});
+        }
+
+        [Fact]
+        public void ShouldThrowOnUpdateWhenNameEmpty(){
+            var blacklist = BlacklistFactory.CreateBlacklist();
+            var one = new Rule(){
+                Name = "rule 1",
+                Pattern = "123456",
+            };
+            one.AlertActionIds.AddRange(new[]{1,2,3,4,5});
+            blacklist.AddRule(one);
+            Assert.Throws<ArgumentException>(()=>{blacklist.UpdateRule(Guid.NewGuid(),new Rule(){Name = ""});});
+        }
+
+        [Fact]
+        public void ShouldUpdateRule(){
+            var blacklist = BlacklistFactory.CreateBlacklist();
+            var one = new Rule(){
+                Name = "rule 1",
+                Pattern = "123456",
+            };
+            one.AlertActionIds.AddRange(new[]{1,2,3,4,5});
+            var oneStored = blacklist.AddRule(one);
+
+            var expected = new Rule(){
+                Name = "update",
+                Pattern = "654321",
+            };
+            expected.AlertActionIds.AddRange(new[]{1,2,3});
+            var updated = blacklist.UpdateRule(oneStored.Id, expected);
+            var actual = blacklist.GetRule(oneStored.Id);
+            AssertRulesEqual(expected,actual, true);
+            AssertRulesEqual(expected,updated, true);
+        }
+
 
         void AssertRulesEqual(Rule expected, Rule actual, bool compareId){
             if(compareId){

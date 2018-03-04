@@ -41,8 +41,16 @@ namespace Ajakka.Blacklist{
             }
             throw new InvalidOperationException("A rule with this id does not exist.");
         }
-        public void UpdateRule(Guid id, Rule rule){
-            throw new NotImplementedException();
+        public Rule UpdateRule(Guid id, Rule rule){
+            if(string.IsNullOrEmpty(rule.Name)){
+                throw new ArgumentException("rule.Name cannot be empty");
+            }
+            if(rules.ContainsKey(id)){
+                rules[id] = rule;
+                rules[id].Id = id;
+                return rules[id];
+            }
+            throw new InvalidOperationException("A rule with this id does not exist.");
         }
         public Rule GetRule(Guid id){
             Rule rule;

@@ -6,7 +6,7 @@ namespace Ajakka.Blacklist{
         Rule AddRule(Rule rule);
         Rule[] GetRules(int pageNumber);
         void DeleteRule(Guid id);
-        void UpdateRule(Guid id, Rule rule);
+        Rule UpdateRule(Guid id, Rule rule);
         Rule GetRule(Guid id);
     }
 }
