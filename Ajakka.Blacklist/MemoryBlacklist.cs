@@ -35,7 +35,11 @@ namespace Ajakka.Blacklist{
             return ret;
         }
         public void DeleteRule(Guid id){
-            throw new NotImplementedException();
+            if(rules.ContainsKey(id)){
+                rules.Remove(id);
+                return;
+            }
+            throw new InvalidOperationException("A rule with this id does not exist.");
         }
         public void UpdateRule(Guid id, Rule rule){
             throw new NotImplementedException();
@@ -46,7 +50,7 @@ namespace Ajakka.Blacklist{
             {
                 return rule;
             }
-            return null;
+            throw new InvalidOperationException("A rule with this id does not exist.");
         }
     }
 }

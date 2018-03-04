@@ -116,17 +116,46 @@ namespace Ajakka.Blacklist.Tests
         }
 
         [Fact]
-        public void ShouldNotGetRule(){
+        public void ShouldDeleteRule(){
+            var blacklist = BlacklistFactory.CreateBlacklist();
+            var one = new Rule(){
+                Name = "r1"
+            };
+            var two = new Rule(){
+                Name = "r2"
+            };
+            var oneStored = blacklist.AddRule(one);
+            var twoStored = blacklist.AddRule(two);
+            blacklist.DeleteRule(twoStored.Id);
+            Assert.Throws<InvalidOperationException>(()=>{blacklist.GetRule(twoStored.Id);});
+            var oneRet = blacklist.GetRule(oneStored.Id);
+            Assert.Equal(oneRet.Name, oneStored.Name);
+        }
+
+        [Fact]
+        public void ShouldThrowWhenDeletingRuleThatDoesNotExist(){
+            var blacklist = BlacklistFactory.CreateBlacklist();
+            var one = new Rule(){
+                Name = "r1"
+            };
+            var two = new Rule(){
+                Name = "r2"
+            };
+            blacklist.AddRule(one);
+            var twoStored = blacklist.AddRule(two);
+            
+            Assert.Throws<InvalidOperationException>(()=>{blacklist.DeleteRule(Guid.NewGuid());});
+        }
+
+        [Fact]
+        public void ShouldThrowExceptionWhenRuleNotFound(){
             var blacklist = BlacklistFactory.CreateBlacklist();
             var one = new Rule(){
                 Name = "rule 1",
                 Pattern = "123456",
             };
             one.AlertActionIds.AddRange(new[]{1,2,3,4,5});
-            var returnedRule = blacklist.AddRule(one);
-
-            var actual = blacklist.GetRule(Guid.NewGuid());
-            Assert.Null(actual);
+            Assert.Throws<InvalidOperationException>(()=>{blacklist.GetRule(Guid.NewGuid());});
         }
 
         void AssertRulesEqual(Rule expected, Rule actual, bool compareId){
