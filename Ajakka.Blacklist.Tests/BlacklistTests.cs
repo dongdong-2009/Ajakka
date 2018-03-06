@@ -204,6 +204,34 @@ namespace Ajakka.Blacklist.Tests
             AssertRulesEqual(expected,updated, true);
         }
 
+        [Fact]
+        public void ShouldReturnPageCount(){
+            var blacklist = BlacklistFactory.CreateBlacklist();
+            for(int i=0;i<25;i++){
+                blacklist.AddRule(new Rule{
+                    Name = "r" + i,
+                    Pattern = "r" + i
+                });
+            }
+           
+            var pageCount = blacklist.GetRulePageCount();
+            Assert.Equal(3, pageCount);
+        }
+
+        [Fact]
+        public void ShouldReturnPageCountPrecise(){
+            var blacklist = BlacklistFactory.CreateBlacklist();
+            for(int i=0;i<20;i++){
+                blacklist.AddRule(new Rule{
+                    Name = "r" + i,
+                    Pattern = "r" + i
+                });
+            }
+           
+            var pageCount = blacklist.GetRulePageCount();
+            Assert.Equal(2, pageCount);
+        }
+
 
         void AssertRulesEqual(Rule expected, Rule actual, bool compareId){
             if(compareId){

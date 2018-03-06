@@ -8,5 +8,7 @@ namespace Ajakka.Blacklist{
         void DeleteRule(Guid id);
         Rule UpdateRule(Guid id, Rule rule);
         Rule GetRule(Guid id);
+        
+        int GetRulePageCount();
     }
 }

@@ -60,5 +60,13 @@ namespace Ajakka.Blacklist{
             }
             throw new InvalidOperationException("A rule with this id does not exist.");
         }
+
+        public int GetRulePageCount(){
+            int add = 0;
+            if (rules.Count % pageSize > 0){
+                add = 1;
+            }
+            return add + rules.Count/pageSize;
+        }
     }
 }
