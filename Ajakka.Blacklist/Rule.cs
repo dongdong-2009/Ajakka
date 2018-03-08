@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Ajakka.Blacklist{
     [DataContract]
@@ -26,6 +27,11 @@ namespace Ajakka.Blacklist{
             };
             rule.AlertActionIds.AddRange(this.AlertActionIds);
             return rule;
+        }
+
+        public bool IsMatch(string input){
+            var regex = new Regex(Pattern);
+            return regex.IsMatch(input);
         }
     }
 }
