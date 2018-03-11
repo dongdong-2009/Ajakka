@@ -16,6 +16,7 @@ const uuidv1 = require('uuid/v1');
 
 var endpointApi = require('./api/endpoint');
 var userApi = require('./api/user');
+var blacklistApi = require('./api/blacklist');
 
 var app = express();
 
@@ -55,6 +56,7 @@ app.use('/about', requireLogin, about)
 app.use('/login', login);
 app.use('/api/endpoints', blockApi, endpointApi);
 app.use('/api/users',blockApi, userApi);
+app.use('/api/blacklist',blockApi, blacklistApi);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -8,3 +8,4 @@ function getMySqlUrl(){
 module.exports.messageQueueHostAddress= 'amqp://localhost';
 module.exports.collectorRpcQueue = 'collector_dal_rpc_queue';
 module.exports.getMySqlUrl = getMySqlUrl;
+module.exports.blacklistRpcQueue = 'blacklist_rpc_queue';
