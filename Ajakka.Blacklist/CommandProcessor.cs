@@ -94,7 +94,7 @@ namespace Ajakka.Blacklist{
                 case "GetRule":
                     return SerializeResponse<CommandProcessorResponse<Rule>>(GetRule(request.RuleId));
                 case "AddRule":
-                    return SerializeResponse<CommandProcessorResponse<Rule>>(AddRule(request.RuleName, request.RulePattern, request.AlertActionIds));
+                    return SerializeResponse<CommandProcessorResponse<Rule>>(AddRule(request.RuleName, request.RulePattern));
                 case "GetPageCount":
                     return SerializeResponse<CommandProcessorResponse<int>>(GetPageCount());
                 default:
@@ -114,12 +114,11 @@ namespace Ajakka.Blacklist{
             return WrapResponse(dal.GetRulePageCount());
         }
 
-        protected virtual CommandProcessorResponse<Rule> AddRule(string name, string pattern, int[] alertActionIds){
+        protected virtual CommandProcessorResponse<Rule> AddRule(string name, string pattern){
             var r = new Rule(){
                 Name = name,
                 Pattern = pattern
             };
-            r.AlertActionIds.AddRange(alertActionIds);
             return WrapResponse(dal.AddRule(r));
         }
 

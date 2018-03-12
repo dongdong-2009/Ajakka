@@ -35,6 +35,20 @@ router.get('/rule', function (req, res) {
     SendMessageToQueue(res, '{"FunctionName": "GetRule", "RuleId": "'+id+'"}');
 });
 
+//creates a new rule
+router.post('/', function (req, res) {
+    var name = req.body.name;
+    var pattern = req.body.pattern;
+    if(!name){
+        res.status(500).send( {Message:"Name cannot be empty"});
+        return;
+    }
+    if(!pattern){
+        pattern = "";
+    }
+    SendMessageToQueue(res, '{"FunctionName": "AddRule", "RuleName": "'+name+'", "RulePattern":"'+pattern+'"}');
+});
+
 function SendMessageToQueue(response, message){
     amqp.connect(configuration.messageQueueHostAddress, function(err, conn) {
         conn.createChannel(function(err, ch) {
