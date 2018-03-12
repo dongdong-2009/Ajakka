@@ -14,7 +14,6 @@ function generateUuid() {
 //  /api/blacklist/?pageNumber=2
 router.get('/', function (req, res) {
     var pageNumber = req.query.pageNumber;
-    console.log(pageNumber);
     if(!pageNumber){
         pageNumber = 0;
     }
@@ -24,6 +23,16 @@ router.get('/', function (req, res) {
 router.get('/pageCount', function (req, res) {
     SendMessageToQueue(res, '{"FunctionName": "GetPageCount"}');
     
+});
+
+//  /api/blacklist/rule/?id=2
+router.get('/rule', function (req, res) {
+    var id = req.query.id;
+    if(!id){
+        res.status(500).send( {Message:"No id specified"});
+        return;
+    }
+    SendMessageToQueue(res, '{"FunctionName": "GetRule", "RuleId": "'+id+'"}');
 });
 
 function SendMessageToQueue(response, message){
