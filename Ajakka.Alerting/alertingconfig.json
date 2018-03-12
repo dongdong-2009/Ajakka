@@ -1,0 +1,4 @@
+{
+    "messageQueueHost":"localhost",
+    "commandProcessorRpcQueueName":"alerting_rpc_queue"
+}
