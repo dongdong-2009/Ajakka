@@ -97,9 +97,15 @@ namespace Ajakka.Alerting{
                     return SerializeResponse<CommandProcessorResponse<AlertActionBase>>(AddAction(request.ActionName, request.ActionConfiguration, request.ActionType));
                 case "GetPageCount":
                     return SerializeResponse<CommandProcessorResponse<int>>(GetPageCount());
+                case "GetActionTypes":
+                    return SerializeResponse<CommandProcessorResponse<ActionTypeDescriptor[]>>(GetActionTypes());
                 default:
                     throw new InvalidOperationException("Function name not found: " +request.FunctionName);
             }
+        }
+
+        protected virtual CommandProcessorResponse<ActionTypeDescriptor[]> GetActionTypes(){
+            return WrapResponse(AlertActionFactory.GetAlertActionTypes());
         }
 
         protected virtual CommandProcessorResponse<int> Execute(int actionId, string alertMessage){

@@ -12,5 +12,11 @@ namespace Ajakka.Alerting{
             alertAction.Name = name;
             return alertAction;
         }
+
+        public static ActionTypeDescriptor[] GetAlertActionTypes(){
+            return new ActionTypeDescriptor[]{
+                new ActionTypeDescriptor("Log to console", typeof(ConsoleLogAction))
+            };
+        }
     }
 }
