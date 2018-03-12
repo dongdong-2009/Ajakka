@@ -83,7 +83,7 @@ namespace Ajakka.Blacklist{
         }
 
         private dynamic ParseRequest(string message){
-            var definition = new {FunctionName = "", PageNumber = 0, PageSize = 0, RuleId = Guid.Empty, RuleName = "", RulePattern = "", AlertActionIds = new int[]{}};
+            var definition = new {FunctionName = "", PageNumber = 0, PageSize = 0, RuleId = Guid.Empty, RuleName = "", RulePattern = "", ActionId = new int[]{}};
             return JsonConvert.DeserializeAnonymousType(message, definition);
         }
 
@@ -95,11 +95,19 @@ namespace Ajakka.Blacklist{
                     return SerializeResponse<CommandProcessorResponse<Rule>>(GetRule(request.RuleId));
                 case "AddRule":
                     return SerializeResponse<CommandProcessorResponse<Rule>>(AddRule(request.RuleName, request.RulePattern));
+                case "LinkAction":
+                    return SerializeResponse<CommandProcessorResponse<Rule>>(LinkAction(request.RuleId, request.ActionId));
                 case "GetPageCount":
                     return SerializeResponse<CommandProcessorResponse<int>>(GetPageCount());
                 default:
                     throw new InvalidOperationException("Function name not found: " +request.FunctionName);
             }
+        }
+
+        protected virtual CommandProcessorResponse<Rule> LinkAction(Guid ruleId, int actionId){
+            var rule = dal.GetRule(ruleId);
+            rule.AlertActionIds.Add(actionId);
+            return WrapResponse(dal.UpdateRule(rule.Id, rule));
         }
 
         protected virtual CommandProcessorResponse<Rule[]> GetRules(int PageNumber){
