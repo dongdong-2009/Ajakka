@@ -11,9 +11,15 @@ function generateUuid() {
            Math.random().toString();
   }
 
-//  /api/blacklist/?pageNumber=2
+  
+//  default 
 router.get('/', function (req, res) {
-    var pageNumber = req.query.pageNumber;
+    SendMessageToQueue(res, '{"FunctionName": "GetRules", "PageNumber": 0}');
+});
+
+//  /api/blacklist/1
+router.get('/:pageNumber', function (req, res) {
+    var pageNumber = req.params.pageNumber;
     if(!pageNumber){
         pageNumber = 0;
     }
@@ -25,9 +31,9 @@ router.get('/pageCount', function (req, res) {
     
 });
 
-//  /api/blacklist/rule/?id=2
-router.get('/rule', function (req, res) {
-    var id = req.query.id;
+//  /api/blacklist/rule/2
+router.get('/rule/:id', function (req, res) {
+    var id = req.params.id;
     if(!id){
         res.status(500).send( {Message:"No id specified"});
         return;
