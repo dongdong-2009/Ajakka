@@ -49,6 +49,23 @@ router.post('/', function (req, res) {
     SendMessageToQueue(res, '{"FunctionName": "AddRule", "RuleName": "'+name+'", "RulePattern":"'+pattern+'"}');
 });
 
+//links action id to rule
+router.put('/linkaction/:ruleId/:actionId', function (req, res) {
+    var ruleId = req.params.ruleId;
+    var actionId = req.params.actionId;
+
+    if(!ruleId){
+        res.status(500).send( {Message:"ruleId cannot be empty"});
+        return;
+    }
+    if(!actionId){
+        res.status(500).send( {Message:"actionId cannot be empty"});
+        return;
+    }
+
+    SendMessageToQueue(res, '{"FunctionName":"LinkAction","RuleId":"'+ruleId+'","ActionId":'+actionId+'}');
+});
+
 function SendMessageToQueue(response, message){
     amqp.connect(configuration.messageQueueHostAddress, function(err, conn) {
         conn.createChannel(function(err, ch) {

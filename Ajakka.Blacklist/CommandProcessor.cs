@@ -83,7 +83,7 @@ namespace Ajakka.Blacklist{
         }
 
         private dynamic ParseRequest(string message){
-            var definition = new {FunctionName = "", PageNumber = 0, PageSize = 0, RuleId = Guid.Empty, RuleName = "", RulePattern = "", ActionId = new int[]{}};
+            var definition = new {FunctionName = "", PageNumber = 0, PageSize = 0, RuleId = Guid.Empty, RuleName = "", RulePattern = "", ActionId = 0};
             return JsonConvert.DeserializeAnonymousType(message, definition);
         }
 
