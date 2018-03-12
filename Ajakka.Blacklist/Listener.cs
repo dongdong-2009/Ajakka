@@ -71,18 +71,21 @@ namespace Ajakka.Blacklist
 
         private void ProcessDevice(dynamic deviceDescriptor)
         {
-           var pageCount = dal.GetRulePageCount();
-           Rule match;
-           for(var page = 0; page < pageCount; page++){
-               if(ProcessPageWithRules(dal.GetRules(page), deviceDescriptor.DeviceMacAddress, deviceDescriptor.DeviceIpAddress, deviceDescriptor.DeviceName, out match)){
-                   SendAlert(deviceDescriptor, match);
-                   break;
-               }
-           }
+            Console.WriteLine("processing device " + deviceDescriptor.DeviceMacAddress);
+            var pageCount = dal.GetRulePageCount();
+            Rule match;
+            for(var page = 0; page < pageCount; page++){
+                if(ProcessPageWithRules(dal.GetRules(page), deviceDescriptor.DeviceMacAddress, deviceDescriptor.DeviceIpAddress, deviceDescriptor.DeviceName, out match)){
+                    SendAlert(deviceDescriptor, match);
+                    break;
+                }
+            }
         }
 
         private void SendAlert(dynamic device, Rule match){
-
+            Console.WriteLine("Blacklist rule match: " + match.Name);
+            Console.WriteLine("device: " + device);
+            
         }
 
         private bool ProcessPageWithRules(Rule[] rules, string mac, string ip, string hostname, out Rule match){

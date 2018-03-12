@@ -16,9 +16,12 @@ namespace Ajakka.Blacklist
             using(var cmdProcessor = new CommandProcessor(config, blacklist)){
                 cmdProcessor.Start();
                 Console.WriteLine("CommandProcessor started");
-
-                Console.WriteLine(" Press [enter] to exit.");
-                Console.ReadLine();
+                using(var listener = new Listener(blacklist, config)){
+                    listener.Listen();
+                    Console.WriteLine("Listener started");
+                    Console.WriteLine(" Press [enter] to exit.");
+                    Console.ReadLine();
+                }
             }
         }
     }
