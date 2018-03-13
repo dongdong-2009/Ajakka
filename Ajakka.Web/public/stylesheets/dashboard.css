@@ -56,6 +56,13 @@ h3#product-logo{
   margin-right: -250px;
 }
 
+.page-heading{
+  margin-bottom:0;
+}
+
+.page-subheading{
+  margin-bottom: 15px;
+}
 
 /* Sidebar Styles */
 
@@ -164,3 +171,4 @@ h3#product-logo{
    
   }
 }
+
