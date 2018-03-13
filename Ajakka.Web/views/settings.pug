@@ -1,0 +1,25 @@
+extends dashboardlayout
+block header
+  script(src='./js/formatting.js')
+  script(src='./js/moment.js')
+  link(rel="stylesheet", href="./stylesheets/settings.css")
+block content
+  script.
+      $('#settingsNav').addClass('active')
+  #currentPage=page 
+  h1.page-heading Settings
+  div.page-subheading.text-muted Application configuration
+
+  div.tile
+    div.tile-inner-div
+      i.fas.fa-user.icon 
+      span.icon-text
+        a.tile-link(href="./users") Users
+      .text-muted Configure user accounts
+  div &nbsp;
+  div.tile
+    div.tile-inner-div
+      i.fas.fa-bell.icon 
+      span.icon-text
+        a.tile-link(href="./settings/alerts") Alerts
+      .text-muted Configure blacklist alerts

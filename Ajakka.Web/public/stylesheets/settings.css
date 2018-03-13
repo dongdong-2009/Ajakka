@@ -1,0 +1,30 @@
+.tile{
+   
+    border-width: 1px;
+    border-style: solid;
+    border-color: lightgray;
+    width:500px;
+}
+
+.icon{
+    font-size:40px;
+}
+
+.icon-text{
+    font-size:40px;
+    padding-left:20px;
+}
+
+.tile-inner-div{
+    padding:25px;
+}
+
+a.tile-link{
+    text-decoration: none;
+    color:inherit;
+}
+
+a.tile-link:hover{
+    text-decoration: none;
+    color:inherit;
+}
