@@ -32,11 +32,11 @@ block content
         input.form-control#newUserName(type='text', placeholder='user name')
         div.invalid-feedback Please choose a username.
       div.form-group
-        label(for='newUserName') Password
+        label(for='password') Password
         input.form-control#password(type='password')
         div.invalid-feedback Password cannot not be empty
       div.form-group
-        label(for='newUserName') Repeat password
+        label(for='passwordRepeat') Repeat password
         input.form-control#passwordRepeat(type='password')
         div.invalid-feedback Passwords do not match
       button#addButton.btn.btn-primary(onclick='return addNewUser();', type='button')
