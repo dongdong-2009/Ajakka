@@ -83,8 +83,15 @@ namespace Ajakka.Blacklist{
         }
 
         private dynamic ParseRequest(string message){
-            var definition = new {FunctionName = "", PageNumber = 0, PageSize = 0, RuleId = Guid.Empty, RuleName = "", RulePattern = "", ActionId = 0};
-            return JsonConvert.DeserializeAnonymousType(message, definition);
+            try{
+                var definition = new {FunctionName = "", PageNumber = 0, PageSize = 0, RuleId = Guid.Empty, RuleName = "", RulePattern = "", ActionId = 0};
+                return JsonConvert.DeserializeAnonymousType(message, definition);
+            }
+            catch(Exception ex){
+                Console.WriteLine("Failed to parse message: " + ex);
+                Console.WriteLine("Message: " + message);
+                throw ex;
+            }
         }
 
         private string ProcessRequest(dynamic request){
