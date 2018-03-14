@@ -1,0 +1,12 @@
+#addNewRule{
+    display:none;
+}
+
+#cancelButton{
+    margin-left:15px;
+}
+
+
+#currentPage {
+    display: none;
+}

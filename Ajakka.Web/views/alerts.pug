@@ -6,7 +6,6 @@ block header
 block content
   script.
       $('#settingsNav').addClass('active')
-  div#currentUserName #{currentUserName}
   #currentPage=page
   h1.page-heading Alerting
   div.page-subheading.text-muted Configure blacklist rules and alert actions
@@ -14,18 +13,20 @@ block content
     table.table.table-striped.table-hover
       thead.thead-dark
         tr
-          th Name
+          th Rule Name
+          th Pattern
+          th Active
           th(style='text-align:right')
             span#pageCount
-      tbody#userListContainer
+      tbody#ruleListContainer
         tr
           td(colspan='2')
             i.fas.fa-spinner.fa-spin
   
   div
-    button#addNewButton.btn.btn-secondary(onclick='toggleAddUserForm()')
-      span Add new user
-  #addNewUser
+    button#addNewButton.btn.btn-secondary(onclick='toggleAddRuleForm()')
+      span Add rule
+  #addNewRule
     form
       div.form-group
         label(for='newUserName') Name
@@ -39,9 +40,9 @@ block content
         label(for='newUserName') Repeat password
         input.form-control#passwordRepeat(type='password')
         div.invalid-feedback Passwords do not match
-      button#addButton.btn.btn-primary(onclick='return addNewUser();', type='button')
+      button#addButton.btn.btn-primary(onclick='return addNewRule();', type='button')
         span Add
-      button#cancelButton.btn.btn-secondary(onclick='toggleAddUserForm();', type='button')
+      button#cancelButton.btn.btn-secondary(onclick='toggleAddRuleForm();', type='button')
         span Cancel
-    div.text-danger#addNewUserError
-  script(src='/js/users/users.js')
+    div.text-danger#addNewRuleError
+  script(src='/js/alerts/alerts.js')

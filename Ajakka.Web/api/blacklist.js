@@ -18,7 +18,7 @@ router.get('/', function (req, res) {
 });
 
 //  /api/blacklist/1
-router.get('/:pageNumber', function (req, res) {
+router.get('/page/:pageNumber', function (req, res) {
     var pageNumber = req.params.pageNumber;
     if(!pageNumber){
         pageNumber = 0;
