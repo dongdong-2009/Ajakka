@@ -12,6 +12,7 @@ var users = require('./routes/users');
 var login = require('./routes/login');
 var about = require('./routes/about');
 var settings = require('./routes/settings');
+var alerts = require('./routes/alerts');
 
 const uuidv1 = require('uuid/v1');
 
@@ -55,6 +56,7 @@ app.use('/index',requireLogin, index);
 app.use('/users',requireLogin, users);
 app.use('/about', requireLogin, about);
 app.use('/settings', requireLogin, settings);
+app.use('/settings/alerts', requireLogin, alerts);
 app.use('/login', login);
 app.use('/api/endpoints', blockApi, endpointApi);
 app.use('/api/users',blockApi, userApi);
