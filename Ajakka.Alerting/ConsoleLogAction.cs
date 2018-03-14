@@ -20,7 +20,10 @@ namespace Ajakka.Alerting{
         }
 
         public override void Execute(string alertMessage){
+            var currentColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(DateTime.Now.ToString(TimestampFormat) + " : " + alertMessage);
+            Console.ForegroundColor = currentColor;
         }
 
         public override void Initialize()
