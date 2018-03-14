@@ -66,7 +66,7 @@ function deleteRule(id){
     
     $.get({
         method:'DELETE',
-        url: '/api/blacklist/'+id,
+        url: '/api/blacklist/rule/'+id,
         success: loadRules,
         error:showError
       });

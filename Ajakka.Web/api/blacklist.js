@@ -41,6 +41,16 @@ router.get('/rule/:id', function (req, res) {
     SendMessageToQueue(res, '{"FunctionName": "GetRule", "RuleId": "'+id+'"}');
 });
 
+// /api/blacklist/rule/2
+router.delete('/rule/:id', function(req, res){
+    var id = req.params.id;
+    if(!id){
+        res.status(500).send({Message:'No id specified'});
+        return;
+    }
+    SendMessageToQueue(res, '{"FunctionName":"DeleteRule","RuleId":"'+id+'"}');
+});
+
 //creates a new rule
 router.post('/', function (req, res) {
     var name = req.body.name;

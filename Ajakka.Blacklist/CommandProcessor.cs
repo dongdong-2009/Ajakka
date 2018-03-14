@@ -106,9 +106,16 @@ namespace Ajakka.Blacklist{
                     return SerializeResponse<CommandProcessorResponse<Rule>>(LinkAction(request.RuleId, request.ActionId));
                 case "GetPageCount":
                     return SerializeResponse<CommandProcessorResponse<int>>(GetPageCount());
+                case "DeleteRule":
+                    return SerializeResponse<CommandProcessorResponse<int>>(DeleteRule(request.RuleId));
                 default:
                     throw new InvalidOperationException("Function name not found: " +request.FunctionName);
             }
+        }
+
+        protected virtual CommandProcessorResponse<int> DeleteRule(Guid ruleId){
+            dal.DeleteRule(ruleId);
+            return WrapResponse(1);
         }
 
         protected virtual CommandProcessorResponse<Rule> LinkAction(Guid ruleId, int actionId){
