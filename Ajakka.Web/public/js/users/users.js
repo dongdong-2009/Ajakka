@@ -5,12 +5,12 @@ function loadUsers(){
     }
 
     $.get({
-        url: './api/users/'+currentPage+'/10',
+        url: '/api/users/'+currentPage+'/10',
         success: fillTableWithUsers,
         error:showError
       });
     $.get({
-        url:'./api/users/pageCount?pageSize=10',
+        url:'/api/users/pageCount?pageSize=10',
         success:showPageCount
     })
 } 
@@ -25,14 +25,14 @@ function showPageCount(pageCountResponse){
     
     if(currentPage > 0){
         var previousPage = currentPage - 1;
-        $('#pageCount').append('<a href="./users?page='+previousPage+'"><i class="fas fa-caret-left"> ');    
+        $('#pageCount').append('<a href="/settings/users?page='+previousPage+'"><i class="fas fa-caret-left"> ');    
     }
     currentPage++;
     $('#pageCount').append(' ' + currentPage + '/' + pageCount);
 
     if(currentPage < pageCount){
         var nextPage = currentPage;
-        $('#pageCount').append('<a href="./users?page='+nextPage+'"> <i class="fas fa-caret-right"> ');    
+        $('#pageCount').append('<a href="/settings/users?page='+nextPage+'"> <i class="fas fa-caret-right"> ');    
     }
 }
 
@@ -71,7 +71,7 @@ function deleteUser(id, name){
     }
     $.get({
         method:'DELETE',
-        url: './api/users/'+id,
+        url: '/api/users/'+id,
         success: loadUsers,
         error:showError
       });
@@ -106,7 +106,7 @@ function addNewUser(){
     
     var post = new Promise(function(resolve, reject){
         $.post({
-            url: './api/users/',
+            url: '/api/users/',
             data:{name:name, pwd:password},
             dataType:'json',
             success: resolve,
