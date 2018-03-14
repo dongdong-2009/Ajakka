@@ -24,25 +24,28 @@ block content
             i.fas.fa-spinner.fa-spin
   
   div
-    button#addNewButton.btn.btn-secondary(onclick='toggleAddRuleForm()')
+    button#addNewButton.btn.btn-secondary(data-toggle="modal" data-target="#addNewRule")
       span Add rule
-  #addNewRule
-    form
-      div.form-group
-        label(for='newUserName') Name
-        input.form-control#newUserName(type='text', placeholder='user name')
-        div.invalid-feedback Please choose a username.
-      div.form-group
-        label(for='newUserName') Password
-        input.form-control#password(type='password')
-        div.invalid-feedback Password cannot not be empty
-      div.form-group
-        label(for='newUserName') Repeat password
-        input.form-control#passwordRepeat(type='password')
-        div.invalid-feedback Passwords do not match
-      button#addButton.btn.btn-primary(onclick='return addNewRule();', type='button')
-        span Add
-      button#cancelButton.btn.btn-secondary(onclick='toggleAddRuleForm();', type='button')
-        span Cancel
-    div.text-danger#addNewRuleError
+    #addNewRule.modal.fade( tabindex="-1", role="dialog", aria-labelledby="addNewRule", aria-hidden="true")
+      .modal-dialog.modal-dialog-centered(role="document")
+        .modal-content(role="document")
+          .modal-header
+            h5.modal-title Add new rule
+            button.close(type="button", data-dismiss="modal", aria-label="Close" )
+          .modal-body
+            form
+              div.form-group
+                label(for='editRuleName') Name
+                input.form-control#editRuleName(type='text', placeholder='rule name')
+                div.invalid-feedback Rule name must not be empty.
+              div.form-group
+                label(for='editRulePattern') Patten
+                input.form-control#editRulePattern(type='text', placeholder='example: 00ACD0')
+                div.invalid-feedback Pattern cannot be empty
+              div.text-danger#addNewRuleError
+          .modal-footer
+            button.btn.btn-secondary(type="button" data-dismiss="modal") Close
+            button.btn.btn-primary(type="button", onclick='return addNewRule();') Save
+          
+    
   script(src='/js/alerts/alerts.js')

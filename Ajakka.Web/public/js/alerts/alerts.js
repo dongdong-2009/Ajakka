@@ -72,53 +72,44 @@ function deleteRule(id){
       });
 }
 
-function toggleAddRuleForm(){
-    $('#addNewRule').toggle();
-    $('#addNewButton').toggle();
-}
-
 function addNewRule(){
-    $('#newUserName').removeClass('is-invalid');
-    $('#password').removeClass('is-invalid');
-    $('#passwordRepeat').removeClass('is-invalid');
-    $('#addNewUserError').hide();
 
-    var name = $('#newUserName').val();
+    $('#editRuleName').removeClass('is-invalid');
+    $('#editRulePattern').removeClass('is-invalid');
+   
+    $('#addNewRuleError').hide();
+
+    var name = $('#editRuleName').val();
     if(name == '' || name == null){
-        $('#newUserName').addClass('is-invalid');
+        $('#editRuleName').addClass('is-invalid');
         return false;
     }
-    var password = $('#password').val();
-    if(password == '' || password == null){
-        $('#password').addClass('is-invalid');
-        return false;
-    }
-    var passwordRepeat = $('#passwordRepeat').val();
-    if(password != passwordRepeat){
-        $('#passwordRepeat').addClass('is-invalid');
+    var pattern = $('#editRulePattern').val();
+    if(pattern == '' || pattern == null){
+        $('#editRulePattern').addClass('is-invalid');
         return false;
     }
     
     var post = new Promise(function(resolve, reject){
         $.post({
-            url: '/api/users/',
-            data:{name:name, pwd:password},
+            url: '/api/blacklist/',
+            data:{name:name, pattern:pattern},
             dataType:'json',
             success: resolve,
             error:reject
         });
     });
     post.then(function(result){
-        $('#addNewUser').hide();
-        $('#addNewButton').show();  
-        loadUsers(); 
+        $('#addNewRule').modal('hide');
+       
+        loadRules(); 
     }).catch(function(error){
-        showUserCreationError(error);
+        showRuleCreation(error);
         
     });
 }
 
-function showUserCreationError(error){
+function showRuleCreation(error){
     console.log(error);
     $('#addNewRuleError').text(error.responseText);
     $('#addNewRuleError').show();
@@ -129,3 +120,10 @@ function configureAlerts(ruleId){
 }
 
 setTimeout(loadRules, 100);
+
+$('#addNewRule').on('shown.bs.modal', function () {
+    $('#editRuleName').val('');
+    $('#editRulePattern').val('');
+    $('#editRuleName').trigger('focus');
+   
+})
