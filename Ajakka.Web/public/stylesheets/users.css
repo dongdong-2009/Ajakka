@@ -2,12 +2,8 @@
     display:none;
 }
 
-#addNewUser{
-    display:none;
-}
-
 #currentPage {
-    visibility: hidden;
+    display: none;
 }
 
 #currentUserName {
