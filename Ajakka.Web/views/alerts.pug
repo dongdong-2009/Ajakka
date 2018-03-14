@@ -1,8 +1,8 @@
 extends dashboardlayout
 block header
-  script(src='./js/formatting.js')
-  script(src='./js/moment.js')
-  link(rel="stylesheet", href="./stylesheets/alerts.css")
+  script(src='/js/formatting.js')
+  script(src='/js/moment.js')
+  link(rel="stylesheet", href="/stylesheets/alerts.css")
 block content
   script.
       $('#settingsNav').addClass('active')
@@ -44,4 +44,4 @@ block content
       button#cancelButton.btn.btn-secondary(onclick='toggleAddUserForm();', type='button')
         span Cancel
     div.text-danger#addNewUserError
-  script(src='./js/users/users.js')
+  script(src='/js/users/users.js')

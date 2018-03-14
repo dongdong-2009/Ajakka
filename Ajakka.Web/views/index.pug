@@ -1,8 +1,8 @@
 extends dashboardlayout
 block header
-  script(src='./js/formatting.js')
-  script(src='./js/moment.js')
-  link(rel="stylesheet", href="./stylesheets/index.css")
+  script(src='/js/formatting.js')
+  script(src='/js/moment.js')
+  link(rel="stylesheet", href="/stylesheets/index.css")
 block content
   script.
       $('#dashboardNav').addClass('active')
@@ -23,4 +23,4 @@ block content
         tr
           td(colspan='5')
             i.fas.fa-spinner.fa-spin
-  script(src='./js/index/endpoints.js')
+  script(src='/js/index/endpoints.js')
