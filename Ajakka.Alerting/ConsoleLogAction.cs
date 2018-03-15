@@ -1,12 +1,16 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace Ajakka.Alerting{
+    
+    [DataContract]
     public sealed class ConsoleLogAction : AlertActionBase
     {
         public ConsoleLogAction(){
             TimestampFormat = "G";
         }
 
+        [DataMember]
         public string TimestampFormat {get;set;}
 
         public override object Clone()
