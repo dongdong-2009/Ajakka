@@ -30,6 +30,9 @@ namespace Ajakka.Blacklist{
         }
 
         public bool IsMatch(string input){
+            if(string.IsNullOrEmpty(input)){
+                return false;
+            }
             var regex = new Regex(Pattern);
             return regex.IsMatch(input);
         }

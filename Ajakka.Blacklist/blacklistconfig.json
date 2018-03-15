@@ -1,5 +1,6 @@
 {
     "messageQueueExchangeName":"ajakkaSensorExchange",
     "messageQueueHost":"localhost",
-    "commandProcessorRpcQueueName":"blacklist_rpc_queue"
+    "commandProcessorRpcQueueName":"blacklist_rpc_queue",
+    "alertingRpcQueueName":"alerting_rpc_queue"
 }
