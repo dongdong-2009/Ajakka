@@ -4,13 +4,7 @@ var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true }));
 var amqp = require('amqplib/callback_api');
 var configuration = require('../config/ajakkaConfiguration');
-
-function generateUuid() {
-    return Math.random().toString() +
-           Math.random().toString() +
-           Math.random().toString();
-  }
-
+var messaging = require('../modules/messaging');
 
 router.post('/', function (req, res) {
     var pageNumber = req.body.pageNumber;
@@ -21,7 +15,7 @@ router.post('/', function (req, res) {
     if(!pageNumber){
         pageNumber = 0;
     }
-    SendMessageToQueue(res, '{"FunctionName": "GetLatest", "PageNumber": "'+pageNumber+'", "PageSize": "'+pageSize+'"}');
+    messaging.SendMessageToQueue(res, '{"FunctionName": "GetLatest", "PageNumber": "'+pageNumber+'", "PageSize": "'+pageSize+'"}', configuration.collectorRpcQueue);
 });
 
 router.get('/pageCount', function (req, res) {
@@ -29,36 +23,9 @@ router.get('/pageCount', function (req, res) {
     if(!pageSize){
         pageSize = 10;
     }
-    SendMessageToQueue(res, '{"FunctionName": "GetDhcpEndpointPageCount", "PageSize": "'+pageSize+'"}');
+    messaging.SendMessageToQueue(res, '{"FunctionName": "GetDhcpEndpointPageCount", "PageSize": "'+pageSize+'"}', configuration.collectorRpcQueue);
     
 });
 
-function SendMessageToQueue(response, message){
-    amqp.connect(configuration.messageQueueHostAddress, function(err, conn) {
-        conn.createChannel(function(err, ch) {
-            ch.assertQueue('', {exclusive: true}, function(err, q) {
-            var corr = generateUuid();
-            ch.consume(q.queue, function(msg) {
-                if (msg.properties.correlationId == corr) {
-                    var responseObject = JSON.parse(msg.content.toString());
-                    if(responseObject.Error){
-                        console.log("Received error: " + responseObject.Message);
-                        response.status(500).send(responseObject);
-                    }
-                    else{
-                        response.status(200).send(responseObject);
-                    }
-                    
-                setTimeout(function() { conn.close(); }, 500);
-                }
-            }, {noAck: true});
-           
-            ch.sendToQueue(configuration.collectorRpcQueue,
-            new Buffer(message),
-            { correlationId: corr, replyTo: q.queue });
-            });
-        });
-        });
-}
 
 module.exports = router;

@@ -4,12 +4,7 @@ var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true }));
 var amqp = require('amqplib/callback_api');
 var configuration = require('../config/ajakkaConfiguration');
-
-function generateUuid() {
-    return Math.random().toString() +
-           Math.random().toString() +
-           Math.random().toString();
-  }
+var messaging = require('../modules/messaging');
 
   
 //  default 
@@ -23,11 +18,11 @@ router.get('/page/:pageNumber', function (req, res) {
     if(!pageNumber){
         pageNumber = 0;
     }
-    SendMessageToQueue(res, '{"FunctionName": "GetRules", "PageNumber": "'+pageNumber+'"}');
+    messaging.SendMessageToQueue(res, '{"FunctionName": "GetRules", "PageNumber": "'+pageNumber+'"}', configuration.blacklistRpcQueue);
 });
 
 router.get('/pageCount', function (req, res) {
-    SendMessageToQueue(res, '{"FunctionName": "GetPageCount"}');
+    messaging.SendMessageToQueue(res, '{"FunctionName": "GetPageCount"}', configuration.blacklistRpcQueue);
     
 });
 
@@ -38,7 +33,7 @@ router.get('/rule/:id', function (req, res) {
         res.status(500).send( {Message:"No id specified"});
         return;
     }
-    SendMessageToQueue(res, '{"FunctionName": "GetRule", "RuleId": "'+id+'"}');
+    messaging.SendMessageToQueue(res, '{"FunctionName": "GetRule", "RuleId": "'+id+'"}', configuration.blacklistRpcQueue);
 });
 
 // /api/blacklist/rule/2
@@ -48,7 +43,7 @@ router.delete('/rule/:id', function(req, res){
         res.status(500).send({Message:'No id specified'});
         return;
     }
-    SendMessageToQueue(res, '{"FunctionName":"DeleteRule","RuleId":"'+id+'"}');
+    messaging.SendMessageToQueue(res, '{"FunctionName":"DeleteRule","RuleId":"'+id+'"}', configuration.blacklistRpcQueue);
 });
 
 //creates a new rule
@@ -62,7 +57,7 @@ router.post('/', function (req, res) {
     if(!pattern){
         pattern = "";
     }
-    SendMessageToQueue(res, '{"FunctionName": "AddRule", "RuleName": "'+name+'", "RulePattern":"'+pattern+'"}');
+    messaging.SendMessageToQueue(res, '{"FunctionName": "AddRule", "RuleName": "'+name+'", "RulePattern":"'+pattern+'"}', configuration.blacklistRpcQueue);
 });
 
 //links action id to rule
@@ -79,35 +74,7 @@ router.put('/linkaction/:ruleId/:actionId', function (req, res) {
         return;
     }
 
-    SendMessageToQueue(res, '{"FunctionName":"LinkAction","RuleId":"'+ruleId+'","ActionId":'+actionId+'}');
+    messaging.SendMessageToQueue(res, '{"FunctionName":"LinkAction","RuleId":"'+ruleId+'","ActionId":'+actionId+'}', configuration.blacklistRpcQueue);
 });
-
-function SendMessageToQueue(response, message){
-    amqp.connect(configuration.messageQueueHostAddress, function(err, conn) {
-        conn.createChannel(function(err, ch) {
-            ch.assertQueue('', {exclusive: true}, function(err, q) {
-            var corr = generateUuid();
-            ch.consume(q.queue, function(msg) {
-                if (msg.properties.correlationId == corr) {
-                    var responseObject = JSON.parse(msg.content.toString());
-                    if(responseObject.Error){
-                        console.log("Received error: " + responseObject.Message);
-                        response.status(500).send(responseObject);
-                    }
-                    else{
-                        response.status(200).send(responseObject);
-                    }
-                    
-                setTimeout(function() { conn.close(); }, 500);
-                }
-            }, {noAck: true});
-           
-            ch.sendToQueue(configuration.blacklistRpcQueue,
-            new Buffer(message),
-            { correlationId: corr, replyTo: q.queue });
-            });
-        });
-        });
-}
 
 module.exports = router;
