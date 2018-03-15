@@ -11,7 +11,7 @@ namespace Ajakka.Alerting{
 
         public ActionTypeDescriptor(string name, Type type){
             Name = name;
-            TypeName = type.Name;
+            TypeName = type.FullName;
         }
     }
 }
