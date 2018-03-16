@@ -15,8 +15,10 @@ namespace Ajakka.Alerting{
 
         public static ActionTypeDescriptor[] GetAlertActionTypes(){
             return new ActionTypeDescriptor[]{
-                new ActionTypeDescriptor("Log to console", typeof(ConsoleLogAction)),
-                new ActionTypeDescriptor("Log to file", typeof(LogToFileAction))
+                new ActionTypeDescriptor("Log to console", typeof(ConsoleLogAction),new[]{new ActionTypePropertyDescriptor("TimestampFormat","Timestamp format","text")}),
+                new ActionTypeDescriptor("Log to file", typeof(LogToFileAction), new[]{
+                    new ActionTypePropertyDescriptor("TimestampFormat","Timestamp format","text"),
+                    new ActionTypePropertyDescriptor("FileName","File name","text")})
             };
         }
     }
