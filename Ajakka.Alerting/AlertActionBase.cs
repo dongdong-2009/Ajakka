@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Ajakka.Alerting{
     [DataContract]
@@ -21,7 +22,11 @@ namespace Ajakka.Alerting{
 
         static Type[] GetKnownTypes()
         {
-            return new Type[] { typeof(ConsoleLogAction) };
+            return new Type[] { typeof(ConsoleLogAction), typeof(LogToFileAction) };
+        }
+
+        protected dynamic ParseConfiguration(dynamic definition){
+            return JsonConvert.DeserializeAnonymousType(Configuration, definition);
         }
     }
 }

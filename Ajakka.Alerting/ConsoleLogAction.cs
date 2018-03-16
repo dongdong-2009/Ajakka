@@ -32,9 +32,11 @@ namespace Ajakka.Alerting{
 
         public override void Initialize()
         {
-            if(!string.IsNullOrEmpty(Configuration)){
-                TimestampFormat = Configuration;
-            }
+            if(string.IsNullOrEmpty(Configuration))
+                return;
+            
+            var config = ParseConfiguration(new {TimestampFormat = ""});
+            TimestampFormat = config.TimestampFormat;
         }
     }
 }
