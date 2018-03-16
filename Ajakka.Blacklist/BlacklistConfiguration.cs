@@ -34,5 +34,9 @@ namespace Ajakka.Blacklist{
         public string AlertingRpcQueueName{
             get{return configuration["alertingRpcQueueName"];}
         }
+
+        public string AlertingEventQueueName{
+            get{return configuration["alertingEventQueueName"];}
+        }
     }
 }

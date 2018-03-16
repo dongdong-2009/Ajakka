@@ -3,5 +3,7 @@ namespace Ajakka.Alerting{
         string MessageQueueHost {get;}
 
         string CommandProcessorRpcQueueName{get;}
+
+        string EventListenerQueueName {get;}
     }
 }

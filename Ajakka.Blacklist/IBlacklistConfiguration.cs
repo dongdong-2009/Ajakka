@@ -7,5 +7,6 @@ namespace Ajakka.Blacklist{
         string CommandProcessorRpcQueueName{get;}
 
         string AlertingRpcQueueName {get;}
+        string AlertingEventQueueName{get;}
     }
 }

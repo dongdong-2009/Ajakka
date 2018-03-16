@@ -26,5 +26,10 @@ namespace Ajakka.Alerting{
         public string CommandProcessorRpcQueueName{
             get{return configuration["commandProcessorRpcQueueName"];}
         }
+
+        public string EventListenerQueueName{
+            get{return configuration["eventListenerQueueName"];}
+        }
+
     }
 }

@@ -89,8 +89,6 @@ namespace Ajakka.Alerting{
 
         private string ProcessRequest(dynamic request){
             switch(request.FunctionName){
-                case "Execute":
-                    return SerializeResponse<CommandProcessorResponse<int>>(Execute(request.ActionId, request.AlertMessage));
                 case "GetAction":
                     return SerializeResponse<CommandProcessorResponse<AlertActionBase>>(GetAction(request.ActionId));
                 case "AddAction":
@@ -108,11 +106,6 @@ namespace Ajakka.Alerting{
             return WrapResponse(AlertActionFactory.GetAlertActionTypes());
         }
 
-        protected virtual CommandProcessorResponse<int> Execute(int actionId, string alertMessage){
-            var action = dal.GetAction(actionId);
-            action.Execute(alertMessage);
-            return WrapResponse(1);
-        }
         protected virtual CommandProcessorResponse<AlertActionBase[]> GetActions(int pageNumber){
             return WrapResponse(dal.GetActions(pageNumber));
         }

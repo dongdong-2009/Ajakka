@@ -6,55 +6,34 @@ using RabbitMQ.Client.Events;
 
 namespace Ajakka.Blacklist{
     class RpcClient:IDisposable{
+        IBlacklistConfiguration configuration;
         IConnection connection;
         IModel channel;
-        string replyQueueName;
-        EventingBasicConsumer consumer;
         IBasicProperties properties;
-        private readonly BlockingCollection<string> respQueue = new BlockingCollection<string>();
-        IBlacklistConfiguration configuration;
-        
+
         public RpcClient(IBlacklistConfiguration config)
         {
             configuration = config;
             var factory = new ConnectionFactory() { HostName = configuration.MessageQueueHost };
-
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
-            replyQueueName = channel.QueueDeclare().QueueName;
-            consumer = new EventingBasicConsumer(channel);
-
+            channel.QueueDeclare(queue: config.AlertingEventQueueName,
+                                 durable: true,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
             properties = channel.CreateBasicProperties();
-            var correlationId = Guid.NewGuid().ToString();
-            properties.CorrelationId = correlationId;
-            properties.ReplyTo = replyQueueName;
-
-            consumer.Received += (model, ea) =>
-            {
-                var body = ea.Body;
-                var response = Encoding.UTF8.GetString(body);
-                if (ea.BasicProperties.CorrelationId == correlationId)
-                {
-                    respQueue.Add(response);
-                }
-            };
+            properties.Persistent = true;
         }
 
-        public string SendMessage(string message)
+        public void SendMessage(string message)
         {
             var messageBytes = Encoding.UTF8.GetBytes(message);
-            channel.BasicPublish(
-                exchange: "",
-                routingKey: configuration.AlertingRpcQueueName,
-                basicProperties: properties,
-                body: messageBytes);
-
-            channel.BasicConsume(
-                consumer: consumer,
-                queue: replyQueueName,
-                autoAck: true);
-
-            return respQueue.Take(); ;
+            
+            channel.BasicPublish(exchange: "",
+                                 routingKey: configuration.AlertingEventQueueName,
+                                 basicProperties: properties,
+                                 body: messageBytes);
         }
 
         public void Close()
@@ -71,7 +50,8 @@ namespace Ajakka.Blacklist{
             {
                 if (disposing)
                 {
-                    connection.Close();
+                    channel.Dispose();
+                    connection.Dispose();
                 }
 
                 disposedValue = true;

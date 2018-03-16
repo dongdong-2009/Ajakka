@@ -15,9 +15,12 @@ namespace Ajakka.Alerting
             using(var cmdProcessor = new CommandProcessor(config, actionStore)){
                 cmdProcessor.Start();
                 Console.WriteLine("CommandProcessor started");
-                
-                Console.WriteLine(" Press [enter] to exit.");
-                Console.ReadLine();
+                using(var alertEventProcessor = new AlertEventProcessor(config, actionStore)){
+                    Console.WriteLine("AlertEventProcessor started" + Environment.NewLine);
+
+                    Console.WriteLine(" Press [enter] to exit.");
+                    Console.ReadLine();   
+                }
             }
         }
     }
