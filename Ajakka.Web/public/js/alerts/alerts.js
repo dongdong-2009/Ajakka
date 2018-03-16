@@ -15,6 +15,41 @@ function loadRules(){
     })
 } 
 
+function loadActionTypes(){
+    $.get({
+        url:'/api/alerts/actionTypes',
+        success: prefillActionTypes,
+        error: function(err){
+            $('#addNewRuleError').text('Alert actions cannot be loaded');
+        }
+    });
+}
+
+function prefillActionTypes(result){
+    result.Content.forEach(function(actionType){
+        actionTypes.push(actionType);
+        $('#actionType').append($("<option></option>")
+        .attr("value",actionType.TypeName)
+        .text(actionType.Name)); 
+    });
+    onActionTypeValueChanged();
+}
+
+function onActionTypeValueChanged(){
+    let selectedType = $('#actionType').val();
+    $('#actionConfigurationContainer').empty();
+    let typeDescriptor = actionTypes.find(function(item){
+        return item.TypeName == selectedType; 
+    });
+    if(!typeDescriptor){
+        return;
+    }
+    typeDescriptor.Properties.forEach(function(prop){
+        let propNameId = '#actionProp'+prop.Name;
+        $('#actionConfigurationContainer').append('<div class="form-group"><label for="'+propNameId +'">'+prop.DisplayName+'</label><input class="form-control" type="text" id="'+propNameId +'"></input></div>')
+    });
+}
+
 function showPageCount(pageCountResponse){
     $('#pageCount').text('');
     var pageCount = pageCountResponse.Content;
@@ -120,6 +155,7 @@ function configureAlerts(ruleId){
 }
 
 setTimeout(loadRules, 100);
+setTimeout(loadActionTypes, 100);
 
 $('#addNewRule').on('shown.bs.modal', function () {
     $('#editRuleName').val('');
@@ -127,3 +163,4 @@ $('#addNewRule').on('shown.bs.modal', function () {
     $('#editRuleName').trigger('focus');
    
 })
+var actionTypes = new Array();

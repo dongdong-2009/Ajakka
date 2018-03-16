@@ -42,6 +42,11 @@ block content
                 label(for='editRulePattern') Patten
                 input.form-control#editRulePattern(type='text', placeholder='example: 00ACD0')
                 div.invalid-feedback Pattern cannot be empty
+              .form-group
+                label(for='actionType') Action
+                select.form-control#actionType(onchange='onActionTypeValueChanged();')
+              .form-group
+                div#actionConfigurationContainer
               div.text-danger#addNewRuleError
           .modal-footer
             button.btn.btn-secondary(type="button" data-dismiss="modal") Close
