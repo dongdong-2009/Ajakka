@@ -76,12 +76,8 @@ namespace Ajakka.Blacklist
         {
             Console.WriteLine("processing device " + deviceDescriptor.DeviceMacAddress);
             var pageCount = dal.GetRulePageCount();
-            Rule match;
             for(var page = 0; page < pageCount; page++){
-                if(ProcessPageWithRules(dal.GetRules(page), deviceDescriptor.DeviceMacAddress, deviceDescriptor.DeviceIpAddress, deviceDescriptor.DeviceName, out match)){
-                    SendAlert(deviceDescriptor, match);
-                    break;
-                }
+                ProcessPageWithRules(dal.GetRules(page), deviceDescriptor);
             }
         }
 
@@ -93,15 +89,12 @@ namespace Ajakka.Blacklist
             }
         }
 
-        private bool ProcessPageWithRules(Rule[] rules, string mac, string ip, string hostname, out Rule match){
+        private void ProcessPageWithRules(Rule[] rules, dynamic deviceDescriptor){
             foreach(var rule in rules){
-                if(rule.IsMatch(mac) || rule.IsMatch(ip) || rule.IsMatch(hostname)){
-                    match = rule;
-                    return true;
+                if(rule.IsMatch(deviceDescriptor.DeviceMacAddress) || rule.IsMatch(deviceDescriptor.DeviceIpAddress) || rule.IsMatch(deviceDescriptor.DeviceName)){
+                    SendAlert(deviceDescriptor, rule);
                 }
             }
-            match = null;
-            return false;
         }
 
         static dynamic ParseMesage(string message){
