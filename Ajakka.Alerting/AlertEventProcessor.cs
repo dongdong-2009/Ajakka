@@ -64,6 +64,7 @@ namespace Ajakka.Alerting{
         }
 
         protected virtual void Execute(int actionId, string alertMessage){
+            Console.WriteLine("Executing action " + actionId);
             var action = dal.GetAction(actionId);
             action.Execute(alertMessage);
         }
