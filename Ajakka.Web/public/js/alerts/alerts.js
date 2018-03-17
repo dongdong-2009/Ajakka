@@ -193,8 +193,11 @@ function getActionToCreate(typeName){
     typeDescriptor.Properties.forEach(function(prop){
         let propNameId = '#ap'+prop.Name;
         let propNameVal = prop.assignedElement.val();
-        actionConfiguration += prop.Name+':\''+propNameVal+'\'';
+        actionConfiguration += prop.Name+':\''+propNameVal+'\',';
     });
+    //remove last comma
+    actionConfiguration = actionConfiguration.substring(0, actionConfiguration.length - 1);
+    
     actionConfiguration += '}';
 
     return {
