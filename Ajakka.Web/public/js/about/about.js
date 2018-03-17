@@ -17,7 +17,8 @@ function testConnection(url, statusDivId ){
 
 
 setTimeout(function(){
-    testConnection('/api/endpoints/pageCount?pageSize=10', "#collectorStatus");
-    testConnection('/api/users', "#dbStatus");
-    testConnection('/api/blacklist/', "#blacklistStatus");
+    testConnection('/api/endpoints/pageCount?pageSize=10', '#collectorStatus');
+    testConnection('/api/users', '#dbStatus');
+    testConnection('/api/blacklist/', '#blacklistStatus');
+    testConnection('/api/alerts/actionTypes','#alertingStatus')
 }, 500);
