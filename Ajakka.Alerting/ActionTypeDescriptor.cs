@@ -29,13 +29,18 @@ namespace Ajakka.Alerting{
         [DataMember]
         public string DisplayName {get;set;}
 
+        [DataMember]
+        public bool IsRequired{get;set;}
+
         public ActionTypePropertyDescriptor(){
             
         }
-        public ActionTypePropertyDescriptor(string name,string displayName, string type){
+
+        public ActionTypePropertyDescriptor(string name, string displayName, string type, bool isRequired=false){
             Name = name;
             DisplayName = displayName;
             Type = type;
+            IsRequired = isRequired;
         }
     }
 }

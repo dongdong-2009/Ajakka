@@ -44,13 +44,26 @@ function onActionTypeValueChanged(){
     if(!typeDescriptor){
         return;
     }
-    typeDescriptor.Properties.forEach(function(prop){
-        let propNameId = '#ap'+prop.Name;
-        let fGroupDiv = $('#actionConfigurationContainer').append('<div class="form-group"></div>').children().last();
-        fGroupDiv.append('<label for="'+propNameId +'">'+prop.DisplayName+'</label>');
-        let fInput = fGroupDiv.append('<input class="form-control" type="text" id="'+propNameId +'"></input>').children().last();
-        prop.assignedElement = fInput;
-    });
+    typeDescriptor.Properties.forEach(function(prop){createFormForActionProperty(prop);});
+}
+
+function createFormForActionProperty(prop){
+    let propNameId = '#ap'+prop.Name;
+    let fGroupDiv = $('#actionConfigurationContainer').append('<div class="form-group"></div>').children().last();
+    let requiredClassName = '';
+    let requiredText = '';
+    if(prop.IsRequired){
+        requiredClassName= ' required-property';
+        requiredText = ' (required)';
+    }
+
+    fGroupDiv.append('<label for="'+propNameId +'">'+prop.DisplayName+requiredText+'</label>');
+    
+    let fInput = fGroupDiv.append('<input class="form-control action-property'+requiredClassName+'" type="text" id="'+propNameId +'"></input>').children().last();
+    prop.assignedElement = fInput;
+    if(prop.IsRequired){
+        fGroupDiv.append('<div class="invalid-feedback">The value cannot be empty.</div>')
+    }
 }
 
 function showPageCount(pageCountResponse){
@@ -110,24 +123,51 @@ function deleteRule(id){
       });
 }
 
-function addNewRule(){
 
+function onAddNewDialogShown(){
+    $('#editRuleName').val('');
+    $('#editRulePattern').val('');
+    $('.action-property').val('');
+    $('#editRuleName').trigger('focus');
+
+}
+
+function areNewRuleFieldsValid(){
     $('#editRuleName').removeClass('is-invalid');
     $('#editRulePattern').removeClass('is-invalid');
-   
+    $('.required-property').removeClass('is-invalid');
+  
     $('#addNewRuleError').hide();
-
+    
+    var valid = true;
     var name = $('#editRuleName').val();
     if(name == '' || name == null){
         $('#editRuleName').addClass('is-invalid');
-        return false;
+        valid = false;
     }
     var pattern = $('#editRulePattern').val();
     if(pattern == '' || pattern == null){
         $('#editRulePattern').addClass('is-invalid');
-        return false;
+        valid = false;
     }
 
+    
+    $('.required-property').each(function(index){
+        if($(this).val() == '' || $(this).val() == null){
+            $(this).addClass('is-invalid');
+            valid = false;
+        }
+    });
+
+    return valid;
+}
+
+function addNewRule(){
+    if(!areNewRuleFieldsValid())
+        return false;
+
+    let name = $('#editRuleName').val();
+    let pattern = $('#editRulePattern').val();
     let addRulePost = new Promise(function(resolve, reject){
         $.post({
             url: '/api/blacklist/',
@@ -217,13 +257,11 @@ function configureAlerts(ruleId){
     window.location.href='/settings/alerts/configure/' + ruleId;
 }
 
+
 setTimeout(loadRules, 100);
 setTimeout(loadActionTypes, 100);
 
 $('#addNewRule').on('shown.bs.modal', function () {
-    $('#editRuleName').val('');
-    $('#editRulePattern').val('');
-    $('#editRuleName').trigger('focus');
-   
-})
+    onAddNewDialogShown();
+});
 var actionTypes = new Array();
