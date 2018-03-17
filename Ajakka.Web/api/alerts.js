@@ -51,7 +51,7 @@ router.post('/', function (req, res) {
     if(!actionConfig){
         actionConfig = '';
     }
-
+    console.log('Action Configuration: ' + actionConfig);
     var actionType = req.body.type;
     if(!actionType){
         res.status(500).send( {Message:'"type" is required'});

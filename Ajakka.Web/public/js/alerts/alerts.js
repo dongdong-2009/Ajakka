@@ -45,8 +45,11 @@ function onActionTypeValueChanged(){
         return;
     }
     typeDescriptor.Properties.forEach(function(prop){
-        let propNameId = '#actionProp'+prop.Name;
-        $('#actionConfigurationContainer').append('<div class="form-group"><label for="'+propNameId +'">'+prop.DisplayName+'</label><input class="form-control" type="text" id="'+propNameId +'"></input></div>')
+        let propNameId = '#ap'+prop.Name;
+        let fGroupDiv = $('#actionConfigurationContainer').append('<div class="form-group"></div>').children().last();
+        fGroupDiv.append('<label for="'+propNameId +'">'+prop.DisplayName+'</label>');
+        let fInput = fGroupDiv.append('<input class="form-control" type="text" id="'+propNameId +'"></input>').children().last();
+        prop.assignedElement = fInput;
     });
 }
 
@@ -124,8 +127,8 @@ function addNewRule(){
         $('#editRulePattern').addClass('is-invalid');
         return false;
     }
-    
-    var post = new Promise(function(resolve, reject){
+
+    let addRulePost = new Promise(function(resolve, reject){
         $.post({
             url: '/api/blacklist/',
             data:{name:name, pattern:pattern},
@@ -134,14 +137,71 @@ function addNewRule(){
             error:reject
         });
     });
-    post.then(function(result){
-        $('#addNewRule').modal('hide');
-       
-        loadRules(); 
+
+    let selectedActionType = $('#actionType').val();
+    var actionToCreate = getActionToCreate(selectedActionType);
+    addActionPost = new Promise(function(resolve, reject){
+        $.post({
+            url:'/api/alerts',
+            data:actionToCreate,
+            dataType:'json',
+            success:resolve,
+            error:reject
+        });
+    });
+  
+    addRulePost.then(function(rule){
+        
+        addActionPost.then(function(action){
+           
+            linkActionP(rule.Content.Id, action.Content.Id).then(function(result){
+                $('#addNewRule').modal('hide');
+                loadRules(); 
+            })
+            .catch(function(error){
+                showRuleCreation(error);    
+            });
+        })
+        .catch(function(error){
+            showRuleCreation(error);
+        });
     }).catch(function(error){
         showRuleCreation(error);
-        
     });
+}
+
+function linkActionP(blacklistRuleId, linkActionId){
+    return new Promise(function(resolve,reject){
+        linkAction(blacklistRuleId, linkActionId, resolve, reject);
+    });
+}
+
+function linkAction(blacklistRuleId, linkActionId, resolve, reject){
+    $.ajax({
+        method:'put',
+        url: '/api/blacklist/linkaction/'+blacklistRuleId +'/'+linkActionId,
+        success:resolve,
+        error:reject
+    });
+}
+
+function getActionToCreate(typeName){
+    let typeDescriptor = actionTypes.find(function(item){
+        return item.TypeName == typeName; 
+    });
+    var actionConfiguration = '{';
+    typeDescriptor.Properties.forEach(function(prop){
+        let propNameId = '#ap'+prop.Name;
+        let propNameVal = prop.assignedElement.val();
+        actionConfiguration += prop.Name+':\''+propNameVal+'\'';
+    });
+    actionConfiguration += '}';
+
+    return {
+        name : typeDescriptor.Name,
+        type : typeDescriptor.TypeName,
+        configuration : actionConfiguration
+    };
 }
 
 function showRuleCreation(error){
