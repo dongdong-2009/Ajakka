@@ -64,6 +64,7 @@ function fillTableWithUsers(users){
 }
 
 function deleteUser(id, name){
+    $('.tooltip').hide();
     var currentUser = $('#currentUserName').text();
     if(currentUser == name){
         alert('You cannot delete your own account.');

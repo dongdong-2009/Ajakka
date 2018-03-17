@@ -101,7 +101,7 @@ function fillTableWithRules(rules){
 }
 
 function deleteRule(id){
-    
+    $('.tooltip').hide();
     $.get({
         method:'DELETE',
         url: '/api/blacklist/rule/'+id,
@@ -197,7 +197,7 @@ function getActionToCreate(typeName){
     });
     //remove last comma
     actionConfiguration = actionConfiguration.substring(0, actionConfiguration.length - 1);
-    
+
     actionConfiguration += '}';
 
     return {
