@@ -16,6 +16,12 @@ router.get('/actionTypes', function (req, res) {
     
 });
 
+router.get('/page/:pageId', function (req, res) {
+    var pageId = req.params.pageId;
+    messaging.SendMessageToQueue(res, '{"FunctionName": "GetActions","PageNumber":'+pageId+'}', configuration.alertingRpcQueue);
+    
+});
+
 router.get('/:id', function (req, res) {
     var id = req.params.id;
     if(!id){

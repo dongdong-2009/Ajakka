@@ -91,6 +91,8 @@ namespace Ajakka.Alerting{
             switch(request.FunctionName){
                 case "GetAction":
                     return SerializeResponse<CommandProcessorResponse<AlertActionBase>>(GetAction(request.ActionId));
+                case "GetActions":
+                    return SerializeResponse<CommandProcessorResponse<AlertActionBase[]>>(GetActions(request.PageNumber));
                 case "AddAction":
                     return SerializeResponse<CommandProcessorResponse<AlertActionBase>>(AddAction(request.ActionName, request.ActionConfiguration, request.ActionType));
                 case "GetPageCount":
