@@ -9,7 +9,8 @@ var messaging = require('../modules/messaging');
   
 //  default 
 router.get('/', function (req, res) {
-    SendMessageToQueue(res, '{"FunctionName": "GetRules", "PageNumber": 0}');
+    pageNumber = 0;
+    messaging.SendMessageToQueue(res, '{"FunctionName": "GetRules", "PageNumber": "'+pageNumber+'"}', configuration.blacklistRpcQueue);
 });
 
 //  /api/blacklist/1
