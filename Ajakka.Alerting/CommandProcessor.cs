@@ -95,6 +95,8 @@ namespace Ajakka.Alerting{
                     return SerializeResponse<CommandProcessorResponse<AlertActionBase[]>>(GetActions(request.PageNumber));
                 case "AddAction":
                     return SerializeResponse<CommandProcessorResponse<AlertActionBase>>(AddAction(request.ActionName, request.ActionConfiguration, request.ActionType));
+                case "UpdateAction":
+                    return SerializeResponse<CommandProcessorResponse<int>>(UpdateAction(request.ActionId, request.ActionName, request.ActionConfiguration, request.ActionType));
                 case "GetPageCount":
                     return SerializeResponse<CommandProcessorResponse<int>>(GetPageCount());
                 case "GetActionTypes":
@@ -102,6 +104,12 @@ namespace Ajakka.Alerting{
                 default:
                     throw new InvalidOperationException("Function name not found: " +request.FunctionName);
             }
+        }
+
+        protected virtual CommandProcessorResponse<int> UpdateAction(int actionId, string name, string configuration, string actionType){
+            var action = AlertActionFactory.Create(name, actionType, configuration);
+            dal.UpdateAction(actionId, action);
+            return WrapResponse(actionId);
         }
 
         protected virtual CommandProcessorResponse<ActionTypeDescriptor[]> GetActionTypes(){

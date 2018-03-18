@@ -67,5 +67,30 @@ router.post('/', function (req, res) {
     
 });
 
+//update action: name, configuration, type
+router.put('/', function (req, res) {
+    var name = req.body.name;
+    if(!name){
+        res.status(500).send( {Message:'"name" is required'});
+        return;
+    }
+    var actionConfig = req.body.configuration;
+    if(!actionConfig){
+        actionConfig = '';
+    }
+    var actionType = req.body.type;
+    if(!actionType){
+        res.status(500).send( {Message:'"type" is required'});
+        return;
+    }
+    var actionId = req.body.actionId;
+    if(!actionId){
+        res.status(500).send( {Message:'"actionId" is required'});
+        return;
+    }
+    messaging.SendMessageToQueue(res, '{"FunctionName": "UpdateAction","ActionName":"'+name+'","ActionConfiguration":"'+actionConfig+'","ActionType":"'+actionType+'","ActionId":'+actionId+'}', configuration.alertingRpcQueue);
+    
+});
+
 
 module.exports = router;

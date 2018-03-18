@@ -48,7 +48,7 @@ function onActionTypeValueChanged(){
 }
 
 function createFormForActionProperty(prop){
-    let propNameId = '#ap'+prop.Name;
+    let propNameId = 'ap'+prop.Name;
     let fGroupDiv = $('#actionConfigurationContainer').append('<div class="form-group"></div>').children().last();
     let requiredClassName = '';
     let requiredText = '';
@@ -97,6 +97,7 @@ function fillTableWithRules(rules){
     $('#ruleListContainer').empty();
 
     rules.Content.forEach(function(rule){
+        allRules.push(rule);
         var activeAlerting = 'yes';
         if(rule.AlertActionIds.length == 0){
             activeAlerting = 'no';
@@ -105,7 +106,7 @@ function fillTableWithRules(rules){
         row += '<td>' + rule.Name + '</td>';
         row += '<td>' + rule.Pattern + '</td>';
         row += '<td>' + activeAlerting + '</td>';
-        row += '<td style="text-align:right"> <button class="btn btn-secondary" onclick="configureAlerts(\''+rule.Id+'\')"><span data-toggle="tooltip" title="Edit"><i class="fas fa-edit"/><span></button> <button class="btn btn-secondary" href="#" onclick="deleteRule(\''+rule.Id+'\',\''+rule.Name+'\')"><span data-toggle="tooltip" title="Delete Rule"><i class="fas fa-trash-alt"/> </span></a></td>';
+        row += '<td style="text-align:right"> <button class="btn btn-secondary" onclick="editRule(\''+rule.Id+'\')"><span data-toggle="tooltip" title="Edit"><i class="fas fa-edit"/><span></button> <button class="btn btn-secondary" href="#" onclick="deleteRule(\''+rule.Id+'\',\''+rule.Name+'\')"><span data-toggle="tooltip" title="Delete Rule"><i class="fas fa-trash-alt"/> </span></a></td>';
         row += '</tr>';
         $('#ruleListContainer').append(row);
         
@@ -125,19 +126,26 @@ function deleteRule(id){
 
 
 function onAddNewDialogShown(){
+    $('#editRuleName').trigger('focus');
+
+    if(addNewDialogMode == 'edit')
+        return;
     $('#editRuleName').val('');
     $('#editRulePattern').val('');
     $('.action-property').val('');
-    $('#editRuleName').trigger('focus');
 
 }
 
-function areNewRuleFieldsValid(){
+function clearValidationStyles(){
     $('#editRuleName').removeClass('is-invalid');
     $('#editRulePattern').removeClass('is-invalid');
     $('.required-property').removeClass('is-invalid');
   
     $('#addNewRuleError').hide();
+}
+
+function areNewRuleFieldsValid(){
+    clearValidationStyles();
     
     var valid = true;
     var name = $('#editRuleName').val();
@@ -165,7 +173,10 @@ function areNewRuleFieldsValid(){
 function addNewRule(){
     if(!areNewRuleFieldsValid())
         return false;
-
+    if(addNewDialogMode == 'edit'){
+        saveChangesToRule();
+        return false;
+    }
     let name = $('#editRuleName').val();
     let pattern = $('#editRulePattern').val();
     let addRulePost = new Promise(function(resolve, reject){
@@ -253,15 +264,14 @@ function showRuleCreation(error){
     $('#addNewRuleError').show();
 }
 
-function configureAlerts(ruleId){
-    window.location.href='/settings/alerts/configure/' + ruleId;
-}
-
-
 setTimeout(loadRules, 100);
 setTimeout(loadActionTypes, 100);
+
+$('#addNewButton').on('click',function(){addNewDialogMode = 'add';});
 
 $('#addNewRule').on('shown.bs.modal', function () {
     onAddNewDialogShown();
 });
 var actionTypes = new Array();
+var allRules = new Array();
+var addNewDialogMode ='add';

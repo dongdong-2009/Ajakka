@@ -13,6 +13,12 @@ namespace Ajakka.Alerting{
         [DataMember]
         public string Name {get;set;}
 
+        [DataMember]
+        public string TypeName {get{
+            return this.GetType().FullName;
+        }
+            set{}
+        }
         public virtual void Execute(string alertMessage){
 
         }
