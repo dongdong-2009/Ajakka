@@ -96,6 +96,7 @@ function showError(error){
 function fillTableWithRules(rules){
     $('#ruleListContainer').empty();
 
+    allRules = [];
     rules.Content.forEach(function(rule){
         allRules.push(rule);
         var activeAlerting = 'yes';
