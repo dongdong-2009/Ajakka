@@ -62,10 +62,11 @@ router.post('/', function (req, res) {
 });
 
 //updates a rule 
-router.put('/', function (req, res) {
+router.put('/:ruleId', function (req, res) {
     var name = req.body.name;
     var pattern = req.body.pattern;
     var action = req.body.actionId;
+    var ruleId = req.params.ruleId;
     if(!name){
         res.status(500).send( {Message:"Name cannot be empty"});
         return;
@@ -73,7 +74,10 @@ router.put('/', function (req, res) {
     if(!pattern){
         pattern = "";
     }
-    messaging.SendMessageToQueue(res, '{"FunctionName": "AddRule", "RuleName": "'+name+'", "RulePattern":"'+pattern+'","ActionId":'+action+'}', configuration.blacklistRpcQueue);
+    if(!ruleId){
+        res.status(500).send({Message:"ruleId cannot be empty"});
+    }
+    messaging.SendMessageToQueue(res, '{"FunctionName": "UpdateRule", "RuleName": "'+name+'", "RulePattern":"'+pattern+'","ActionId":'+action+',"RuleId":"'+ruleId+'"}', configuration.blacklistRpcQueue);
 });
 
 //links action id to rule

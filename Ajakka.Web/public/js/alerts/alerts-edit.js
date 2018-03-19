@@ -57,7 +57,7 @@ function saveChangesToRule(){
 
     var updateRuleRequest = new Promise(function(resolve,reject){
         $.ajax({
-            url: '/api/blacklist/',
+            url: '/api/blacklist/'+currentlyEditedRule.Id,
             method: 'put',
             data:{name:name, pattern:pattern, actionId: currentlyEditedRule.AlertActionIds[0]},
             dataType:'json',
