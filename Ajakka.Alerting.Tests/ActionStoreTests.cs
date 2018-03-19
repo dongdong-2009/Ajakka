@@ -7,8 +7,8 @@ namespace Ajakka.Alerting.Tests{
         [Fact]
         public void ShouldAddAndGetAlertActions(){
             var store = ActionStoreFactory.GetActionStore();
-            ConsoleLogAction expected1 = (ConsoleLogAction)AlertActionFactory.Create("log to console","Ajakka.Alerting.ConsoleLogAction","G");
-            ConsoleLogAction expected2 = (ConsoleLogAction)AlertActionFactory.Create("log to console 2","Ajakka.Alerting.ConsoleLogAction","MM");
+            ConsoleLogAction expected1 = (ConsoleLogAction)AlertActionFactory.Create("log to console","Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"G\"}");
+            ConsoleLogAction expected2 = (ConsoleLogAction)AlertActionFactory.Create("log to console 2","Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"MM\"}");
            
             var returned1 = store.AddAction(expected1);
             var returned2 = store.AddAction(expected2);
@@ -26,7 +26,7 @@ namespace Ajakka.Alerting.Tests{
         public void ShouldReturnPageWithActions(){
             var store = ActionStoreFactory.GetActionStore();
             for(int i = 0; i < 15; i++){
-                var action = (ConsoleLogAction)AlertActionFactory.Create("log to console " + i,"Ajakka.Alerting.ConsoleLogAction","G");
+                var action = (ConsoleLogAction)AlertActionFactory.Create("log to console " + i,"Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"G\"}");
                 store.AddAction(action);
             }
             var firstPage = store.GetActions(0);
@@ -40,7 +40,7 @@ namespace Ajakka.Alerting.Tests{
         public void ShouldReturnSecondPageWithActions(){
             var store = ActionStoreFactory.GetActionStore();
             for(int i = 0; i < 15; i++){
-                var action = (ConsoleLogAction)AlertActionFactory.Create("log to console " + i,"Ajakka.Alerting.ConsoleLogAction","G");
+                var action = (ConsoleLogAction)AlertActionFactory.Create("log to console " + i,"Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"G\"}");
                 store.AddAction(action);
             }
             var firstPage = store.GetActions(1);
@@ -54,7 +54,7 @@ namespace Ajakka.Alerting.Tests{
         public void ShouldReturnEmptyPageWithActions(){
             var store = ActionStoreFactory.GetActionStore();
             for(int i = 0; i < 15; i++){
-                var action = (ConsoleLogAction)AlertActionFactory.Create("log to console " + i,"Ajakka.Alerting.ConsoleLogAction","G");
+                var action = (ConsoleLogAction)AlertActionFactory.Create("log to console " + i,"Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"G\"}");
                 store.AddAction(action);
             }
             var firstPage = store.GetActions(3);
@@ -65,7 +65,7 @@ namespace Ajakka.Alerting.Tests{
         public void ShouldPageCount(){
             var store = ActionStoreFactory.GetActionStore();
             for(int i = 0; i < 15; i++){
-                var action = (ConsoleLogAction)AlertActionFactory.Create("log to console " + i,"Ajakka.Alerting.ConsoleLogAction","G");
+                var action = (ConsoleLogAction)AlertActionFactory.Create("log to console " + i,"Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"G\"}");
                 store.AddAction(action);
             }
             var pageCount = store.GetPageCount();
@@ -75,8 +75,8 @@ namespace Ajakka.Alerting.Tests{
         [Fact]
         public void ShouldDeleteAction(){
             var store = ActionStoreFactory.GetActionStore();
-            ConsoleLogAction expected1 = (ConsoleLogAction)AlertActionFactory.Create("log to console","Ajakka.Alerting.ConsoleLogAction","G");
-            ConsoleLogAction expected2 = (ConsoleLogAction)AlertActionFactory.Create("log to console 2","Ajakka.Alerting.ConsoleLogAction","MM");
+            ConsoleLogAction expected1 = (ConsoleLogAction)AlertActionFactory.Create("log to console","Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"G\"}");
+            ConsoleLogAction expected2 = (ConsoleLogAction)AlertActionFactory.Create("log to console 2","Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"MM\"}");
             var returned1 = store.AddAction(expected1);
             var returned2 = store.AddAction(expected2);
 
@@ -91,12 +91,12 @@ namespace Ajakka.Alerting.Tests{
         [Fact]
         public void ShouldUpdateAction(){
             var store = ActionStoreFactory.GetActionStore();
-            ConsoleLogAction expected1 = (ConsoleLogAction)AlertActionFactory.Create("log to console","Ajakka.Alerting.ConsoleLogAction","G");
+            ConsoleLogAction expected1 = (ConsoleLogAction)AlertActionFactory.Create("log to console","Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"G\"}");
             var returned = store.AddAction(expected1);
 
             expected1.Name = "changed";
             expected1.TimestampFormat = "MM";
-            expected1.Configuration = "MM";
+            expected1.Configuration = "{TimestampFormat:\"MM\"}";
 
             store.UpdateAction(returned.Id, expected1);
 

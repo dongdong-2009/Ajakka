@@ -27,7 +27,9 @@ namespace Ajakka.Alerting{
 
         public AlertActionBase GetAction(int actionId)
         {
-            return alertActions[actionId];
+            var action = alertActions[actionId];
+            action.Initialize();
+            return action;
         }
 
         public AlertActionBase[] GetActions(int pageNumber)
@@ -45,6 +47,7 @@ namespace Ajakka.Alerting{
             var ret = new AlertActionBase[targetSize];
             for(int i = startIndex, j = 0;i<startIndex + targetSize ;i++, j++ ){
                 ret[j] = values[i];
+                ret[j].Initialize();
             }
             return ret;
         }
@@ -60,9 +63,7 @@ namespace Ajakka.Alerting{
 
         public void UpdateAction(int actionId, AlertActionBase update)
         {
-            var change = alertActions[actionId];
-            change.Configuration = update.Configuration;
-            change.Name = update.Name;
+            alertActions[actionId] = (AlertActionBase)update.Clone();
         }
     }
 }
