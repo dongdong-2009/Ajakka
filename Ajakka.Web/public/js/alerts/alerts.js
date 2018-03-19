@@ -97,16 +97,24 @@ function fillTableWithRules(rules){
     $('#ruleListContainer').empty();
 
     allRules = [];
+    var i = 1000;
     rules.Content.forEach(function(rule){
+        i++;
         allRules.push(rule);
-        var activeAlerting = 'yes';
-        if(rule.AlertActionIds.length == 0){
-            activeAlerting = 'no';
+        var alertingElementId = 'alertDescription'+i;
+        if(rule.AlertActionIds.length > 0){
+            $.get({
+                url:'/api/alerts/'+rule.AlertActionIds[0],
+                success:function(result){
+                    $('#'+alertingElementId).text(result.Content.Name);
+                },
+                error:function(err){console.log(err);}
+            });
         }
         var row = '<tr>';
         row += '<td>' + rule.Name + '</td>';
         row += '<td>' + rule.Pattern + '</td>';
-        row += '<td>' + activeAlerting + '</td>';
+        row += '<td id="'+alertingElementId+'"></td>';
         row += '<td style="text-align:right"> <button class="btn btn-secondary" onclick="editRule(\''+rule.Id+'\')"><span data-toggle="tooltip" title="Edit"><i class="fas fa-edit"/><span></button> <button class="btn btn-secondary" href="#" onclick="deleteRule(\''+rule.Id+'\',\''+rule.Name+'\')"><span data-toggle="tooltip" title="Delete Rule"><i class="fas fa-trash-alt"/> </span></a></td>';
         row += '</tr>';
         $('#ruleListContainer').append(row);
