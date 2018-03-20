@@ -100,6 +100,32 @@ Creates required tables in the target mysql database. The database has to exist 
 dotnet run [environment variable storing connection string]
 ~~~~
 
+### Ajakka.Alerting
+Provides alerting functionality. Used by Ajakka.Blacklist, stores alert actions and their configuration.
+~~~~
+dotnet run
+~~~~
+
+### Ajakka.Alerting.Tests
+Tests for Ajakka.Alerting project.
+~~~~
+dotnet xunit
+~~~~
+
+
+### Ajakka.Blacklist
+Provides functionality for blacklist rules. Stores rules and their configuration. Evaluates devices detected by sensor and when the devices match a rule, a linked alert action is executed via Ajakka.Alerting.
+~~~~
+dotnet run
+~~~~
+
+### Ajakka.Blacklist.Tests
+Tests for Ajakka.Blacklist project.
+~~~~
+dotnet run
+~~~~
+
+
 ### Ajakka.Web
 Website
 MySql connection configuration is expected in environment variables:
