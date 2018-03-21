@@ -289,3 +289,5 @@ __pycache__/
 
 #Visual Studio Code
 .vscode/
+Ajakka.Alerting/alertactions.json
+Ajakka.Blacklist/blacklist.json
