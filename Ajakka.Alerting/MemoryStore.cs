@@ -5,12 +5,12 @@ using System.Runtime.Serialization.Json;
 namespace Ajakka.Alerting{
     public class MemoryStore : IActionStore, IAlertingStorage
     {
-        static int lastId = 0;
+        int lastId = 0;
         const int pageSize = 10;
 
         readonly Dictionary<int, AlertActionBase> alertActions = new Dictionary<int, AlertActionBase>();
 
-        static int GetIdAndIncrement(){
+        int GetIdAndIncrement(){
             return lastId++;
         }
 
@@ -76,6 +76,9 @@ namespace Ajakka.Alerting{
                 alertActions.Clear();
                 foreach(var l in loaded){
                     alertActions.Add(l.Id, l);
+                    if(lastId <= l.Id){
+                        lastId = l.Id+1;
+                    }
                 }
             }
         }

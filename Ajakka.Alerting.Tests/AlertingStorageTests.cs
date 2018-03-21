@@ -5,6 +5,19 @@ namespace Ajakka.Alerting.Tests{
     public class AlertingStorageTests{
 
         [Fact]
+        void BugTest_ShouldAddActionAfterLoading(){
+            var actionStore = ActionStoreFactory.GetActionStore();
+            actionStore.AddAction(AlertActionFactory.Create("action1", "Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"MM\"}"));
+            actionStore.AddAction(AlertActionFactory.Create("action2", "Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"MM\"}"));
+            actionStore.AddAction(AlertActionFactory.Create("action3", "Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"MM\"}"));
+            ((IAlertingStorage) actionStore).Save("BugTest_ShouldAddActionAfterLoading");
+            var actionStore2 = ActionStoreFactory.GetActionStore();
+            ((IAlertingStorage) actionStore2).Load("BugTest_ShouldAddActionAfterLoading");
+            var action2 =  AlertActionFactory.Create("action", "Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"MM\"}");
+            actionStore2.AddAction(action2);
+        }
+        
+        [Fact]
         void ShouldSaveAndLoadActions(){
             var actionStore = ActionStoreFactory.GetActionStore();
             List<AlertActionBase> actions = new List<AlertActionBase>();
@@ -23,12 +36,12 @@ namespace Ajakka.Alerting.Tests{
                 actions.Add(action);
             }
             
-            ((IAlertingStorage)actionStore).Save("alerts_test");
+            ((IAlertingStorage)actionStore).Save("ShouldSaveAndLoadActions");
             var actionStore2 = ActionStoreFactory.GetActionStore();
             var action2 = AlertActionFactory.Create("action e", "Ajakka.Alerting.LogToFileAction","{TimestampFormat:\"MM\",FileName:\"log.log\"}");
             actionStore2.AddAction(action2);
 
-            ((IAlertingStorage)actionStore2).Load("alerts_test");
+            ((IAlertingStorage)actionStore2).Load("ShouldSaveAndLoadActions");
         
 
             foreach(var expected in actions){
