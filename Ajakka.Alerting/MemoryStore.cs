@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Json;
 
 namespace Ajakka.Alerting{
-    public class MemoryStore : IActionStore
+    public class MemoryStore : IActionStore, IAlertingStorage
     {
         static int lastId = 0;
         const int pageSize = 10;
@@ -64,6 +66,29 @@ namespace Ajakka.Alerting{
         public void UpdateAction(int actionId, AlertActionBase update)
         {
             alertActions[actionId] = (AlertActionBase)update.Clone();
+        }
+
+        public void Load(string fileName)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(List<AlertActionBase>));
+            using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read)){
+                List<AlertActionBase> loaded = (List<AlertActionBase>)serializer.ReadObject(stream);
+                alertActions.Clear();
+                foreach(var l in loaded){
+                    alertActions.Add(l.Id, l);
+                }
+            }
+        }
+
+        public void Save(string fileName)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(List<AlertActionBase>));
+            using(var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write)){
+                var list = new List<AlertActionBase>();
+                list.AddRange(alertActions.Values);
+                serializer.WriteObject(stream, list);  
+                    
+            }
         }
     }
 }
