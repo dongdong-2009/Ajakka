@@ -7,7 +7,7 @@ namespace Ajakka.Blacklist{
     [DataContract]
     public class Rule:ICloneable{
 
-        private readonly List<int> alertActionIds = new List<int>();
+        private List<int> alertActionIds = new List<int>();
 
         [DataMember]
         public Guid Id {get;set;}
@@ -16,7 +16,17 @@ namespace Ajakka.Blacklist{
         [DataMember]
         public string Pattern {get;set;}
         [DataMember]
-        public List<int> AlertActionIds {get {return alertActionIds; }}
+        public List<int> AlertActionIds {get {return alertActionIds;} set {alertActionIds = value;}}
+
+        public Rule(){
+
+        }
+
+        public Rule(string name, string pattern, IEnumerable<int> alertActionIds){
+            Name = name;
+            Pattern = pattern;
+            AlertActionIds.AddRange(alertActionIds);
+        }
 
         public object Clone()
         {

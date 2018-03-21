@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using System.Text;
 
 namespace Ajakka.Blacklist{
-    class MemoryBlacklist:IBlacklist{
+    class MemoryBlacklist:IBlacklist, IBlacklistStorage{
         readonly Dictionary<Guid, Rule> rules = new Dictionary<Guid, Rule>();
         const int pageSize = 10;
 
@@ -67,6 +70,30 @@ namespace Ajakka.Blacklist{
                 add = 1;
             }
             return add + rules.Count/pageSize;
+        }
+
+        public void Load(string fileName)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(List<Rule>));
+            using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read)){
+                List<Rule> loaded = (List<Rule>)serializer.ReadObject(stream);
+                rules.Clear();
+                foreach(var l in loaded){
+                    rules.Add(l.Id, l);
+                }
+            }
+        }
+
+        public void Save(string fileName)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(List<Rule>));
+            using(var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write)){
+                var list = new List<Rule>();
+                list.AddRange(rules.Values);
+                serializer.WriteObject(stream, list);  
+                    
+            }
+            
         }
     }
 }
