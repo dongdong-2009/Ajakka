@@ -42,5 +42,14 @@ namespace Ajakka.Alerting.Tests
             Assert.Equal("log to file",alertAction.Name);
             Assert.Equal("alert.log",alertAction.FileName);
         }
+
+        [Fact]
+        public void BugFix_ShouldNotLogOutsideCurrentDirectory(){
+            LogToFileAction alertAction = (LogToFileAction)AlertActionFactory.Create("log to file","Ajakka.Alerting.LogToFileAction","{\"TimestampFormat\":\"MM\",\"FileName\":\"c:\\\\alert.log\"}");
+            var store = ActionStoreFactory.GetActionStore();
+            var added = store.AddAction(alertAction);
+            var actual = store.GetAction(added.Id);
+            Assert.Equal("alert.log",((LogToFileAction)actual).FileName);
+        }
     }
 }

@@ -44,7 +44,7 @@ namespace Ajakka.Alerting{
             var config = ParseConfiguration(new {TimestampFormat = "", FileName = ""});
           
             TimestampFormat = config.TimestampFormat;
-            FileName = config.FileName;
+            FileName = Path.GetFileName(config.FileName);
             if(string.IsNullOrEmpty(FileName)){
                 throw new InvalidOperationException("FileName property is not set");
             }
