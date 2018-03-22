@@ -2,9 +2,9 @@
 using RabbitMQ.Client.Events;
 using System;
 using System.Text;
-using Ajakka.Messaging;
 using System.Runtime.Serialization.Json;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Ajakka.Collector
 {
@@ -67,14 +67,12 @@ namespace Ajakka.Collector
                 Console.WriteLine(" Message:{0}{1}", Environment.NewLine, message);
             }
         }
-        static DeviceDescriptorMessage ParseMesage(byte[] message){
-            using(var stream = new MemoryStream(message)){
-                var serializer = new DataContractJsonSerializer(typeof(DeviceDescriptorMessage));
-                return (DeviceDescriptorMessage)serializer.ReadObject(stream);
-            }
+        static dynamic ParseMesage(byte[] message){
+            var prototype = new{DeviceName = "", DeviceIpAddress="",DeviceMacAddress = "",TimeStamp=DateTime.UtcNow};
+            return JsonConvert.DeserializeAnonymousType(Encoding.UTF8.GetString(message),prototype);
         }
 
-        void StoreDeviceInfo(DeviceDescriptorMessage deviceInfo){
+        void StoreDeviceInfo(dynamic deviceInfo){
             dal.StoreDhcpEndpoint(deviceInfo.DeviceMacAddress, 
             deviceInfo.DeviceIpAddress, 
             deviceInfo.DeviceName, 

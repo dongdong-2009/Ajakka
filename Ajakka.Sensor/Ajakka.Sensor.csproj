@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ajakka.Net\Ajakka.Net.csproj" />
-    <ProjectReference Include="..\Ajakka.Messaging\Ajakka.Messaging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

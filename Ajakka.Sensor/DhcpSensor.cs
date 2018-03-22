@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Net.NetworkInformation;
 using Ajakka.Net;
 using RabbitMQ.Client;
-using Ajakka.Messaging;
 using System.IO;
 using System.Runtime.Serialization.Json;
+using Newtonsoft.Json;
 
 namespace Ajakka.Sensor{
     class DhcpSensor{
@@ -99,21 +99,14 @@ namespace Ajakka.Sensor{
             var ip = packet.GetClientIp();
             var mac = packet.GetClientMac();
 
-            var message = new DeviceDescriptorMessage
+            var message = new 
             {
                 DeviceName = deviceName,
                 DeviceIpAddress = ip == null ? string.Empty: ip.ToString(),
                 DeviceMacAddress = mac == null ? string.Empty : mac.ToString(),
                 TimeStamp = DateTime.UtcNow
             };
-            var ms = new MemoryStream();  
-
-            // Serializer the User object to the stream.  
-            var serializer = new DataContractJsonSerializer(typeof(DeviceDescriptorMessage));  
-            serializer.WriteObject(ms, message);  
-            byte[] json = ms.ToArray();  
-            ms.Close();  
-            return Encoding.UTF8.GetString(json, 0, json.Length);  
+            return JsonConvert.SerializeObject(message); 
         }
 
 

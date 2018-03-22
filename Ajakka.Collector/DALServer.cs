@@ -2,7 +2,6 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Text;
-using Ajakka.Messaging;
 using System.Runtime.Serialization.Json;
 using System.IO;
 using Newtonsoft.Json;
