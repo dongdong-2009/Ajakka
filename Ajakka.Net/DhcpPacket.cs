@@ -94,7 +94,7 @@ namespace Ajakka.Net{
             index += 4;
 
             CHAddr = new byte[16];
-            var tempAddr = new byte[6];
+            var tempAddr = new byte[6]; 
             for (byte i = 0; i < 16; i++)
             {
                 CHAddr[i] = bytes[index + i];
@@ -115,6 +115,13 @@ namespace Ajakka.Net{
             MagicCookie = BitConverter.ToUInt32(new[]{bytes[index + 3],bytes[index + 2],bytes[index + 1],bytes[index]},0);
             IsActualDhcp = MagicCookie == 0x63825363;
             return index;
+        }
+
+        private void CreateBootP(){
+            List<Byte> bytes =new List<Byte>();
+            bytes.Add(BootPMessageType);
+            bytes.Add((byte)HType);
+            bytes.Add(HLen);
         }
 
         public DhcpMessageType GetDhcpMessageType(){

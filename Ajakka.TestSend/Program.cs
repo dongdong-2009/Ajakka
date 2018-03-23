@@ -2,13 +2,18 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 
 namespace Ajakka.TestSend
 {
     public class Program
     {
+        static  Configuration config = new Configuration();
+
         public static void Main(string[] args)
         {
+            Console.WriteLine("Commands: " + Environment.NewLine + "send: sends notification about a new device" + Environment.NewLine + "Press Ctrl+C to exit");
             var command = "";
             do{
                 command = Console.ReadLine();
@@ -16,57 +21,54 @@ namespace Ajakka.TestSend
                 {
                     ProcessSendCommand(command);
                 }
-                if(command.StartsWith("b"))
-                {
-                    ProcessBroadcastCommand(command);
-                }
             }while(command != "x");
         }
 
-
-        private static void ProcessSendCommand(string command)
-        {
-            var data = command.Split(' ');
-            IPAddress target;
-            IPAddress.TryParse(data[1], out target);
-            if(data.Length == 3 && target != null)
-            {
-                SendData(IPAddress.Parse(data[1]),data[2]);
-            }
-            else
-            {
-                Console.WriteLine("usage: send <ip address> <data>");
+        static void ProcessSendCommand(string command){
+            var parts = command.Split(' ');
+            if(parts.Length == 1){
+                var device = DeviceDescriptor.CreateRandom();
+                SendNewDeviceNotification(device);
+                Console.WriteLine("Sent new device notification: " + device);
             }
         }
 
-        private static void ProcessBroadcastCommand(string command)
+
+        private static void SendNewDeviceNotification(DeviceDescriptor device)
         {
-            var data = command.Split(' ');
-            if(data.Length == 2)
-            {
-                BroadcastData(data[1]);
-            }
-            else
-            {
-                Console.WriteLine("usage: broadcast <data>");
+            var factory = new ConnectionFactory() { 
+                HostName = string.IsNullOrEmpty(config.MessageQueueHost) ? 
+                    "localhost" :
+                    config.MessageQueueHost 
+            };
+            using(var connection = factory.CreateConnection()){
+                using(var channel = connection.CreateModel())
+                {
+                    channel.ExchangeDeclare(exchange: config.MessageQueueExchangeName, type: "fanout");
+                    
+                    string message = BuildMessage(device);
+                    var body = Encoding.UTF8.GetBytes(message);
+
+                    channel.BasicPublish(exchange: string.IsNullOrEmpty(config.MessageQueueExchangeName) ? "": config.MessageQueueExchangeName,
+                                        routingKey: "",
+                                        basicProperties: null,
+                                        body: body);
+                }
             }
         }
 
-        private static async void SendData(IPAddress ip, string data)
+        private static string BuildMessage(DeviceDescriptor device)
         {
-            Console.WriteLine(string.Format("Sending data {0} to ip {1}", data, ip));
-            UdpClient client = new UdpClient();
-            var datagram = Encoding.UTF8.GetBytes(data);
-            await client.SendAsync(datagram,datagram.Length,new IPEndPoint(ip,67));
+            var message = new 
+            {
+                DeviceName = device.Name,
+                DeviceIpAddress = device.Ip == null ? string.Empty: device.Ip,
+                DeviceMacAddress = device.Mac == null ? string.Empty : device.Mac.ToString(),
+                TimeStamp = DateTime.UtcNow
+            };
+            return JsonConvert.SerializeObject(message); 
         }
 
-        private static async void BroadcastData(string data)
-        {
-            Console.WriteLine("Sending data (broadcast): " + data);
-            UdpClient client = new UdpClient();
-            client.EnableBroadcast = true;
-            var datagram = Encoding.UTF8.GetBytes(data);
-            await client.SendAsync(datagram,datagram.Length,"255.255.255.255",67);
-        }
+
     }
 }
