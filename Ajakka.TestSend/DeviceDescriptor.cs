@@ -13,6 +13,16 @@ namespace Ajakka.TestSend{
         public string Ip {get;set;}
         public string Name {get;set;}
 
+        public DeviceDescriptor(){
+
+        }
+
+        public DeviceDescriptor(string mac, string ip, string name){
+            Mac = mac.ToUpper();
+            Ip = ip;
+            Name = name;
+        }
+
         static DeviceDescriptor(){
             for(int i = 48; i < 57; i++){
                 allowedCharacters.Add(Convert.ToChar(i));
@@ -29,6 +39,22 @@ namespace Ajakka.TestSend{
                 Ip = GetIp(),
                 Name = GetName()
             };    
+        }
+
+        internal static DeviceDescriptor CreateRandom(string mac){
+            return new DeviceDescriptor(){
+                Mac = mac.ToUpper(),
+                Ip = GetIp(),
+                Name = GetName()
+            };
+        }
+
+        internal static DeviceDescriptor CreateRandom(string mac, string ip){
+            return new DeviceDescriptor(){
+                Mac = mac.ToUpper(),
+                Ip = ip,
+                Name = GetName()
+            };
         }
 
         internal static string GetName(){
