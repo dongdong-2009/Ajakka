@@ -16,5 +16,8 @@ namespace Ajakka.Collector{
 
         [DataMember]
         public DateTime TimeStamp;
+
+        [DataMember]
+        public string VendorName;
     }
 }

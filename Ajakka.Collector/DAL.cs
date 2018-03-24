@@ -49,7 +49,7 @@ namespace Ajakka.Collector{
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = string.Format("SELECT * FROM endpoint_latest order by lastseen desc LIMIT {0} OFFSET {1}",pageSize, (pageNumber * pageSize) );
+                command.CommandText = string.Format("SELECT * FROM endpoint_latest join vendors on vendors.oui = substring(endpoint_latest.mac,1,6) order by lastseen desc LIMIT {0} OFFSET {1}",pageSize, (pageNumber * pageSize) );
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -66,11 +66,13 @@ namespace Ajakka.Collector{
                             timestamp.Minute,
                             timestamp.Second,
                             DateTimeKind.Utc);
+                        var vendor = record[5].ToString();
                         result.Add(new EndpointDescriptor{
                             DeviceName = hostname,
                             DeviceMacAddress = mac,
                             DeviceIpAddress = ip,
-                            TimeStamp = timestampUtc
+                            TimeStamp = timestampUtc,
+                            VendorName = vendor
                         });
                     }
                 }
