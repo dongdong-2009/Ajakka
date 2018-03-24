@@ -14,28 +14,36 @@ namespace Ajakka.TestSend{
             }
 
             if(parts.Length == 2){
-                if(!ValidateMac(parts[1])){
-                    Console.WriteLine(parts[1] + " is not a valid MAC.");
-                    return;
-                }
-                device = DeviceDescriptor.CreateRandom(parts[1]);
+               device = CreateWithMac(parts[1]);
             }
 
             if(parts.Length == 3){
-                if(!ValidateMac(parts[1])){
-                    Console.WriteLine(parts[1] + " is not a valid MAC.");
-                    return;
-                }
-                if(!ValidateIp(parts[2])){
-                    Console.WriteLine(parts[2] + " is not a valid IP.");
-                    return;
-                }
-                device = DeviceDescriptor.CreateRandom(parts[1], parts[2]);
+                device = CreateWithMacIp(parts[1],parts[2]);
             }
             if(device != null){
                 client.SendNewDeviceNotification(device);
                 Console.WriteLine("Sent new device notification: " + device);
             }
+        }
+
+        DeviceDescriptor CreateWithMac(string mac){
+            if(!ValidateMac(mac)){
+                Console.WriteLine(mac + " is not a valid MAC.");
+                return null;
+            }
+            return DeviceDescriptor.CreateRandom(mac);
+        }
+
+        DeviceDescriptor CreateWithMacIp(string mac, string ip){
+            if(!ValidateMac(mac)){
+                Console.WriteLine(mac + " is not a valid MAC.");
+                return null;
+            }
+            if(!ValidateIp(ip)){
+                Console.WriteLine(ip + " is not a valid IP.");
+                return null;
+            }
+            return DeviceDescriptor.CreateRandom(mac, ip);
         }
 
          private static bool ValidateIp(string ip){
