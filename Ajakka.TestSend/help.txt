@@ -1,4 +1,9 @@
 Commands:
+help
+Shows the list of supported commands.
+
+clear
+clears screen
 
 send 
 Sends a notification about a new device. MAC, IP, and Hostname are generated randomly.

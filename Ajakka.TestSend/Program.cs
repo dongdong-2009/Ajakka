@@ -18,11 +18,17 @@ namespace Ajakka.TestSend
             var command = "";
             do{
                 command = Console.ReadLine();
-                if(command.StartsWith("s"))
+                if(command.ToLower().StartsWith("s"))
                 {
                     ProcessSendCommand(command);
                 }
-            }while(command != "x");
+                if(command.ToLower().StartsWith("h")){
+                    ShowHelp();
+                }
+                if(command.ToLower().StartsWith("c")){
+                    Console.Clear();
+                }
+            }while(command.ToLower() != "x");
         }
 
         static void ShowHelp(){
