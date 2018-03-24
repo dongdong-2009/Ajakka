@@ -291,3 +291,4 @@ __pycache__/
 .vscode/
 Ajakka.Alerting/alertactions.json
 Ajakka.Blacklist/blacklist.json
+Ajakka.DbInit/oui.txt
