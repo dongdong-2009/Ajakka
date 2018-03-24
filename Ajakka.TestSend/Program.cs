@@ -17,11 +17,14 @@ namespace Ajakka.TestSend
                 {
                     sendCommandProcessor.ProcessSendCommand(command);
                 }
-                if(command.ToLower().StartsWith("h")){
+                else if(command.ToLower().StartsWith("h")){
                     ShowHelp();
                 }
-                if(command.ToLower().StartsWith("c")){
+                else if(command.ToLower().StartsWith("c")){
                     Console.Clear();
+                }
+                else if(command.ToLower() != "x"){
+                    Console.WriteLine("Invalid command");
                 }
             }while(command.ToLower() != "x");
         }
