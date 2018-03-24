@@ -11,5 +11,8 @@ Sends a notification about a new device. MAC, IP, and Hostname are generated ran
 send <MAC>
 Sends a notification about a new device with the provided MAC. IP, and Hostname are generated randomly.
 
+send <MAC> <IP>
+Sends a notification about a new device with the provided MAC and IP. Hostname is generated randomly.
+
 
 Press Ctrl+C to exit

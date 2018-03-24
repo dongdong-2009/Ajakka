@@ -54,6 +54,33 @@ namespace Ajakka.TestSend
                 SendNewDeviceNotification(device);
                 Console.WriteLine("Sent new device notification: " + device);
             }
+
+            if(parts.Length == 3){
+                if(!ValidateMac(parts[1])){
+                    Console.WriteLine(parts[1] + " is not a valid MAC.");
+                    return;
+                }
+                if(!ValidateIp(parts[2])){
+                    Console.WriteLine(parts[2] + " is not a valid IP.");
+                    return;
+                }
+                var device = DeviceDescriptor.CreateRandom();
+                device.Mac = parts[1].ToUpper();
+                device.Ip = parts[2];
+                SendNewDeviceNotification(device);
+                Console.WriteLine("Sent new device notification: " + device);
+            }
+        }
+
+        private static bool ValidateIp(string ip){
+            try{
+                IPAddress.Parse(ip);
+                return true;
+            }
+            catch(Exception)
+            {
+                return false;
+            }
         }
 
         private static bool ValidateMac(string mac){
