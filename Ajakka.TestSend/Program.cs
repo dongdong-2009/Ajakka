@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Ajakka.TestSend
 
         public static void Main(string[] args)
         {
-            Console.WriteLine("Commands: " + Environment.NewLine + "send: sends notification about a new device" + Environment.NewLine + "Press Ctrl+C to exit");
+            ShowHelp();
             var command = "";
             do{
                 command = Console.ReadLine();
@@ -24,6 +25,11 @@ namespace Ajakka.TestSend
             }while(command != "x");
         }
 
+        static void ShowHelp(){
+            using(var reader = new StreamReader("help.txt")){
+                Console.WriteLine(reader.ReadToEnd());
+            }
+        }
         static void ProcessSendCommand(string command){
             var parts = command.Split(' ');
             if(parts.Length == 1){
@@ -31,8 +37,28 @@ namespace Ajakka.TestSend
                 SendNewDeviceNotification(device);
                 Console.WriteLine("Sent new device notification: " + device);
             }
+
+            if(parts.Length == 2){
+                if(!ValidateMac(parts[1])){
+                    Console.WriteLine(parts[1] + " is not a valid MAC.");
+                    return;
+                }
+                var device = DeviceDescriptor.CreateRandom();
+                device.Mac = parts[1].ToUpper();
+                SendNewDeviceNotification(device);
+                Console.WriteLine("Sent new device notification: " + device);
+            }
         }
 
+        private static bool ValidateMac(string mac){
+            try{
+                var number = Convert.ToInt64(mac,16);
+                return mac.Length == 12;
+            }
+            catch(Exception){
+                return false;
+            }
+        }
 
         private static void SendNewDeviceNotification(DeviceDescriptor device)
         {

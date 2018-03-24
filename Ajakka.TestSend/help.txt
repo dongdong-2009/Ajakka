@@ -1,0 +1,10 @@
+Commands:
+
+send 
+Sends a notification about a new device. MAC, IP, and Hostname are generated randomly.
+
+send <MAC>
+Sends a notification about a new device with the provided MAC. IP, and Hostname are generated randomly.
+
+
+Press Ctrl+C to exit

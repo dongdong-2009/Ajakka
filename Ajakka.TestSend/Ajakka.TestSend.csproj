@@ -12,5 +12,6 @@
 
   <ItemGroup>
     <None Update="config.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="help.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
