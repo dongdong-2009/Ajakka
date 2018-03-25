@@ -28,3 +28,24 @@ a.tile-link:hover{
     text-decoration: none;
     color:inherit;
 }
+.sub-heading{
+    margin-top:20px;
+}
+.user-settings-section{
+    margin-top:10px;
+    width:400px;
+}
+.user-settings-section-header{
+    font-weight: bold;
+}
+.save-button{
+    margin-top:20px;
+}
+
+#successMessage{
+    display: none;
+}
+
+#errorMessage{
+    display: none;
+}

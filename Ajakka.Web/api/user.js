@@ -42,11 +42,9 @@ router.get('/pageCount', function (req, res) {
 
 
 router.get('/settings/showVendorLogos', function(req,res){
-	console.log('showVendorLogos (get)');
-	console.log(req.session.user.id);
 	userController.getShowVendorLogos(req.session.user.id)
 	.then(function(result){
-		res.status(200).send({result:result});
+		res.status(200).send({content:result});
 	})
 	.catch(function(err){
 		res.status(500).send(err);

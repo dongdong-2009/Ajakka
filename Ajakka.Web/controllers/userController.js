@@ -175,7 +175,7 @@ function _setShowVendorLogos(id, value, resolve, reject){
     });
 }
 
-function _getShowVendorLogos(id, value, resolve, reject){
+function _getShowVendorLogos(id, resolve, reject){
     var connection = createConnection();
     var query = 'select showVendorLogos from users where id=?';
     var q = connection.query(query, [id], function(err, result, fields){
@@ -184,8 +184,7 @@ function _getShowVendorLogos(id, value, resolve, reject){
             return;
         }
         connection.end();
-        console.log(result);
-        resolve({content:result[0].showVendorLogos});
+        resolve(result[0].showVendorLogos);
     });
 }
 
