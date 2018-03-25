@@ -20,6 +20,7 @@ var endpointApi = require('./api/endpoint');
 var userApi = require('./api/user');
 var blacklistApi = require('./api/blacklist');
 var alertsApi = require('./api/alerts');
+var vendorsApi = require('./api/vendor');
 
 var app = express();
 
@@ -63,6 +64,7 @@ app.use('/api/endpoints', blockApi, endpointApi);
 app.use('/api/users',blockApi, userApi);
 app.use('/api/blacklist',blockApi, blacklistApi);
 app.use('/api/alerts', blockApi, alertsApi);
+app.use('/api/vendor',blockApi, vendorsApi);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

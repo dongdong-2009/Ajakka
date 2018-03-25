@@ -292,3 +292,4 @@ __pycache__/
 Ajakka.Alerting/alertactions.json
 Ajakka.Blacklist/blacklist.json
 Ajakka.DbInit/oui.txt
+Ajakka.Web/images/vendor/*

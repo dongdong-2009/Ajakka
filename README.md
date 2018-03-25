@@ -150,3 +150,33 @@ Start as:
 ~~~~
 npm run start
 ~~~~
+
+#### vendor images
+Vendor images are not included (copyright reasons). Add vendor logos to Ajakka.Web\images\vendor. 
+
+Supported formats (extensions):jpg, png.
+
+Naming convention: see function getVendorShortName() in /public/js/index/endpoint.js to get details on how image name is constructed from vendor name:
+
+1) convert to lower caps
+
+2) remove all within ()
+
+3) remove commas
+
+4) remove spaces
+
+5) remove full stops
+
+6) remove 'coltd' from the end of the string
+
+7) remove 'co' from the end of the string
+
+8) remove 'gmbh' from the end of the string
+
+9) remove 'inc' from the end of the string
+
+You can also check the *imagedownloader* project that searches for logos on Bing and downloads them to files following the same file naming convention.
+
+### Imagedownloader
+A simple program that gets vendor names from list, searches for their logos using Bing, and saves them as picture files to be used with Ajakka.Web.

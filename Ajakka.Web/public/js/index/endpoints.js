@@ -44,16 +44,43 @@ function showError(error){
     $('#endpointListContainer').append('<tr class="table-danger"><td colspan="4">Request error: '+error.statusText+'</td></tr>');
 }
 
+function getVendorShortName(vendorName){
+    vendorName = vendorName.toLowerCase();
+    let index = vendorName.indexOf('(');
+    
+    if(index > 0){
+        vendorName = vendorName.substring(0,index);
+    }
+    vendorName = vendorName.replace(',','');
+    vendorName = vendorName.replace(/\./g,'');    
+    vendorName = vendorName.replace(/\ /g,'');
+    vendorName = removeVendorNameSuffix(vendorName,'coltd');
+
+    vendorName = removeVendorNameSuffix(vendorName,'co');
+
+    vendorName = removeVendorNameSuffix(vendorName,'gmbh');
+
+    vendorName = removeVendorNameSuffix(vendorName,'inc');
+    return vendorName;
+}
+
+function removeVendorNameSuffix(vendorName, suffix){
+    if(vendorName.endsWith(suffix)){
+        vendorName = vendorName.substring(0,vendorName.length - suffix.length);
+    }
+    return vendorName;
+}
+
 function fillTableWithEndpoints(endpointsResponse){
     var endpoints = endpointsResponse.Content;
     $('#endpointListContainer').empty();
     
     endpoints.forEach(function(endpoint){
         var timestampUtc = moment.utc(endpoint.TimeStamp);
-        
+        var src = '/api/vendor/' + getVendorShortName(endpoint.VendorName);
         var timestamp = timestampUtc.local().format('YYYY/MM/DD, h:mm:ss A');
         var row = '<tr>';
-        row += '<td>' + formatMac(endpoint.DeviceMacAddress) + '</td>';
+        row += '<td>'+ formatMac(endpoint.DeviceMacAddress) + '<img alt="'+endpoint.VendorName+'" src="'+ src+'" class="vendor-logo"/> </td>';
         row += '<td>' + endpoint.DeviceIpAddress + '</td>';
         row += '<td>' + endpoint.DeviceName + '</td>';
         row += '<td colspan="2">' + timestamp + '</td>';
