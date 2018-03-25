@@ -162,6 +162,33 @@ function _changeUserPassword(name, oldPassword, newPassword, resolve, reject){
     });
 }
 
+function _setShowVendorLogos(id, value, resolve, reject){
+    var connection = createConnection();
+    var query = 'update users set showVendorLogos=? where id=?';
+    var q = connection.query(query, [value, id], function(err, result, fields){
+        if(err){
+            reject(err);
+            return;
+        }
+        connection.end();
+        resolve(value);
+    });
+}
+
+function _getShowVendorLogos(id, value, resolve, reject){
+    var connection = createConnection();
+    var query = 'select showVendorLogos from users where id=?';
+    var q = connection.query(query, [id], function(err, result, fields){
+        if(err){
+            reject(err);
+            return;
+        }
+        connection.end();
+        console.log(result);
+        resolve({content:result[0].showVendorLogos});
+    });
+}
+
 function validateLogin(name, password){
     return new Promise(function(resolve, reject){
         _validateLogin(name, password, resolve, reject);
@@ -207,12 +234,24 @@ function getPageCount(pageSize){
 function changeUserPassword(name, oldPassword, newPassword){
     return new Promise(function(resolve, reject){
         _changeUserPassword(name, oldPassword, newPassword, resolve, reject);
-    })
+    });
 }
 
 function createConnection(){
     return mysql.createConnection(config.getMySqlUrl());
 
+}
+
+function setShowVendorLogos(id, value){
+    return new Promise(function(resolve, reject){
+        _setShowVendorLogos(id, value, resolve, reject);
+    });
+}
+
+function getShowVendorLogos(id){
+    return new Promise(function(resolve, reject){
+        _getShowVendorLogos(id, resolve, reject);
+    });
 }
 
 module.exports.validateLogin = validateLogin;
@@ -223,3 +262,5 @@ module.exports.deleteUser = deleteUser;
 module.exports.changeUserPassword = changeUserPassword;
 module.exports.findByName = findByName;
 module.exports.getPageCount = getPageCount;
+module.exports.getShowVendorLogos = getShowVendorLogos;
+module.exports.setShowVendorLogos = setShowVendorLogos;

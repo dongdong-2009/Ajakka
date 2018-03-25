@@ -40,6 +40,20 @@ router.get('/pageCount', function (req, res) {
 	});
 });
 
+
+router.get('/settings/showVendorLogos', function(req,res){
+	console.log('showVendorLogos (get)');
+	console.log(req.session.user.id);
+	userController.getShowVendorLogos(req.session.user.id)
+	.then(function(result){
+		res.status(200).send({result:result});
+	})
+	.catch(function(err){
+		res.status(500).send(err);
+	});
+});
+
+
 // RETURNS ALL THE USERS IN THE DATABASE
 router.get('/:pageNumber/:pageSize', function (req, res) {
 	var pageSize = req.params.pageSize;
@@ -102,6 +116,16 @@ router.put('/password/:name', function (req, res) {
 	})
 	.catch(function(error){
 		return res.status(500).send("There was a problem updating the user. " + error);
+	});
+});
+
+router.put('/settings/showVendorLogos/:val', function(req,res){
+	userController.setShowVendorLogos(req.session.user.id, req.params.val)
+	.then(function(){
+		res.status(200).send({result:'ok'});
+	})
+	.catch(function(err){
+		res.status(500).send(err);
 	});
 });
 
