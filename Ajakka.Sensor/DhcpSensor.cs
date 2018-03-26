@@ -14,6 +14,7 @@ namespace Ajakka.Sensor{
     class DhcpSensor{
 
         bool stop = false;
+        SensorConfiguration configuration;
 
         public DhcpSensor(SensorConfiguration configuration){
             bool valid = ValidateAndLogConfiguration(configuration);
@@ -21,8 +22,9 @@ namespace Ajakka.Sensor{
                 Console.WriteLine("Configuration is not valid. Sensor cannot start.");
                 return;
             }
+            this.configuration = configuration;
             Task.Run(()=>{
-                SensorLoop(configuration);
+                SensorLoop();
             });
         }
 
@@ -44,7 +46,7 @@ namespace Ajakka.Sensor{
             return true;
         }
 
-        private async void SensorLoop(SensorConfiguration configuration){
+        private async void SensorLoop(){
             try{
                 
                 using (var udpClient = new UdpClient(new IPEndPoint(0,67))){
@@ -60,7 +62,7 @@ namespace Ajakka.Sensor{
                         Console.WriteLine("Hostname: " + packet.GetHostName());
                         if(configuration.EnableMessaging)
                         {
-                            var task = Task.Run(()=>{SendNotification(configuration, packet);});
+                            var task = Task.Run(()=>{SendNotification(packet);});
                         }
                     }
                 }
@@ -70,7 +72,7 @@ namespace Ajakka.Sensor{
             }
         }
 
-        private void SendNotification(SensorConfiguration configuration, DhcpPacket packet)
+        private void SendNotification(DhcpPacket packet)
         {
             var factory = new ConnectionFactory() { 
                 HostName = string.IsNullOrEmpty(configuration.MessageQueueHost) ? 
@@ -104,7 +106,8 @@ namespace Ajakka.Sensor{
                 DeviceName = deviceName,
                 DeviceIpAddress = ip == null ? string.Empty: ip.ToString(),
                 DeviceMacAddress = mac == null ? string.Empty : mac.ToString(),
-                TimeStamp = DateTime.UtcNow
+                TimeStamp = DateTime.UtcNow,
+                DetectedBy = configuration.SensorName
             };
             return JsonConvert.SerializeObject(message); 
         }

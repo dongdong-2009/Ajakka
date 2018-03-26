@@ -30,5 +30,9 @@ namespace Ajakka.Sensor{
         public bool EnableMessaging{
             get{return configuration["enableMessaging"] == "true";}
         }
+
+        public string SensorName{
+            get {return Environment.MachineName;}
+        }
     }
 }

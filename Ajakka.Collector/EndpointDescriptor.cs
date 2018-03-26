@@ -19,5 +19,8 @@ namespace Ajakka.Collector{
 
         [DataMember]
         public string VendorName;
+
+        [DataMember]
+        public string DetectedBy;
     }
 }

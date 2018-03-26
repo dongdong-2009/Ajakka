@@ -68,7 +68,7 @@ namespace Ajakka.Collector
             }
         }
         static dynamic ParseMesage(byte[] message){
-            var prototype = new{DeviceName = "", DeviceIpAddress="",DeviceMacAddress = "",TimeStamp=DateTime.UtcNow};
+            var prototype = new{DeviceName = "", DeviceIpAddress="",DeviceMacAddress = "",TimeStamp=DateTime.UtcNow, DetectedBy=""};
             return JsonConvert.DeserializeAnonymousType(Encoding.UTF8.GetString(message),prototype);
         }
 
@@ -76,7 +76,8 @@ namespace Ajakka.Collector
             dal.StoreDhcpEndpoint(deviceInfo.DeviceMacAddress, 
             deviceInfo.DeviceIpAddress, 
             deviceInfo.DeviceName, 
-            deviceInfo.TimeStamp);
+            deviceInfo.TimeStamp,
+            deviceInfo.DetectedBy);
         }
 
         #region IDisposable Support

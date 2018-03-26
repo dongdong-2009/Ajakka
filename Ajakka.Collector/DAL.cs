@@ -12,16 +12,17 @@ namespace Ajakka.Collector{
             this.connectionString = connectionString;
         }
 
-        public void StoreDhcpEndpoint(string mac, string ip, string hostname, DateTime timestamp){
+        public void StoreDhcpEndpoint(string mac, string ip, string hostname, DateTime timestamp, string detectedBy){
             using (var connection = new MySql.Data.MySqlClient.MySqlConnection(connectionString))
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "INSERT INTO endpoint_latest(mac,ip,hostname,lastseen) VALUES(@mac, @ip, @hostname,@lastseen) ON DUPLICATE KEY UPDATE ip=@ip, hostname=@hostname, lastseen=@lastseen;";
+                command.CommandText = "INSERT INTO endpoint_latest(mac,ip,hostname,lastseen,detectedby) VALUES(@mac, @ip, @hostname,@lastseen,@detectedby) ON DUPLICATE KEY UPDATE ip=@ip, hostname=@hostname, lastseen=@lastseen, detectedby=@detectedby;";
                 command.Parameters.Add("@mac", DbType.StringFixedLength).Value=mac;
                 command.Parameters.Add("@ip", DbType.String).Value=ip;
                 command.Parameters.Add("@hostname", DbType.String).Value = hostname;
                 command.Parameters.Add("@lastseen", DbType.DateTime).Value = timestamp.ToUniversalTime();
+                command.Parameters.Add("@detectedby", DbType.String).Value = detectedBy;
                 command.ExecuteNonQuery();
                 
             }
@@ -49,7 +50,7 @@ namespace Ajakka.Collector{
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = string.Format("SELECT * FROM endpoint_latest join vendors on vendors.oui = substring(endpoint_latest.mac,1,6) order by lastseen desc LIMIT {0} OFFSET {1}",pageSize, (pageNumber * pageSize) );
+                command.CommandText = string.Format("SELECT * FROM endpoint_latest left outer join vendors on vendors.oui = substring(endpoint_latest.mac,1,6) order by lastseen desc LIMIT {0} OFFSET {1}",pageSize, (pageNumber * pageSize) );
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -66,13 +67,15 @@ namespace Ajakka.Collector{
                             timestamp.Minute,
                             timestamp.Second,
                             DateTimeKind.Utc);
-                        var vendor = record[5].ToString();
+                        var detectedBy = record[4].ToString();
+                        var vendor = record[6].ToString();
                         result.Add(new EndpointDescriptor{
                             DeviceName = hostname,
                             DeviceMacAddress = mac,
                             DeviceIpAddress = ip,
                             TimeStamp = timestampUtc,
-                            VendorName = vendor
+                            VendorName = vendor,
+                            DetectedBy = detectedBy
                         });
                     }
                 }
