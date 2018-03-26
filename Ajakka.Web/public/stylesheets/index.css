@@ -1,4 +1,6 @@
 #currentPage{visibility: hidden}
 #pageCount{text-align: center}
 .last-column {width:70px;}
-.vendor-logo{height:30px; margin-left:10px;}
+.vendor-logo{height:25px; margin-left:10px;}
+.device-mac{font-weight: bold;}
+.device-vendor-name{font-style:italic;}

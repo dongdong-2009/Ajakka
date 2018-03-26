@@ -29,6 +29,7 @@ function saveAllSettings(){
             $('#errorMessage').show();
         }
     });
+    window.localStorage.vendorLogos = value;
 }
 
 setTimeout(loadSettingsValues,100);

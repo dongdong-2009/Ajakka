@@ -1,3 +1,12 @@
+function loadPage(){
+    loadUserSettings().then(function(){
+        loadEndpoints();
+    }).catch(function(err){
+        alert('Failed to load settings from database.');
+        console.log(err);
+    });
+}
+
 function loadEndpoints(){
     var currentPage = $('#currentPage').text();
     if(!currentPage){
@@ -80,7 +89,16 @@ function fillTableWithEndpoints(endpointsResponse){
         var src = '/api/vendor/' + getVendorShortName(endpoint.VendorName);
         var timestamp = timestampUtc.local().format('YYYY/MM/DD, h:mm:ss A');
         var row = '<tr>';
-        row += '<td>'+ formatMac(endpoint.DeviceMacAddress) + '<img alt="'+endpoint.VendorName+'" src="'+ src+'" class="vendor-logo"/> </td>';
+        if(window.localStorage.vendorLogos == 1){ //pictures only
+            row += '<td>'+ formatMac(endpoint.DeviceMacAddress) + '<img alt="'+endpoint.VendorName+'" src="'+ src+'" class="vendor-logo"/> </td>';
+        }
+        else if(window.localStorage.vendorLogos == 2){ //pictures and names
+            row += '<td><span class="device-mac">'+ formatMac(endpoint.DeviceMacAddress) + '</span> <span class="device-vendor-name">'+endpoint.VendorName+'</span><img alt="'+endpoint.VendorName+'" src="'+ src+'" class="vendor-logo"/> </td>';
+        }
+        else{ //names only
+            row += '<td><span class="device-mac">'+ formatMac(endpoint.DeviceMacAddress) +'</span> <span class="device-vendor-name">'+endpoint.VendorName+'</span></td>';
+        }
+        
         row += '<td>' + endpoint.DeviceIpAddress + '</td>';
         row += '<td>' + endpoint.DeviceName + '</td>';
         row += '<td colspan="2">' + timestamp + '</td>';
@@ -91,5 +109,5 @@ function fillTableWithEndpoints(endpointsResponse){
     setTimeout(loadEndpoints, 300000);
 }
 
-setTimeout(loadEndpoints, 100);
+setTimeout(loadPage, 100);
 
