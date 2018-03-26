@@ -101,7 +101,8 @@ function fillTableWithEndpoints(endpointsResponse){
         
         row += '<td>' + endpoint.DeviceIpAddress + '</td>';
         row += '<td>' + endpoint.DeviceName + '</td>';
-        row += '<td colspan="2">' + timestamp + '</td>';
+        row += '<td>' + timestamp + '</td>';
+        row += '<td colspan="2">' + endpoint.DetectedBy + '</td>';
         row += '</tr>';
         $('#endpointListContainer').append(row);
         
