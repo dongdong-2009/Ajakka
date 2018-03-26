@@ -151,6 +151,12 @@ Start as:
 npm run start
 ~~~~
 
+Tests:
+~~~~
+npm run test_windows
+npm run test
+~~~~
+
 #### vendor images
 Vendor images are not included (copyright reasons). Add vendor logos to Ajakka.Web\images\vendor. 
 
