@@ -31,13 +31,18 @@ namespace Ajakka.DbInit
                 RunScript(connection,"endpointLatest.sql");
                 RunScript(connection,"users.sql");
                 if(RunScript(connection,"vendors.sql")){
-                    try{
-                        OuiDownloader.DownloadOuiList("oui.txt");
-                        var vendors = OuiParser.Parse("oui.txt");
-                        InsertVendors(connection, vendors);
-                    }
-                    catch(Exception ex){
-                        LogError("Error: Could not finish creating vendors table.", ex.Message);
+                    Console.WriteLine("Do you want to import vendor names? [y/n]");
+                    var key = Console.ReadKey();
+                    Console.WriteLine();
+                    if (key.KeyChar == 'y' || key.KeyChar == 'Y'){
+                        try{
+                            OuiDownloader.DownloadOuiList("oui.txt");
+                            var vendors = OuiParser.Parse("oui.txt");
+                            InsertVendors(connection, vendors);
+                        }
+                        catch(Exception ex){
+                            LogError("Error: Could not finish creating vendors table.", ex.Message);
+                        }
                     }
                 }
                 Console.WriteLine("Database setup finished.");
