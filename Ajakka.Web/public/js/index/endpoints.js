@@ -101,12 +101,18 @@ function fillTableWithEndpoints(endpointsResponse){
         
         row += '<td>' + endpoint.DeviceIpAddress + '</td>';
         row += '<td>' + endpoint.DeviceName + '</td>';
-        row += '<td>' + timestamp + '</td>';
-        row += '<td colspan="2">' + endpoint.DetectedBy + '</td>';
+
+        row += '<td class="sensor-column">' + endpoint.DetectedBy + '</td>';
+        row += '<td colspan="2">' + timestamp + '</td>';
         row += '</tr>';
         $('#endpointListContainer').append(row);
         
     });
+    if(window.localStorage.hideSensorColumn == 1){
+        $('.sensor-column').each(function(item){
+            $(this).hide();
+        });
+    }
     setTimeout(loadEndpoints, 300000);
 }
 
