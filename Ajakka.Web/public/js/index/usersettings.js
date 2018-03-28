@@ -8,7 +8,11 @@ function loadUserSettings(){
         $.get({
             url:'api/users/settings/showVendorLogos',
             success:function(result){
-                window.localStorage.vendorLogos = result.content;
+                let val = result.content;
+                if(!val){
+                    val = 0;
+                }
+                window.localStorage.vendorLogos = val;
                 resolve();
             },
             error:function(err){

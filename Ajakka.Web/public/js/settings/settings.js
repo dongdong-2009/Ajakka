@@ -5,7 +5,12 @@ function loadSettingsValues(){
         url:'api/users/settings/showVendorLogos',
         success:function(result){
             var value = result.content;
-            $('#showLogos').val(value);
+            if(value){
+                $('#showLogos').val(value);
+            }
+            else{
+                $('#showLogos').val(0);
+            }
         },
         error:function(err){
             alert('Failed to load settings from database.');

@@ -42,7 +42,7 @@ router.get('/pageCount', function (req, res) {
 
 
 router.get('/settings/showVendorLogos', function(req,res){
-	userController.getShowVendorLogos(req.session.user.id)
+	userController.getSettingsValue('showVendorLogos',req.session.user.id)
 	.then(function(result){
 		res.status(200).send({content:result});
 	})
@@ -118,7 +118,7 @@ router.put('/password/:name', function (req, res) {
 });
 
 router.put('/settings/showVendorLogos/:val', function(req,res){
-	userController.setShowVendorLogos(req.session.user.id, req.params.val)
+	userController.setSettingsValue('showVendorLogos',req.session.user.id, req.params.val)
 	.then(function(){
 		res.status(200).send({result:'ok'});
 	})
