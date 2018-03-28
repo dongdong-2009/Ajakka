@@ -469,6 +469,72 @@ describe('User', function() {
         });
     });
 
+    describe('#setSettingsValue()', function(){
+        before(function(done){
+            var connection = createConnection();
+            connection.query('delete from usersettings;', function(err, result, fields){
+                if(err){
+                    throw err;
+                }
+                connection.query('insert into usersettings values (\'private\',\'admin\',\'val\')', function(err2, result, fields){
+                    if(err2){
+                        throw err2;
+                    }
+                    connection.end();
+                    done();
+                });
+            });
+        });
+
+        it('should get an existing settings item', function(done){
+            userController.getSettingsValue('private','admin')
+            .then(function(result){
+                assert.equal(result,'val');              
+                done();      
+            })
+            .catch(function(err){done(err);});
+        });
+
+        it('should return null when settings item does not exist', function(done){
+            userController.getSettingsValue('pr1vate','admin')
+            .then(function(result){
+                assert.equal(result, null);              
+                done();      
+            })
+            .catch(function(err){done(err);});
+        });
+
+        it('should save a new setting value', function(done){
+            userController.setSettingsValue('newKey','newUser','1')
+            .then(function(){
+                userController.getSettingsValue('newKey','newUser')
+                .then(function(result){
+                    assert.equal(result,'1');              
+                    done();      
+                })
+                .catch(function(err){done(err);});
+            })
+            .catch(function(err){
+                done(err);
+            })
+        });
+
+        it('should update an existing setting value', function(done){
+            userController.setSettingsValue('private','admin','30')
+            .then(function(){
+                userController.getSettingsValue('private','admin')
+                .then(function(result){
+                    assert.equal(result,'30');              
+                    done();      
+                })
+                .catch(function(err){done(err);});
+            })
+            .catch(function(err){
+                done(err);
+            })
+        });
+    });
+
     describe('#changeUserPassword()',function(){
         before(function(done){
             var connection = createConnection();

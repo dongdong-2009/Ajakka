@@ -11,5 +11,6 @@
     <None Update="endpointLatest.sql" CopyToOutputDirectory="PreserveNewest" />
     <None Update="users.sql" CopyToOutputDirectory="PreserveNewest" />
     <None Update="vendors.sql" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="usersettings.sql" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

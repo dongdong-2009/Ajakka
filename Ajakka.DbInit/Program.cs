@@ -30,6 +30,7 @@ namespace Ajakka.DbInit
                 connection.Open();
                 RunScript(connection,"endpointLatest.sql");
                 RunScript(connection,"users.sql");
+                RunScript(connection,"usersettings.sql");
                 if(RunScript(connection,"vendors.sql")){
                     Console.WriteLine("Do you want to import vendor names? [y/n]");
                     var key = Console.ReadKey();

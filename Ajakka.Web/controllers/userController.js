@@ -162,29 +162,37 @@ function _changeUserPassword(name, oldPassword, newPassword, resolve, reject){
     });
 }
 
-function _setShowVendorLogos(id, value, resolve, reject){
-    var connection = createConnection();
-    var query = 'update users set showVendorLogos=? where id=?';
-    var q = connection.query(query, [value, id], function(err, result, fields){
+function _setSettingsValue(key, userid, value, resolve, reject){
+    var connection = createConnectionMultilineQueries();
+    var query = 'start transaction;'+
+                'delete from usersettings where settingskey=? and userid=?;'+
+                'insert into usersettings (settingskey, userid, settingsvalue) values(?,?,?);'+
+                'commit;';
+    var q = connection.query(query, [key, userid, key, userid, value], function(err, result, fields){
         if(err){
+            console.log(err);
             reject(err);
             return;
         }
         connection.end();
-        resolve(value);
+        resolve();
     });
 }
 
-function _getShowVendorLogos(id, resolve, reject){
+function _getSettingsValue(key, userId, resolve, reject){
     var connection = createConnection();
-    var query = 'select showVendorLogos from users where id=?';
-    var q = connection.query(query, [id], function(err, result, fields){
+    var query = 'select settingsvalue from usersettings where settingskey=? and userid=?';
+    var q = connection.query(query, [key, userId], function(err, result, fields){
         if(err){
             reject(err);
             return;
         }
         connection.end();
-        resolve(result[0].showVendorLogos);
+        if(result[0]){
+            resolve(result[0].settingsvalue);
+            return;
+        }
+        resolve(null);
     });
 }
 
@@ -241,15 +249,26 @@ function createConnection(){
 
 }
 
-function setShowVendorLogos(id, value){
+function createConnectionMultilineQueries(){
+    var url = config.getMySqlUrl();
+    if(url.indexOf('?') >= 0){
+        url = url + '&multipleStatements=true';
+    }
+    else{
+        url = url + '?multipleStatements=true';
+    }
+    return mysql.createConnection(url);
+}
+
+function setSettingsValue(key, userId, value){
     return new Promise(function(resolve, reject){
-        _setShowVendorLogos(id, value, resolve, reject);
+        _setSettingsValue(key,userId,value,resolve, reject);
     });
 }
 
-function getShowVendorLogos(id){
+function getSettingsValue(key, userId){
     return new Promise(function(resolve, reject){
-        _getShowVendorLogos(id, resolve, reject);
+        _getSettingsValue(key, userId, resolve, reject);
     });
 }
 
@@ -261,5 +280,5 @@ module.exports.deleteUser = deleteUser;
 module.exports.changeUserPassword = changeUserPassword;
 module.exports.findByName = findByName;
 module.exports.getPageCount = getPageCount;
-module.exports.getShowVendorLogos = getShowVendorLogos;
-module.exports.setShowVendorLogos = setShowVendorLogos;
+module.exports.setSettingsValue = setSettingsValue;
+module.exports.getSettingsValue = getSettingsValue;
