@@ -16,7 +16,29 @@ function loadSettingsValues(){
             alert('Failed to load settings from database.');
             console.log(err);
         }
-    })
+    });
+    $.get({
+        url:'api/users/settings/hideSensorColumn',
+        success:function(result){
+            var value = result.content;
+            if(value){
+                if(value == "1"){
+                    $('#showSensorNames').val('no');
+                }
+                else{
+                    $('#showSensorNames').val('yes');
+                }
+                
+            }
+            else{
+                $('#showSensorNames').val('yes');
+            }
+        },
+        error:function(err){
+            alert('Failed to load settings from database.');
+            console.log(err);
+        }
+    });
 }
 
 function saveAllSettings(){
@@ -34,7 +56,27 @@ function saveAllSettings(){
             $('#errorMessage').show();
         }
     });
+    let hideSensors = $('#showSensorNames').val();
+    if(hideSensors == 'yes'){
+        hideSensors = '0';
+    }
+    else{
+        hideSensors = '1';
+    }
+    $.ajax({
+        method:'put',
+        url:'api/users/settings/hideSensorColumn/'+hideSensors,
+        success:function(){
+            $('#successMessage').show();
+        },
+        error:function(error){
+            console.log(error);
+            $('#errorMessage').show();
+        }
+    });
+    
     window.localStorage.vendorLogos = value;
+    window.localStorage.hideSensorColumn = hideSensors;
 }
 
 setTimeout(loadSettingsValues,100);

@@ -33,6 +33,13 @@ block content
           option(value="0") Show names only
           option(value="1") Show pictures only
           option(value="2") Show names and pictures
+    .user-settings-section
+      div.user-settings-section-header Show sensor name in the list of endpoints
+      .form-group
+        label(for="showSensorNames")
+        select.form-control(id="showSensorNames")
+          option(value="yes") Yes
+          option(value="no") No
         button.btn.btn-default.save-button(onclick="saveAllSettings();") Save
     div#successMessage.alert.alert-success Settings saved
     div#errorMessage.alert.alert-danger Failed to save settings 
