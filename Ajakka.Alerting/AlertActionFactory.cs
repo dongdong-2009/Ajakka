@@ -18,7 +18,8 @@ namespace Ajakka.Alerting{
                 new ActionTypeDescriptor("Log to console", typeof(ConsoleLogAction),new[]{new ActionTypePropertyDescriptor("TimestampFormat","Timestamp format","text")}),
                 new ActionTypeDescriptor("Log to file", typeof(LogToFileAction), new[]{
                     new ActionTypePropertyDescriptor("TimestampFormat","Timestamp format","text"),
-                    new ActionTypePropertyDescriptor("FileName","File name","text", true)})
+                    new ActionTypePropertyDescriptor("FileName","File name","text", true)}),
+                new ActionTypeDescriptor("Send HTTP GET request", typeof(HttpRequestAlertAction),new[]{new ActionTypePropertyDescriptor("Url","URL","text")}),
             };
         }
     }
