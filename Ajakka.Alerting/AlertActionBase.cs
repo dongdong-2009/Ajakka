@@ -28,7 +28,7 @@ namespace Ajakka.Alerting{
 
         static Type[] GetKnownTypes()
         {
-            return new Type[] { typeof(ConsoleLogAction), typeof(LogToFileAction), typeof(HttpRequestAlertAction) };
+            return AlertActionFactory.GetAlertActionTypes();
         }
 
         protected dynamic ParseConfiguration(dynamic definition){
