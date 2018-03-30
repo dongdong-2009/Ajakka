@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+using Ajakka.Alerting.Descriptors;
 
 namespace Ajakka.Alerting{
     [DataContract]

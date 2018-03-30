@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using Ajakka.Alerting.Descriptors;
 
 namespace Ajakka.Alerting{
     

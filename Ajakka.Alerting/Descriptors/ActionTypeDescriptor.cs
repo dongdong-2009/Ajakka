@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Ajakka.Alerting{
+namespace Ajakka.Alerting.Descriptors{
     public class ActionTypeDescriptor{
         public string Name {get;set;}
         public string TypeName {get;set;}
@@ -27,30 +27,6 @@ namespace Ajakka.Alerting{
             Name = ((DisplayNameAttribute)attributes[0]).DisplayName;
             TypeName = type.FullName;
             this.properties.AddRange(properties);
-        }
-    }
-
-    [DataContract]
-    public class ActionTypePropertyDescriptor{
-        [DataMember]
-        public string Name {get;set;}
-        [DataMember]
-        public string Type {get;set;}
-        [DataMember]
-        public string DisplayName {get;set;}
-
-        [DataMember]
-        public bool IsRequired{get;set;}
-
-        public ActionTypePropertyDescriptor(){
-            
-        }
-
-        public ActionTypePropertyDescriptor(string name, string displayName, string type, bool isRequired=false){
-            Name = name;
-            DisplayName = displayName;
-            Type = type;
-            IsRequired = isRequired;
         }
     }
 }
