@@ -64,7 +64,7 @@ namespace Ajakka.Alerting.Tests
             }));
             ValidateConsoleLogActionType(alertActionTypes.First((actionType)=>{
                 return actionType.TypeName == "Ajakka.Alerting.ConsoleLogAction";
-            }));
+            })); 
         }
 
         private static void ValidateConsoleLogActionType(ActionTypeDescriptor actionType){
@@ -79,7 +79,7 @@ namespace Ajakka.Alerting.Tests
             Assert.Equal("Send HTTP GET request",actionType.Name);
             ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "Url";} ),
             "URL","text",false);
-            Assert.Equal(1,actionType.Properties.Length);
+            Assert.True(1 == actionType.Properties.Length);
         }
         private static void ValidateLogToFileActionType(ActionTypeDescriptor actionType){
             Assert.NotNull(actionType);
@@ -88,7 +88,7 @@ namespace Ajakka.Alerting.Tests
             "Timestamp format","text",false);
              ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "FileName";} ),
             "File name","text",true);
-            Assert.Equal(2,actionType.Properties.Length);
+            Assert.True(2 == actionType.Properties.Length);
         }
 
         private static void ValidateProperty(ActionTypePropertyDescriptor prop, string expectedDisplayName, string expectedType, bool expectedIsRequired){
