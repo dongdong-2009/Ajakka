@@ -72,7 +72,7 @@ namespace Ajakka.Alerting.Tests
             Assert.Equal("Log to console",actionType.Name);
             ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "TimestampFormat";} ),
             "Timestamp format","text",false);
-            Assert.Equal(1,actionType.Properties.Length);
+            Assert.True(1 == actionType.Properties.Length);
         }
         private static void ValidateHttpRequestAlertActionType(ActionTypeDescriptor actionType){
             Assert.NotNull(actionType);
