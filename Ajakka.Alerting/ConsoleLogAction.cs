@@ -12,6 +12,7 @@ namespace Ajakka.Alerting{
         }
 
         [DataMember]
+        [DisplayName("Timestamp format")]
         public string TimestampFormat {get;set;}
 
         public override object Clone()

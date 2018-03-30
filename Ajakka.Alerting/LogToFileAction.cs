@@ -12,8 +12,11 @@ namespace Ajakka.Alerting{
         }
 
         [DataMember]
+        [DisplayName("File name")]
         public string FileName{get;set;}
-         [DataMember]
+         
+        [DataMember]
+        [DisplayName("Timestamp format")]
         public string TimestampFormat {get;set;}
 
         public override object Clone()

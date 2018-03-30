@@ -8,6 +8,7 @@ namespace Ajakka.Alerting{
     public class HttpRequestAlertAction : AlertActionBase
     {
         [DataMember]
+        [DisplayName("URL")]
         
         public string Url {get;set;}
 
