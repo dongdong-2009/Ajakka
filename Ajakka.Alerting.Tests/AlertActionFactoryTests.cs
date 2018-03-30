@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using Ajakka.Alerting;
 using System.Linq;
+using Ajakka.Alerting.Descriptors;
 
 namespace Ajakka.Alerting.Tests
 {
