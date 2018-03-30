@@ -10,7 +10,8 @@ namespace Ajakka.Alerting{
     {
         [DataMember]
         [DisplayName("URL")]
-        
+        [PropertyType("text")]
+        [IsRequired(true)]
         public string Url {get;set;}
 
         public HttpRequestAlertAction(){
