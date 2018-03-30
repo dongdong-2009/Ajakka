@@ -55,7 +55,7 @@ namespace Ajakka.Alerting.Tests
 
         [Fact]
         public void ShouldReturnActionTypes(){
-            var alertActionTypes = AlertActionFactory.GetAlertActionTypes();
+            var alertActionTypes = AlertActionFactory.GetAlertActionTypeDescriptors();
             ValidateLogToFileActionType(alertActionTypes.First((actionType)=>{
                 return actionType.TypeName == "Ajakka.Alerting.LogToFileAction";
             }));

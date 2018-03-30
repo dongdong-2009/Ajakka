@@ -113,7 +113,7 @@ namespace Ajakka.Alerting{
         }
 
         protected virtual CommandProcessorResponse<ActionTypeDescriptor[]> GetActionTypes(){
-            return WrapResponse(AlertActionFactory.GetAlertActionTypes());
+            return WrapResponse(AlertActionFactory.GetAlertActionTypeDescriptors());
         }
 
         protected virtual CommandProcessorResponse<AlertActionBase[]> GetActions(int pageNumber){
