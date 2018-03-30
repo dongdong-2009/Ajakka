@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Ajakka.Alerting{
     public class AlertActionFactory{
@@ -14,7 +17,11 @@ namespace Ajakka.Alerting{
         }
 
         public static Type[] GetAlertActionTypes(){
-            return new Type[] { typeof(ConsoleLogAction), typeof(LogToFileAction), typeof(HttpRequestAlertAction) };
+            var types = Assembly.GetExecutingAssembly().GetExportedTypes();
+            return(from Type t in types where
+             t.BaseType != null &&
+             t.BaseType.FullName == "Ajakka.Alerting.AlertActionBase" 
+             select t).ToArray();
         }
 
         public static ActionTypeDescriptor[] GetAlertActionTypeDescriptors(){
