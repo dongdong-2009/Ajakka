@@ -26,11 +26,11 @@ namespace Ajakka.Alerting{
 
         public static ActionTypeDescriptor[] GetAlertActionTypeDescriptors(){
             return new ActionTypeDescriptor[]{
-                new ActionTypeDescriptor("Log to console", typeof(ConsoleLogAction),new[]{new ActionTypePropertyDescriptor("TimestampFormat","Timestamp format","text")}),
-                new ActionTypeDescriptor("Log to file", typeof(LogToFileAction), new[]{
+                new ActionTypeDescriptor(typeof(ConsoleLogAction),new[]{new ActionTypePropertyDescriptor("TimestampFormat","Timestamp format","text")}),
+                new ActionTypeDescriptor(typeof(LogToFileAction), new[]{
                     new ActionTypePropertyDescriptor("TimestampFormat","Timestamp format","text"),
                     new ActionTypePropertyDescriptor("FileName","File name","text", true)}),
-                new ActionTypeDescriptor("Send HTTP GET request", typeof(HttpRequestAlertAction),new[]{new ActionTypePropertyDescriptor("Url","URL","text")}),
+                new ActionTypeDescriptor(typeof(HttpRequestAlertAction),new[]{new ActionTypePropertyDescriptor("Url","URL","text")}),
             };
         }
     }

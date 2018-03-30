@@ -18,6 +18,16 @@ namespace Ajakka.Alerting{
             TypeName = type.FullName;
             this.properties.AddRange(properties);
         }
+
+        public ActionTypeDescriptor(Type type, ActionTypePropertyDescriptor[] properties){
+            var attributes = type.GetCustomAttributes(typeof(DisplayNameAttribute), false);
+            if(attributes.Length == 0){
+                throw new InvalidOperationException("The type is missing DisplayName attribute");
+            }
+            Name = ((DisplayNameAttribute)attributes[0]).DisplayName;
+            TypeName = type.FullName;
+            this.properties.AddRange(properties);
+        }
     }
 
     [DataContract]

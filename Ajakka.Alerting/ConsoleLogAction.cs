@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 namespace Ajakka.Alerting{
     
     [DataContract]
+    [DisplayName("Log to console")]
     public sealed class ConsoleLogAction : AlertActionBase
     {
         public ConsoleLogAction(){

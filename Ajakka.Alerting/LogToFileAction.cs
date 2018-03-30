@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 
 namespace Ajakka.Alerting{
     [DataContract]
+    [DisplayName("Log to file")]
     public class LogToFileAction : AlertActionBase
     {
         public LogToFileAction(){

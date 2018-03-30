@@ -4,9 +4,11 @@ using System.Runtime.Serialization;
 
 namespace Ajakka.Alerting{
     [DataContract]
+    [DisplayName("Send HTTP GET request")]
     public class HttpRequestAlertAction : AlertActionBase
     {
         [DataMember]
+        
         public string Url {get;set;}
 
         public HttpRequestAlertAction(){
