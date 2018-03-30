@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using Ajakka.Alerting;
+using System.Linq;
 
 namespace Ajakka.Alerting.Tests
 {
@@ -50,6 +51,50 @@ namespace Ajakka.Alerting.Tests
             var added = store.AddAction(alertAction);
             var actual = store.GetAction(added.Id);
             Assert.Equal("alert.log",((LogToFileAction)actual).FileName);
+        }
+
+        [Fact]
+        public void ShouldReturnActionTypes(){
+            var alertActionTypes = AlertActionFactory.GetAlertActionTypes();
+            ValidateLogToFileActionType(alertActionTypes.First((actionType)=>{
+                return actionType.TypeName == "Ajakka.Alerting.LogToFileAction";
+            }));
+            ValidateHttpRequestAlertActionType(alertActionTypes.First((actionType)=>{
+                return actionType.TypeName == "Ajakka.Alerting.HttpRequestAlertAction";
+            }));
+            ValidateConsoleLogActionType(alertActionTypes.First((actionType)=>{
+                return actionType.TypeName == "Ajakka.Alerting.ConsoleLogAction";
+            }));
+        }
+
+        private static void ValidateConsoleLogActionType(ActionTypeDescriptor actionType){
+            Assert.NotNull(actionType);
+            Assert.Equal("Log to console",actionType.Name);
+            ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "TimestampFormat";} ),
+            "Timestamp format","text",false);
+            Assert.Equal(1,actionType.Properties.Length);
+        }
+        private static void ValidateHttpRequestAlertActionType(ActionTypeDescriptor actionType){
+            Assert.NotNull(actionType);
+            Assert.Equal("Send HTTP GET request",actionType.Name);
+            ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "Url";} ),
+            "URL","text",false);
+            Assert.Equal(1,actionType.Properties.Length);
+        }
+        private static void ValidateLogToFileActionType(ActionTypeDescriptor actionType){
+            Assert.NotNull(actionType);
+            Assert.Equal("Log to file",actionType.Name);
+            ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "TimestampFormat";} ),
+            "Timestamp format","text",false);
+             ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "FileName";} ),
+            "File name","text",true);
+            Assert.Equal(2,actionType.Properties.Length);
+        }
+
+        private static void ValidateProperty(ActionTypePropertyDescriptor prop, string expectedDisplayName, string expectedType, bool expectedIsRequired){
+            Assert.Equal(expectedDisplayName, prop.DisplayName);
+            Assert.Equal(expectedIsRequired, prop.IsRequired);
+            Assert.Equal(expectedType, prop.Type);
         }
     }
 }
