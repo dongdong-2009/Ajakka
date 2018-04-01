@@ -26,13 +26,12 @@ namespace Ajakka.Alerting{
         }
 
         public static ActionTypeDescriptor[] GetAlertActionTypeDescriptors(){
-            return new ActionTypeDescriptor[]{
-                new ActionTypeDescriptor(typeof(ConsoleLogAction),new[]{new ActionTypePropertyDescriptor("TimestampFormat","Timestamp format","text")}),
-                new ActionTypeDescriptor(typeof(LogToFileAction), new[]{
-                    new ActionTypePropertyDescriptor("TimestampFormat","Timestamp format","text"),
-                    new ActionTypePropertyDescriptor("FileName","File name","text", true)}),
-                new ActionTypeDescriptor(typeof(HttpRequestAlertAction),new[]{new ActionTypePropertyDescriptor("Url","URL","text")}),
-            };
+            var types = GetAlertActionTypes();
+            var list = new List<ActionTypeDescriptor>();
+            foreach (var t in types){
+                list.Add(new ActionTypeDescriptor(t));
+            }
+            return list.ToArray();
         }
     }
 }

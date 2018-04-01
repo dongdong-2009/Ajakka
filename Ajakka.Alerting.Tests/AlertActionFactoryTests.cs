@@ -79,7 +79,7 @@ namespace Ajakka.Alerting.Tests
             Assert.NotNull(actionType);
             Assert.Equal("Send HTTP GET request",actionType.Name);
             ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "Url";} ),
-            "URL","text",false);
+            "URL","text",true);
             Assert.True(1 == actionType.Properties.Length);
         }
         private static void ValidateLogToFileActionType(ActionTypeDescriptor actionType){
