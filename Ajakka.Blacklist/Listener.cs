@@ -15,7 +15,7 @@ namespace Ajakka.Blacklist
         IConnection connection;
         IModel channel;
 
-        RpcClient rpcClient;
+        AlertEventClient alertEventClient;
 
         private Listener(){
 
@@ -31,7 +31,7 @@ namespace Ajakka.Blacklist
                 throw new ArgumentNullException("blacklistConfiguration");
             }
             this.blacklistConfiguration = blacklistConfiguration;
-            rpcClient = new RpcClient(blacklistConfiguration);
+            alertEventClient = new AlertEventClient(blacklistConfiguration);
         }
 
         public void Listen(){
@@ -84,9 +84,7 @@ namespace Ajakka.Blacklist
         private void SendAlert(dynamic device, Rule match){
             Console.WriteLine("Blacklist rule match: " + match.Name);
             Console.WriteLine("device: " + device);
-            foreach(var alertAction in match.AlertActionIds){
-                rpcClient.SendMessage("{\"FunctionName\":\"Execute\",\"ActionId\":"+alertAction+",\"AlertMessage\":\"Device detected: "+ device.DeviceMacAddress+" " +device.DeviceIpAddress +" " +device.DeviceName+"\"}");
-            }
+            alertEventClient.SendMessage("{\"MessageType\":\"BlacklistMatch\",\"RuleId\":\""+match.Id+"\",\"Mac\":\""+ device.DeviceMacAddress+"\",\"Ip\":\""+device.DeviceIpAddress +"\",\"Name\":\""+device.DeviceName+"\"}");
         }
 
         private void ProcessPageWithRules(Rule[] rules, dynamic deviceDescriptor){
@@ -115,7 +113,7 @@ namespace Ajakka.Blacklist
                 {
                     channel.Dispose();
                     connection.Dispose();
-                    rpcClient.Dispose();
+                    alertEventClient.Dispose();
                 }
 
                 disposedValue = true;

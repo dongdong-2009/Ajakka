@@ -80,21 +80,4 @@ router.put('/:ruleId', function (req, res) {
     messaging.SendMessageToQueue(res, '{"FunctionName": "UpdateRule", "RuleName": "'+name+'", "RulePattern":"'+pattern+'","ActionId":'+action+',"RuleId":"'+ruleId+'"}', configuration.blacklistRpcQueue);
 });
 
-//links action id to rule
-router.put('/linkaction/:ruleId/:actionId', function (req, res) {
-    var ruleId = req.params.ruleId;
-    var actionId = req.params.actionId;
-
-    if(!ruleId){
-        res.status(500).send( {Message:"ruleId cannot be empty"});
-        return;
-    }
-    if(!actionId){
-        res.status(500).send( {Message:"actionId cannot be empty"});
-        return;
-    }
-
-    messaging.SendMessageToQueue(res, '{"FunctionName":"LinkAction","RuleId":"'+ruleId+'","ActionId":'+actionId+'}', configuration.blacklistRpcQueue);
-});
-
 module.exports = router;

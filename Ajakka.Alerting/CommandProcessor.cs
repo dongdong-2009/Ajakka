@@ -84,11 +84,13 @@ namespace Ajakka.Alerting{
         }
 
         private dynamic ParseRequest(string message){
-            var definition = new {FunctionName = "", ActionId = 0, PageNumber = 0, AlertMessage= "", ActionName="", ActionConfiguration="",ActionType=""};
+            var definition = new {FunctionName = "", ActionId = 0, PageNumber = 0, AlertMessage= "", ActionName="", ActionConfiguration="",ActionType="", RuleId = Guid.Empty};
             return JsonConvert.DeserializeAnonymousType(message, definition);
         }
 
         private string ProcessRequest(dynamic request){
+            Console.WriteLine(request.FunctionName);
+            Console.WriteLine(request.ToString());
             switch(request.FunctionName){
                 case "GetAction":
                     return SerializeResponse<CommandProcessorResponse<AlertActionBase>>(GetAction(request.ActionId));
@@ -102,9 +104,22 @@ namespace Ajakka.Alerting{
                     return SerializeResponse<CommandProcessorResponse<int>>(GetPageCount());
                 case "GetActionTypes":
                     return SerializeResponse<CommandProcessorResponse<ActionTypeDescriptor[]>>(GetActionTypes());
+                case "LinkRuleToAction":
+                    return SerializeResponse<CommandProcessorResponse<int>>(LinkRuleToAction(request.ActionId, request.RuleId));
+                case "GetLinkedActions":
+                    return SerializeResponse<CommandProcessorResponse<AlertActionBase[]>>(GetLinkedActions(request.RuleId));
                 default:
                     throw new InvalidOperationException("Function name not found: " +request.FunctionName);
             }
+        }
+
+        protected virtual CommandProcessorResponse<AlertActionBase[]> GetLinkedActions(Guid ruleId){
+            return WrapResponse(dal.GetLinkedActions(ruleId));
+        }
+        protected virtual CommandProcessorResponse<int> LinkRuleToAction(dynamic actionId, dynamic ruleId)
+        {
+            dal.LinkRuleToAction(ruleId, actionId);
+            return WrapResponse(0);
         }
 
         protected virtual CommandProcessorResponse<int> UpdateAction(int actionId, string name, string configuration, string actionType){

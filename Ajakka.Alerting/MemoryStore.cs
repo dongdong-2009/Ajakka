@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Json;
@@ -9,6 +10,7 @@ namespace Ajakka.Alerting{
         const int pageSize = 10;
 
         readonly Dictionary<int, AlertActionBase> alertActions = new Dictionary<int, AlertActionBase>();
+        readonly Dictionary<Guid, List<int>> ruleToActionMap = new Dictionary<Guid, List<int>>();
 
         int GetIdAndIncrement(){
             return lastId++;
@@ -70,28 +72,54 @@ namespace Ajakka.Alerting{
 
         public void Load(string fileName)
         {
-            var serializer = new DataContractJsonSerializer(typeof(List<AlertActionBase>));
+            var serializer = new DataContractJsonSerializer(typeof(MemoryStoreContainer));
             using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read)){
-                List<AlertActionBase> loaded = (List<AlertActionBase>)serializer.ReadObject(stream);
+                MemoryStoreContainer loaded = (MemoryStoreContainer)serializer.ReadObject(stream);
                 alertActions.Clear();
-                foreach(var l in loaded){
-                    alertActions.Add(l.Id, l);
-                    if(lastId <= l.Id){
-                        lastId = l.Id+1;
-                    }
+                foreach (var item in loaded.AlertActions){
+                    alertActions.Add(item.Key, item.Value);
                 }
+                ruleToActionMap.Clear();
+                foreach(var item in loaded.RuleToActionMap){
+                    ruleToActionMap.Add(item.Key, item.Value);
+                }
+                lastId = loaded.LastId;
             }
         }
 
         public void Save(string fileName)
         {
-            var serializer = new DataContractJsonSerializer(typeof(List<AlertActionBase>));
+            var serializer = new DataContractJsonSerializer(typeof(MemoryStoreContainer));
             using(var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write)){
-                var list = new List<AlertActionBase>();
-                list.AddRange(alertActions.Values);
-                serializer.WriteObject(stream, list);  
-                    
+                var container = new MemoryStoreContainer();
+                container.AlertActions = this.alertActions;
+                container.RuleToActionMap = this.ruleToActionMap;
+                container.LastId = this.lastId;
+                serializer.WriteObject(stream, container);  
             }
+        }
+
+        public void LinkRuleToAction(Guid ruleId, int id)
+        {
+            if(!ruleToActionMap.ContainsKey(ruleId)){
+                ruleToActionMap.Add(ruleId, new List<int>());
+            }
+            if(!ruleToActionMap[ruleId].Contains(id)){
+                ruleToActionMap[ruleId].Add(id);
+            }
+        }
+
+        public AlertActionBase[] GetLinkedActions(Guid ruleId)
+        {
+            List<int> list;
+            if(ruleToActionMap.TryGetValue(ruleId, out list)){
+                var actions = new AlertActionBase[list.Count];
+                for(int i = 0; i < list.Count; i ++){
+                    actions[i] = GetAction(list[i]);
+                }
+                return actions;
+            }
+            return new AlertActionBase[0];
         }
     }
 }

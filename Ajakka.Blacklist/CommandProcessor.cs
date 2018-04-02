@@ -84,7 +84,7 @@ namespace Ajakka.Blacklist{
 
         private dynamic ParseRequest(string message){
             try{
-                var definition = new {FunctionName = "", PageNumber = 0, PageSize = 0, RuleId = Guid.Empty, RuleName = "", RulePattern = "", ActionId = 0};
+                var definition = new {FunctionName = "", PageNumber = 0, PageSize = 0, RuleId = Guid.Empty, RuleName = "", RulePattern = ""};
                 return JsonConvert.DeserializeAnonymousType(message, definition);
             }
             catch(Exception ex){
@@ -102,14 +102,12 @@ namespace Ajakka.Blacklist{
                     return SerializeResponse<CommandProcessorResponse<Rule>>(GetRule(request.RuleId));
                 case "AddRule":
                     return SerializeResponse<CommandProcessorResponse<Rule>>(AddRule(request.RuleName, request.RulePattern));
-                case "LinkAction":
-                    return SerializeResponse<CommandProcessorResponse<Rule>>(LinkAction(request.RuleId, request.ActionId));
                 case "GetPageCount":
                     return SerializeResponse<CommandProcessorResponse<int>>(GetPageCount());
                 case "DeleteRule":
                     return SerializeResponse<CommandProcessorResponse<int>>(DeleteRule(request.RuleId));
                 case "UpdateRule":
-                    return SerializeResponse<CommandProcessorResponse<Rule>>(UpdateRule(request.RuleId, request.RuleName, request.RulePattern, request.ActionId));
+                    return SerializeResponse<CommandProcessorResponse<Rule>>(UpdateRule(request.RuleId, request.RuleName, request.RulePattern));
                 default:
                     throw new InvalidOperationException("Function name not found: " +request.FunctionName);
             }
@@ -117,22 +115,18 @@ namespace Ajakka.Blacklist{
 
         protected virtual CommandProcessorResponse<int> DeleteRule(Guid ruleId){
             dal.DeleteRule(ruleId);
+            using(var client = new AlertEventClient(configuration)){
+                client.SendMessage("{\"MessageType\":\"RuleDeleted\",\"RuleId\":\""+ruleId+"\"}");
+            }
             return WrapResponse(1);
         }
 
-        protected virtual CommandProcessorResponse<Rule> UpdateRule(Guid ruleId, string name, string pattern, int actionId){
+        protected virtual CommandProcessorResponse<Rule> UpdateRule(Guid ruleId, string name, string pattern){
             var rule = new Rule(){
                 Name = name,
                 Pattern = pattern
             };
-            rule.AlertActionIds.Add(actionId);
             return WrapResponse(dal.UpdateRule(ruleId, rule));
-        }
-
-        protected virtual CommandProcessorResponse<Rule> LinkAction(Guid ruleId, int actionId){
-            var rule = dal.GetRule(ruleId);
-            rule.AlertActionIds.Add(actionId);
-            return WrapResponse(dal.UpdateRule(rule.Id, rule));
         }
 
         protected virtual CommandProcessorResponse<Rule[]> GetRules(int PageNumber){

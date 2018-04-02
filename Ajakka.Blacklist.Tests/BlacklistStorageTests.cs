@@ -9,7 +9,7 @@ namespace Ajakka.Blacklist.Tests{
             var blacklist = BlacklistFactory.CreateBlacklist();
             List<Rule> rules = new List<Rule>();
             for(int i =0; i < 100; i++){
-                var rule = new Rule("r" + i, i.ToString(),new int[]{i});
+                var rule = new Rule("r" + i, i.ToString());
                 blacklist.AddRule(rule);
             }
             
@@ -35,7 +35,6 @@ namespace Ajakka.Blacklist.Tests{
             Assert.Equal(expected.Id, actual.Id);
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.Pattern, actual.Pattern);
-            Assert.Equal(expected.AlertActionIds, actual.AlertActionIds);
         }
     }
 }

@@ -54,23 +54,34 @@ namespace Ajakka.Alerting{
         }
 
         void ProcessRequest(dynamic request){
-            switch(request.FunctionName){
-                case "Execute":
-                    Execute(request.ActionId, request.AlertMessage);
+            switch(request.MessageType){
+                case "BlacklistMatch":
+                    Execute(request.RuleId, request.Mac, request.Ip, request.Name);
+                    break;
+                case "RuleDeleted":
+                    OnRuleDeleted(request.RuleId);
                 break;
                 default:
                     throw new InvalidOperationException("Command does not exist: " + request.FunctionName);
             }
         }
 
-        protected virtual void Execute(int actionId, string alertMessage){
-            Console.WriteLine("Executing action " + actionId);
-            var action = dal.GetAction(actionId);
-            action.Execute(alertMessage);
+        protected virtual void OnRuleDeleted(dynamic ruleId)
+        {
+            foreach(var action in dal.GetLinkedActions(ruleId)){
+                dal.DeleteAction(action.Id);
+            }
+        }
+
+        protected virtual void Execute(Guid ruleId, string mac, string ip, string name){
+            var linkedActions = dal.GetLinkedActions(ruleId);
+            foreach(var action in linkedActions){
+                action.Execute("Blacklist match: " + mac + "/" + ip + "/" + name);
+            }
         }
         
         private dynamic ParseRequest(string message){
-            var definition = new {FunctionName = "", ActionId = 0, AlertMessage= ""};
+            var definition = new {MessageType = "", RuleId = Guid.Empty, Mac = "", Ip = "", Name = ""};
             return JsonConvert.DeserializeAnonymousType(message, definition);
         }
 

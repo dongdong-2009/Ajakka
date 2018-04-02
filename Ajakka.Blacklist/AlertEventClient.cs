@@ -5,13 +5,13 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
 namespace Ajakka.Blacklist{
-    class RpcClient:IDisposable{
+    class AlertEventClient:IDisposable{
         IBlacklistConfiguration configuration;
         IConnection connection;
         IModel channel;
         IBasicProperties properties;
 
-        public RpcClient(IBlacklistConfiguration config)
+        public AlertEventClient(IBlacklistConfiguration config)
         {
             configuration = config;
             var factory = new ConnectionFactory() { HostName = configuration.MessageQueueHost };

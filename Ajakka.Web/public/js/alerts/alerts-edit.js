@@ -3,8 +3,14 @@ function editRule(ruleId){
         return item.Id == ruleId;
     });
     $.get({
-        url:'/api/alerts/'+rule.AlertActionIds[0],
+        url:'/api/alerts/linkedActions/'+ruleId,
         success:function(result){
+            if(result.Content.length == 0)
+            {
+                console.log('no linked actions found');
+                alert('No linked actions found.');
+                return;
+            }
             showEditDialog(rule, result.Content);
         },
         error:function(error){
@@ -14,15 +20,17 @@ function editRule(ruleId){
     });
 }
 
-function showEditDialog(rule, linkedAction){
+function showEditDialog(rule, linkedActions){
+
     currentlyEditedRule = rule;
+    currentlyEditedAction = linkedActions[0];
     addNewDialogMode = 'edit';
     $('#addNewRule').modal('show');
     $('#editRuleName').val(rule.Name);
     $('#editRulePattern').val(rule.Pattern);
-    $('#actionType').val(linkedAction.TypeName);
+    $('#actionType').val(linkedActions[0].TypeName);
     onActionTypeValueChanged();
-    fillDynamicallyGeneratedFields(linkedAction);
+    fillDynamicallyGeneratedFields(linkedActions[0]);
     clearValidationStyles();
 }
 
@@ -42,7 +50,7 @@ function saveChangesToRule(){
   
     let selectedActionType = $('#actionType').val();
     var actionToUpdate = getActionToCreate(selectedActionType);
-    actionToUpdate.actionId = currentlyEditedRule.AlertActionIds[0];
+    actionToUpdate.actionId = currentlyEditedAction.Id;
 
     var updateActionRequest = new Promise(function(resolve, reject){
         $.ajax({
@@ -59,7 +67,7 @@ function saveChangesToRule(){
         $.ajax({
             url: '/api/blacklist/'+currentlyEditedRule.Id,
             method: 'put',
-            data:{name:name, pattern:pattern, actionId: currentlyEditedRule.AlertActionIds[0]},
+            data:{name:name, pattern:pattern},
             dataType:'json',
             success: resolve,
             error:reject
@@ -82,3 +90,4 @@ function saveChangesToRule(){
 }
 
 var currentlyEditedRule = null;
+var currentlyEditedAction = null;

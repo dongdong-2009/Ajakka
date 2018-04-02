@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Ajakka.Alerting.Tests{
@@ -54,6 +56,37 @@ namespace Ajakka.Alerting.Tests{
                 loadedActions.AddRange(actionStore2.GetActions(i));
             }
             Assert.True(loadedActions.Count == 100);
+        }
+
+        [Fact]
+        void ShouldSaveAndLoadRuleLinks(){
+            var store = ActionStoreFactory.GetActionStore();
+            var ruleId = Guid.NewGuid();
+            var ruleId2 = Guid.NewGuid();
+            var expected1 = (ConsoleLogAction)AlertActionFactory.Create("log to console","Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"G\"}");
+            var returned1 = store.AddAction(expected1);
+            var expected2 = (LogToFileAction)AlertActionFactory.Create("log to console","Ajakka.Alerting.LogToFileAction","{FileName:\"log.log\"}");
+            var returned2 = store.AddAction(expected1);
+            var expected3 = (HttpRequestAlertAction)AlertActionFactory.Create("send http request","Ajakka.Alerting.HttpRequestAlertAction","{Url:\"http://google.com\"}");
+            var returned3 = store.AddAction(expected3);
+
+            store.LinkRuleToAction(ruleId,returned1.Id);
+            store.LinkRuleToAction(ruleId,returned2.Id);
+            store.LinkRuleToAction(ruleId2, returned3.Id);
+            ((IAlertingStorage)store).Save("ShouldSaveAndLoadRuleLinks");
+            var store2 = ActionStoreFactory.GetActionStore();
+            ((IAlertingStorage)store2).Load("ShouldSaveAndLoadRuleLinks");
+        
+            var actions = store2.GetLinkedActions(ruleId);
+            Assert.True(actions.Length == 2);
+            var action1 = actions.First((a)=>{return a.Id == returned1.Id;});
+            AssertActionsEqual(returned1, action1);
+            var action2 = actions.First((a)=>{return a.Id == returned2.Id;});
+            AssertActionsEqual(returned2, action2);
+
+            var action3 = store2.GetLinkedActions(ruleId2).First((a)=>{return a.Id == returned3.Id;});
+            AssertActionsEqual(returned3, action3);
+            
         }
 
         void AssertActionsEqual(AlertActionBase expected, AlertActionBase actual){

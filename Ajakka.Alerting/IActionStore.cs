@@ -1,3 +1,5 @@
+using System;
+
 namespace Ajakka.Alerting{
     public interface IActionStore{
         AlertActionBase[] GetActions(int pageNumber);
@@ -6,5 +8,7 @@ namespace Ajakka.Alerting{
         void UpdateAction(int actionId, AlertActionBase update);
         AlertActionBase GetAction(int actionId);
         int GetPageCount();
+        void LinkRuleToAction(Guid ruleId, int id);
+        AlertActionBase[] GetLinkedActions(Guid ruleId);
     }
 }

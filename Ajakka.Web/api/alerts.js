@@ -32,18 +32,13 @@ router.get('/:id', function (req, res) {
     
 });
 
-router.post('/exec/:id', function (req, res) {
-    var id = req.params.id;
-    if(!id){
-        res.status(500).send( {Message:"No id specified"});
+router.get('/linkedActions/:ruleId', function(req,res){
+    var ruleId = req.params.ruleId;
+    if(!ruleId){
+        res.status(500).send({Message:"No ruleId specified."});
         return;
     }
-    var message = req.body.alertMessage;
-    if(!message){
-        message = '';
-    }
-    messaging.SendMessageToQueue(res, '{"FunctionName": "Execute","ActionId":'+id+',"AlertMessage":"'+message+'"}', configuration.alertingRpcQueue);
-    
+    messaging.SendMessageToQueue(res, '{"FunctionName":"GetLinkedActions","RuleId":"'+ruleId+'"}', configuration.alertingRpcQueue);
 });
 
 //add action: name, configuration, type
@@ -92,5 +87,22 @@ router.put('/', function (req, res) {
     
 });
 
+
+//links action id to rule
+router.put('/linkaction/:ruleId/:actionId', function (req, res) {
+    var ruleId = req.params.ruleId;
+    var actionId = req.params.actionId;
+
+    if(!ruleId){
+        res.status(500).send( {Message:"ruleId cannot be empty"});
+        return;
+    }
+    if(!actionId){
+        res.status(500).send( {Message:"actionId cannot be empty"});
+        return;
+    }
+
+    messaging.SendMessageToQueue(res, '{"FunctionName":"LinkRuleToAction","RuleId":"'+ruleId+'","ActionId":'+actionId+'}', configuration.alertingRpcQueue);
+});
 
 module.exports = router;

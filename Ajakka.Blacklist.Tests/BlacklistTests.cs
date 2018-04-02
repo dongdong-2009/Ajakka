@@ -15,7 +15,6 @@ namespace Ajakka.Blacklist.Tests
                 Name = "rule 1",
                 Pattern = "123456",
             };
-            expected.AlertActionIds.AddRange(new[]{1,2,3,4,5});
             var returnedRule = blacklist.AddRule(expected);
 
             var actual = blacklist.GetRule(returnedRule.Id);
@@ -33,7 +32,6 @@ namespace Ajakka.Blacklist.Tests
                 Pattern = "123456",
                 Id = Guid.NewGuid(),
             };
-            expected1.AlertActionIds.AddRange(new[]{1,2,3,4,5});
             var expected2 = (Rule)expected1.Clone();
             Assert.Equal(expected1.Id, expected2.Id);
 
@@ -154,7 +152,6 @@ namespace Ajakka.Blacklist.Tests
                 Name = "rule 1",
                 Pattern = "123456",
             };
-            one.AlertActionIds.AddRange(new[]{1,2,3,4,5});
             blacklist.AddRule(one);
             Assert.Throws<InvalidOperationException>(()=>{blacklist.GetRule(Guid.NewGuid());});
         }
@@ -166,7 +163,6 @@ namespace Ajakka.Blacklist.Tests
                 Name = "rule 1",
                 Pattern = "123456",
             };
-            one.AlertActionIds.AddRange(new[]{1,2,3,4,5});
             blacklist.AddRule(one);
             Assert.Throws<InvalidOperationException>(()=>{blacklist.UpdateRule(Guid.NewGuid(),new Rule(){Name = "123"});});
         }
@@ -178,7 +174,6 @@ namespace Ajakka.Blacklist.Tests
                 Name = "rule 1",
                 Pattern = "123456",
             };
-            one.AlertActionIds.AddRange(new[]{1,2,3,4,5});
             blacklist.AddRule(one);
             Assert.Throws<ArgumentException>(()=>{blacklist.UpdateRule(Guid.NewGuid(),new Rule(){Name = ""});});
         }
@@ -190,14 +185,12 @@ namespace Ajakka.Blacklist.Tests
                 Name = "rule 1",
                 Pattern = "123456",
             };
-            one.AlertActionIds.AddRange(new[]{1,2,3,4,5});
             var oneStored = blacklist.AddRule(one);
 
             var expected = new Rule(){
                 Name = "update",
                 Pattern = "654321",
             };
-            expected.AlertActionIds.AddRange(new[]{1,2,3});
             var updated = blacklist.UpdateRule(oneStored.Id, expected);
             var actual = blacklist.GetRule(oneStored.Id);
             AssertRulesEqual(expected,actual, true);
@@ -239,7 +232,6 @@ namespace Ajakka.Blacklist.Tests
             }
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.Pattern, actual.Pattern);
-            Assert.Equal(expected.AlertActionIds, actual.AlertActionIds);
         }
     }
 }

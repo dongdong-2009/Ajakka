@@ -101,26 +101,29 @@ function fillTableWithRules(rules){
     rules.Content.forEach(function(rule){
         i++;
         allRules.push(rule);
-        var alertingElementId = 'alertDescription'+i;
-        if(rule.AlertActionIds.length > 0){
-            $.get({
-                url:'/api/alerts/'+rule.AlertActionIds[0],
-                success:function(result){
-                    $('#'+alertingElementId).text(result.Content.Name);
-                },
-                error:function(err){console.log(err);}
-            });
-        }
-        var row = '<tr>';
-        row += '<td>' + rule.Name + '</td>';
-        row += '<td>' + rule.Pattern + '</td>';
-        row += '<td id="'+alertingElementId+'"></td>';
-        row += '<td style="text-align:right"> <button class="btn btn-secondary" onclick="editRule(\''+rule.Id+'\')"><span data-toggle="tooltip" title="Edit"><i class="fas fa-edit"/><span></button> <button class="btn btn-secondary" href="#" onclick="deleteRule(\''+rule.Id+'\',\''+rule.Name+'\')"><span data-toggle="tooltip" title="Delete Rule"><i class="fas fa-trash-alt"/> </span></a></td>';
-        row += '</tr>';
-        $('#ruleListContainer').append(row);
+       
+        $.get({
+            url:'/api/alerts/linkedActions/'+rule.Id,
+            async:false,
+            success:function(result){
+                let alertActionName = '';
+                if(result.Content.length > 0){
+                    alertActionName = result.Content[0].Name;
+                }
+                        
+                var row = '<tr>';
+                row += '<td>' + rule.Name + '</td>';
+                row += '<td>' + rule.Pattern + '</td>';
+                row += '<td>'+alertActionName+'</td>';
+                row += '<td style="text-align:right"> <button class="btn btn-secondary" onclick="editRule(\''+rule.Id+'\')"><span data-toggle="tooltip" title="Edit"><i class="fas fa-edit"/><span></button> <button class="btn btn-secondary" href="#" onclick="deleteRule(\''+rule.Id+'\',\''+rule.Name+'\')"><span data-toggle="tooltip" title="Delete Rule"><i class="fas fa-trash-alt"/> </span></a></td>';
+                row += '</tr>';
+                $('#ruleListContainer').append(row);
+            },
+            error:function(err){console.log(err);}
+        });
         
     });
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
 }
 
 function deleteRule(id){
@@ -239,7 +242,7 @@ function linkActionP(blacklistRuleId, linkActionId){
 function linkAction(blacklistRuleId, linkActionId, resolve, reject){
     $.ajax({
         method:'put',
-        url: '/api/blacklist/linkaction/'+blacklistRuleId +'/'+linkActionId,
+        url: '/api/alerts/linkaction/'+blacklistRuleId +'/'+linkActionId,
         success:resolve,
         error:reject
     });

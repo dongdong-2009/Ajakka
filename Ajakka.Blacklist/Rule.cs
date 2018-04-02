@@ -15,17 +15,14 @@ namespace Ajakka.Blacklist{
         public string Name {get;set;}
         [DataMember]
         public string Pattern {get;set;}
-        [DataMember]
-        public List<int> AlertActionIds {get {return alertActionIds;} set {alertActionIds = value;}}
-
+      
         public Rule(){
 
         }
 
-        public Rule(string name, string pattern, IEnumerable<int> alertActionIds){
+        public Rule(string name, string pattern){
             Name = name;
             Pattern = pattern;
-            AlertActionIds.AddRange(alertActionIds);
         }
 
         public object Clone()
@@ -35,7 +32,6 @@ namespace Ajakka.Blacklist{
                 Name = this.Name,
                 Pattern = this.Pattern
             };
-            rule.AlertActionIds.AddRange(this.AlertActionIds);
             return rule;
         }
 
