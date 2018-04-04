@@ -121,5 +121,13 @@ namespace Ajakka.Alerting{
             }
             return new AlertActionBase[0];
         }
+
+        public void DeleteRuleAndActions(Guid ruleId)
+        {
+            foreach(var action in GetLinkedActions(ruleId)){
+                DeleteAction(action.Id);
+            }
+            ruleToActionMap.Remove(ruleId);
+        }
     }
 }

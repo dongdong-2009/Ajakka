@@ -10,5 +10,6 @@ namespace Ajakka.Alerting{
         int GetPageCount();
         void LinkRuleToAction(Guid ruleId, int id);
         AlertActionBase[] GetLinkedActions(Guid ruleId);
+        void DeleteRuleAndActions(Guid ruleId);
     }
 }

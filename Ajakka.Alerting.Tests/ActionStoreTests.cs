@@ -143,6 +143,30 @@ namespace Ajakka.Alerting.Tests{
 
             var action3 = store.GetLinkedActions(ruleId2).First((a)=>{return a.Id == returned3.Id;});
             AssertActionsEqual(returned3, action3, true);
+        } 
+
+        [Fact]
+        public void ShouldDeleteRuleAndLinkedActions(){
+            var store = ActionStoreFactory.GetActionStore();
+            var ruleId = Guid.NewGuid();
+            var ruleId2 = Guid.NewGuid();
+            var expected1 = (ConsoleLogAction)AlertActionFactory.Create("log to console","Ajakka.Alerting.ConsoleLogAction","{TimestampFormat:\"G\"}");
+            var returned1 = store.AddAction(expected1);
+            var expected2 = (LogToFileAction)AlertActionFactory.Create("log to console","Ajakka.Alerting.LogToFileAction","{FileName:\"log.log\"}");
+            var returned2 = store.AddAction(expected1);
+            var expected3 = (HttpRequestAlertAction)AlertActionFactory.Create("send http request","Ajakka.Alerting.HttpRequestAlertAction","{Url:\"http://google.com\"}");
+            var returned3 = store.AddAction(expected3);
+
+            store.LinkRuleToAction(ruleId,returned1.Id);
+            store.LinkRuleToAction(ruleId,returned2.Id);
+            store.LinkRuleToAction(ruleId2, returned3.Id);
+
+            store.DeleteRuleAndActions(ruleId);
+            Assert.Throws<KeyNotFoundException>(()=>{store.GetAction(returned1.Id);});
+            Assert.Throws<KeyNotFoundException>(()=>{store.GetAction(returned2.Id);});
+            store.GetAction(returned3.Id);
+            var linkedActions = store.GetLinkedActions(ruleId);
+            Assert.True(linkedActions.Length == 0);
         }
 
         private void AssertActionsEqual(AlertActionBase expected, AlertActionBase actual, bool compareIds = true){

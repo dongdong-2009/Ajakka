@@ -68,9 +68,7 @@ namespace Ajakka.Alerting{
 
         protected virtual void OnRuleDeleted(dynamic ruleId)
         {
-            foreach(var action in dal.GetLinkedActions(ruleId)){
-                dal.DeleteAction(action.Id);
-            }
+            dal.DeleteRuleAndActions(ruleId);
         }
 
         protected virtual void Execute(Guid ruleId, string mac, string ip, string name){
