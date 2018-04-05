@@ -74,7 +74,7 @@ namespace Ajakka.Alerting{
         protected virtual void Execute(Guid ruleId, string mac, string ip, string name){
             var linkedActions = dal.GetLinkedActions(ruleId);
             foreach(var action in linkedActions){
-                action.Execute("Blacklist match: " + mac + "/" + ip + "/" + name);
+                action.Execute( new{RuleId = ruleId, Mac = mac, Ip = ip, Name = name});
             }
         }
         

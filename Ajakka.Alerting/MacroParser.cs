@@ -6,10 +6,11 @@ using Newtonsoft.Json.Linq;
 
 namespace Ajakka.Alerting{
     public class MacroParser{
-        public string Parse(string input, string jsonObject) {
-            var deserialized = (JObject) JsonConvert.DeserializeObject(jsonObject);
+
+        public string Parse(string input, dynamic data){
+            var properties = ((object)data).GetType().GetProperties().ToDictionary(p => p.Name, p=>p.GetValue(data));
             var macros = GetMacros(input);
-            foreach(var item in deserialized){
+            foreach(var item in properties){
                 var macro = macros.FirstOrDefault((m)=>m == item.Key);
                 if(macro != null){
                     input = input.Replace("{"+macro+"}", item.Value.ToString());

@@ -33,7 +33,8 @@ namespace Ajakka.Alerting{
             };
         }
 
-        public override void Execute(string alertMessage){
+        public override void Execute(dynamic data){
+            var alertMessage = GetAlertMessage(data);
             try{
                 using(var writer = new StreamWriter(FileName, true)){
                     writer.WriteLine(DateTime.Now.ToString(TimestampFormat) + " : " + alertMessage);

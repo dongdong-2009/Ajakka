@@ -27,7 +27,8 @@ namespace Ajakka.Alerting{
             };
         }
 
-        public override void Execute(string alertMessage){
+        public override void Execute(dynamic data){
+            var alertMessage = GetAlertMessage(data);
             var currentColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(DateTime.Now.ToString(TimestampFormat) + " : " + alertMessage);

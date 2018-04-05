@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Ajakka.Alerting.Tests{
     public class MacroParserTests{
-        dynamic device = new {
+        dynamic inputDevice = new {
             Mac = "001122334455",
             Ip = "192.168.1.1",
             Name = "server"
@@ -11,7 +11,6 @@ namespace Ajakka.Alerting.Tests{
 
         [Fact]
         void ShouldTranslateMac(){
-            var inputDevice = JsonConvert.SerializeObject(device);
             var parser = new MacroParser();
             
             var parsed = parser.Parse("http://example.com?mac={Mac}",inputDevice);
@@ -20,7 +19,6 @@ namespace Ajakka.Alerting.Tests{
 
         [Fact]
         void ShouldTranslateMacAndIp(){
-            var inputDevice = JsonConvert.SerializeObject(device);
             var parser = new MacroParser();
             
             var parsed = parser.Parse("http://example.com?mac={Mac}&ip={Ip}",inputDevice);
@@ -29,7 +27,6 @@ namespace Ajakka.Alerting.Tests{
 
         [Fact]
         void ShouldTranslateMacAndIpAndName(){
-            var inputDevice = JsonConvert.SerializeObject(device);
             var parser = new MacroParser();
             
             var parsed = parser.Parse("http://example.com?mac={Mac}&ip={Ip}&name={Name}",inputDevice);
@@ -39,7 +36,6 @@ namespace Ajakka.Alerting.Tests{
 
         [Fact]
         void ShouldNotTranslateNonMacroStrings(){
-            var inputDevice = JsonConvert.SerializeObject(device);
             var parser = new MacroParser();
             
             var parsed = parser.Parse("http://example.com?Mac={Mac}&Ip={Ip}",inputDevice);
@@ -48,7 +44,6 @@ namespace Ajakka.Alerting.Tests{
 
         [Fact]
         void ShouldIgnoreUnfinishedMacros(){
-            var inputDevice = JsonConvert.SerializeObject(device);
             var parser = new MacroParser();
             
             var parsed = parser.Parse("http://example.com?Mac={Mac}&Ip={Ip",inputDevice);
@@ -57,7 +52,6 @@ namespace Ajakka.Alerting.Tests{
 
         [Fact]
         void ShouldIgnoreUnfinishedMacros2(){
-            var inputDevice = JsonConvert.SerializeObject(device);
             var parser = new MacroParser();
             
             var parsed = parser.Parse("http://example.com?Mac={Mac&Ip={Ip}",inputDevice);
@@ -66,7 +60,6 @@ namespace Ajakka.Alerting.Tests{
 
         [Fact]
         void ShouldIgnoreUnfinishedMacros3(){
-            var inputDevice = JsonConvert.SerializeObject(device);
             var parser = new MacroParser();
             
             var parsed = parser.Parse("http://example.com?Mac={Mac&Ip=1234",inputDevice);
@@ -74,7 +67,6 @@ namespace Ajakka.Alerting.Tests{
         }
         [Fact]
         void ShouldIgnoreUnfinishedMacros4(){
-            var inputDevice = JsonConvert.SerializeObject(device);
             var parser = new MacroParser();
             
             var parsed = parser.Parse("http://example.com?Mac=}Mac&Ip=1234",inputDevice);
@@ -82,8 +74,7 @@ namespace Ajakka.Alerting.Tests{
         }
         [Fact]
         void ShouldIgnoreEmptyMacros(){
-            var inputDevice = JsonConvert.SerializeObject(device);
-            var parser = new MacroParser();
+           var parser = new MacroParser();
             
             var parsed = parser.Parse("http://example.com?Mac={}1",inputDevice);
             Assert.Equal("http://example.com?Mac={}1",parsed);
@@ -92,7 +83,6 @@ namespace Ajakka.Alerting.Tests{
         
         [Fact]
         void ShouldNotParseMissingProperties(){
-            var inputDevice = JsonConvert.SerializeObject(device);
             var parser = new MacroParser();
             
             var parsed = parser.Parse("http://example.com?Mac={aaa}1",inputDevice);

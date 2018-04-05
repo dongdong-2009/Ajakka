@@ -19,8 +19,13 @@ namespace Ajakka.Alerting{
         }
             set{}
         }
-        public virtual void Execute(string alertMessage){
 
+        public virtual void Execute(dynamic data){
+
+        }
+
+        protected static string GetAlertMessage(dynamic data){
+            return "Blacklist match: " + data.Mac + "/" + data.Ip + "/" + data.Name;
         }
 
         public abstract void Initialize();

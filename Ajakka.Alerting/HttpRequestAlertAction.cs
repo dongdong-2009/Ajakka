@@ -17,13 +17,15 @@ namespace Ajakka.Alerting{
         public HttpRequestAlertAction(){
             Url = "";
         }
-        public override void Execute(string alertMessage){
+        public override void Execute(dynamic data){
             if(string.IsNullOrEmpty(Url)){
                 return;
             }
+            var parser = new MacroParser();
+            var requestUrl = parser.Parse(Url, data);
             try{
                 var client = new WebClient();
-                client.DownloadData(Url);
+                client.DownloadData(requestUrl);
             }catch(Exception ex){
                 Console.WriteLine("Error executing Http Request alert action: " + ex);
             }
