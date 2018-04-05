@@ -125,6 +125,12 @@ Tests for Ajakka.Blacklist project.
 dotnet run
 ~~~~
 
+### Ajakka.HttpRequestTestServer
+This is only for testing purposes.
+~~~~
+node index.js
+~~~~
+
 
 ### Ajakka.Web
 Website
