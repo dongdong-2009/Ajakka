@@ -51,10 +51,15 @@ namespace Ajakka.Alerting.Descriptors{
                 var isRequiredAttribute = (IsRequiredAttribute)attributes.FirstOrDefault((attr)=>{
                     return attr is IsRequiredAttribute;
                 });
+                var propertyHintAttribute = (PropertyHintAttribute)attributes.FirstOrDefault((attr)=>{
+                    return attr is PropertyHintAttribute;
+                });
                 this.properties.Add(new ActionTypePropertyDescriptor(p.Name,
                     propDisplayNameAttribute.DisplayName,
                     propTypeAttribute.Type,
-                    isRequiredAttribute == null ? false : isRequiredAttribute.IsRequired));
+                    isRequiredAttribute == null ? false : isRequiredAttribute.IsRequired,
+                    propertyHintAttribute == null ? "":propertyHintAttribute.Text,
+                    propertyHintAttribute == null ? "":propertyHintAttribute.Url));
             }
         }
     }

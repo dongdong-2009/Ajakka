@@ -15,6 +15,7 @@ namespace Ajakka.Alerting{
         [DataMember]
         [DisplayName("Timestamp format")]
         [PropertyType("text")]
+        [PropertyHint("Date and time formatting string. Click to get more help.","http://www.csharp-examples.net/string-format-datetime/")]
         public string TimestampFormat {get;set;}
 
         public override object Clone()

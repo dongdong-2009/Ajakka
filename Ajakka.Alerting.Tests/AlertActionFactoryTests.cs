@@ -72,30 +72,36 @@ namespace Ajakka.Alerting.Tests
             Assert.NotNull(actionType);
             Assert.Equal("Log to console",actionType.Name);
             ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "TimestampFormat";} ),
-            "Timestamp format","text",false);
+            "Timestamp format","text",false, true, true);
             Assert.True(1 == actionType.Properties.Length);
         }
         private static void ValidateHttpRequestAlertActionType(ActionTypeDescriptor actionType){
             Assert.NotNull(actionType);
             Assert.Equal("Send HTTP GET request",actionType.Name);
             ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "Url";} ),
-            "URL","text",true);
+            "URL","text",true, true, true);
             Assert.True(1 == actionType.Properties.Length);
         }
         private static void ValidateLogToFileActionType(ActionTypeDescriptor actionType){
             Assert.NotNull(actionType);
             Assert.Equal("Log to file",actionType.Name);
             ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "TimestampFormat";} ),
-            "Timestamp format","text",false);
+            "Timestamp format","text",false, true, true);
              ValidateProperty(actionType.Properties.First((prop)=>{return prop.Name == "FileName";} ),
-            "File name","text",true);
+            "File name","text",true, false, false);
             Assert.True(2 == actionType.Properties.Length);
         }
 
-        private static void ValidateProperty(ActionTypePropertyDescriptor prop, string expectedDisplayName, string expectedType, bool expectedIsRequired){
+        private static void ValidateProperty(ActionTypePropertyDescriptor prop, string expectedDisplayName, string expectedType, bool expectedIsRequired, bool hasHint, bool hasHintUrl){
             Assert.Equal(expectedDisplayName, prop.DisplayName);
             Assert.Equal(expectedIsRequired, prop.IsRequired);
             Assert.Equal(expectedType, prop.Type);
+            if(hasHint){
+                Assert.False(string.IsNullOrEmpty(prop.Hint));
+            }
+            if(hasHintUrl){
+                Assert.False(string.IsNullOrEmpty(prop.HintUrl));
+            }
         }
     }
 }

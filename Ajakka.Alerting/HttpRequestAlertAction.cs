@@ -12,6 +12,7 @@ namespace Ajakka.Alerting{
         [DisplayName("URL")]
         [PropertyType("text")]
         [IsRequired(true)]
+        [PropertyHint("Specify the full URL the request will be made to. Click to get more help.","./about")]
         public string Url {get;set;}
 
         public HttpRequestAlertAction(){
