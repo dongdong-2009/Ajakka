@@ -16,13 +16,13 @@ function loadEndpoints(){
     $.ajax({
         type: 'POST',
         url: '/api/endpoints',
-        data:{pageNumber:currentPage, pageSize:10},
+        data:{pageNumber:currentPage, pageSize:window.localStorage.endpointsPageSize},
         dataType: 'json',
         success: fillTableWithEndpoints,
         error:showError
       });
     $.get({
-        url:'/api/endpoints/pageCount?pageSize=10',
+        url:'/api/endpoints/pageCount?pageSize='+window.localStorage.endpointsPageSize,
         success:showPageCount
     })
 } 
