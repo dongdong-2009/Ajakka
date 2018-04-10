@@ -35,11 +35,42 @@ Run Ajakka.Collector:
 dotnet run
 ~~~~
 
+
+Run Ajakka.Blacklist:
+~~~~
+dotnet run
+~~~~
+
+
+Run Ajakka.Alerting:
+~~~~
+dotnet run
+~~~~
+
 Install and run Ajakka.Web:
 ~~~~
 npm install
 npm run start
 ~~~~
+
+## Alerting
+Blacklist rules can raise alerts and trigger alert actions. One rule is bound to one alert action. Rules use regular expression match of the pattern and a new device's MAC, IP, and Hostname. If the pattern matches on of these, the rule is triggered and an alert action bound to the rule is executed. 
+The following alert actions are available:
+* log to console: logs alert into the console output of the Ajakka.Alerting service.
+* log to file: logs alert into a log file owned by the Ajakka.Alerting service. The file is stored in the filesystem of the server where the service is running.
+* send a HTTP GET request: performs a GET request to the specified URL
+
+### Message Format
+Logging to console and logging to file accepts datetime formatting string. Default value is empty and is evaluated to "G". See http://www.csharp-examples.net/string-format-datetime/ for more examples.
+
+### Using macros
+HTTP GET request alert action supports macros that are translated before the request is made. Supported macros are {Mac},{Ip},{Name}. The URL can be therefore specified as
+
+~~~~
+http://example.com?ip={Ip}&mac={Mac}&name={Name}
+~~~~
+
+Macros are case sensitive.
 
 ## Projects in the solution
 ### Ajakka.Sensor
