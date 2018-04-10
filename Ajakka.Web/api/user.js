@@ -61,6 +61,16 @@ router.get('/settings/hideSensorColumn', function(req,res){
 	});
 });
 
+router.get('/settings/endpointsPageSize', function(req,res){
+	userController.getSettingsValue('endpointsPageSize',req.session.user.id)
+	.then(function(result){
+		res.status(200).send({content:result});
+	})
+	.catch(function(err){
+		res.status(500).send(err);
+	});
+});
+
 
 
 // RETURNS ALL THE USERS IN THE DATABASE
@@ -131,6 +141,16 @@ router.put('/settings/showVendorLogos/:val', function(req,res){
 
 router.put('/settings/hideSensorColumn/:val', function(req,res){
 	userController.setSettingsValue('hideSensorColumn',req.session.user.id, req.params.val)
+	.then(function(){
+		res.status(200).send({result:'ok'});
+	})
+	.catch(function(err){
+		res.status(500).send(err);
+	});
+});
+
+router.put('/settings/endpointsPageSize/:val', function(req,res){
+	userController.setSettingsValue('endpointsPageSize',req.session.user.id, req.params.val)
 	.then(function(){
 		res.status(200).send({result:'ok'});
 	})

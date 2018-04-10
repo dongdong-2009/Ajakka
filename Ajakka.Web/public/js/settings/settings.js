@@ -1,38 +1,44 @@
 function loadSettingsValues(){
     $('#errorMessage').hide();
     $('#successMessage').hide();
-    $.get({
-        url:'api/users/settings/showVendorLogos',
-        success:function(result){
-            var value = result.content;
-            if(value){
-                $('#showLogos').val(value);
-            }
-            else{
-                $('#showLogos').val(0);
-            }
-        },
-        error:function(err){
-            alert('Failed to load settings from database.');
-            console.log(err);
+    
+    loadValue('showVendorLogos',function(val){
+        if(val){
+            $('#showLogos').val(val);
+        }
+        else{
+            $('#showLogos').val(0);
         }
     });
+
+    loadValue('hideSensorColumn', function(val){
+        if(val == "1"){
+            $('#showSensorNames').val('no');
+        }
+        else{
+            $('#showSensorNames').val('yes');
+        }
+    });
+
+    loadValue('endpointsPageSize', function(val){
+        if(val)
+        {
+            $('#endpointsPageSize').val(val);
+        }
+        else{
+            $('endpointsPageSize').val(10);
+        }
+    });
+   
+}
+
+function loadValue(name, success){
     $.get({
-        url:'api/users/settings/hideSensorColumn',
+        url:'api/users/settings/'+name,
         success:function(result){
             var value = result.content;
-            if(value){
-                if(value == "1"){
-                    $('#showSensorNames').val('no');
-                }
-                else{
-                    $('#showSensorNames').val('yes');
-                }
-                
-            }
-            else{
-                $('#showSensorNames').val('yes');
-            }
+            success(value);
+            
         },
         error:function(err){
             alert('Failed to load settings from database.');
@@ -41,13 +47,10 @@ function loadSettingsValues(){
     });
 }
 
-function saveAllSettings(){
-    $('#errorMessage').hide();
-    $('#successMessage').hide();
-    let value = $('#showLogos').val();
+function saveValue(name, value){
     $.ajax({
         method:'put',
-        url:'api/users/settings/showVendorLogos/'+value,
+        url:'api/users/settings/'+name+'/'+value,
         success:function(){
             $('#successMessage').show();
         },
@@ -56,6 +59,14 @@ function saveAllSettings(){
             $('#errorMessage').show();
         }
     });
+}
+
+function saveAllSettings(){
+    $('#errorMessage').hide();
+    $('#successMessage').hide();
+    let value = $('#showLogos').val();
+    saveValue('showVendorLogos',value);
+
     let hideSensors = $('#showSensorNames').val();
     if(hideSensors == 'yes'){
         hideSensors = '0';
@@ -63,20 +74,14 @@ function saveAllSettings(){
     else{
         hideSensors = '1';
     }
-    $.ajax({
-        method:'put',
-        url:'api/users/settings/hideSensorColumn/'+hideSensors,
-        success:function(){
-            $('#successMessage').show();
-        },
-        error:function(error){
-            console.log(error);
-            $('#errorMessage').show();
-        }
-    });
-    
+    saveValue('hideSensorColumn',hideSensors);
+
+    let endpointsPageSize=$('#endpointsPageSize').val();
+    saveValue('endpointsPageSize',endpointsPageSize)
+   
     window.localStorage.vendorLogos = value;
     window.localStorage.hideSensorColumn = hideSensors;
+    window.localStorage.endpointsPageSize = endpointsPageSize;
 }
 
 setTimeout(loadSettingsValues,100);

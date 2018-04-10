@@ -40,6 +40,15 @@ block content
         select.form-control(id="showSensorNames")
           option(value="yes") Yes
           option(value="no") No
+    .user-settings-section
+      .user-settings-section-header Number of endpoints to display on one page in the Dashboard
+      .form-group
+        label(for="endpointsPageSize")
+        select.form-control(id="endpointsPageSize")
+          option(value="10") 10
+          option(value="20") 20
+          option(value="30") 30
+          option(value="40") 40
         button.btn.btn-default.save-button(onclick="saveAllSettings();") Save
     div#successMessage.alert.alert-success Settings saved
     div#errorMessage.alert.alert-danger Failed to save settings 
