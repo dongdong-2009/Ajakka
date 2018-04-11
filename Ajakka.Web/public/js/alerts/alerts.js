@@ -59,8 +59,9 @@ function createFormForActionProperty(prop){
 
     fGroupDiv.append('<label for="'+propNameId +'">'+prop.DisplayName+requiredText+'</label>');
     
-    let fInput = fGroupDiv.append('<input class="form-control action-property'+requiredClassName+'" type="text" id="'+propNameId +'"></input><div class="small"><a class=" text-muted" href="'+prop.HintUrl+'" target="_blank">'+prop.Hint+'</a></div>').children().last();
+    let fInput = fGroupDiv.append('<input class="form-control action-property'+requiredClassName+'" type="text" id="'+propNameId +'"></input>').children().last();
     prop.assignedElement = fInput;
+    fGroupDiv.append('<div class="small"><a class=" text-muted" href="'+prop.HintUrl+'" target="_blank">'+prop.Hint+'</a></div>');
     if(prop.IsRequired){
         fGroupDiv.append('<div class="invalid-feedback">The value cannot be empty.</div>')
     }
