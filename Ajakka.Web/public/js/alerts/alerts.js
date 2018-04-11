@@ -90,7 +90,7 @@ function showPageCount(pageCountResponse){
 function showError(error){
     console.log(error);
     $('#ruleListContainer').empty();
-    $('#ruleListContainer').append('<tr class="table-danger"><td colspan="4">Request error: '+error.statusText+'</td></tr>');
+    $('#ruleListContainer').append('<tr class="table-danger"><td colspan="4">Request error: '+error.responseJSON.Content+'</td></tr>');
 }
 
 function fillTableWithRules(rules){
@@ -214,9 +214,7 @@ function addNewRule(){
     });
   
     addRulePost.then(function(rule){
-        
         addActionPost.then(function(action){
-           
             linkActionP(rule.Content.Id, action.Content.Id).then(function(result){
                 $('#addNewRule').modal('hide');
                 loadRules(); 
@@ -227,6 +225,7 @@ function addNewRule(){
         })
         .catch(function(error){
             showRuleCreation(error);
+
         });
     }).catch(function(error){
         showRuleCreation(error);
@@ -272,7 +271,7 @@ function getActionToCreate(typeName){
 
 function showRuleCreation(error){
     console.log(error);
-    $('#addNewRuleError').text(error.responseText);
+    $('#addNewRuleError').text(error.responseJSON.Content);
     $('#addNewRuleError').show();
 }
 
