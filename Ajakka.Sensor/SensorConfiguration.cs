@@ -34,5 +34,13 @@ namespace Ajakka.Sensor{
         public string SensorName{
             get {return Environment.MachineName;}
         }
+
+        public string MessageQueueUserName{
+            get{return Environment.GetEnvironmentVariable("AjakkaMqUser");}
+        }
+
+         public string MessageQueuePassword{
+            get{return Environment.GetEnvironmentVariable("AjakkaMqPassword");}
+        }
     }
 }

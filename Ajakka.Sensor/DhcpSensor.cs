@@ -77,7 +77,9 @@ namespace Ajakka.Sensor{
             var factory = new ConnectionFactory() { 
                 HostName = string.IsNullOrEmpty(configuration.MessageQueueHost) ? 
                     "localhost" :
-                    configuration.MessageQueueHost 
+                    configuration.MessageQueueHost,
+                    UserName = configuration.MessageQueueUserName,
+                    Password = configuration.MessageQueuePassword
             };
             using(var connection = factory.CreateConnection()){
                 using(var channel = connection.CreateModel())

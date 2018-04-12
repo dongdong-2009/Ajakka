@@ -25,6 +25,9 @@ Set environment variable AjakkaWebMySql to MySql URL:
 mysql://root:mypassword@127.0.0.1/ajakka
 ~~~~
 
+Set environment variable AjakkaMqUser to user name configured in RabbitMq.
+Set environment variable AjakkaMqPassword to password for that user.
+
 Run Ajakka.Sensor:
 ~~~~
 dotnet run
