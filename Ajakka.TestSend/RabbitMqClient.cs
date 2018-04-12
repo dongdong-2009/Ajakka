@@ -12,7 +12,9 @@ namespace Ajakka.TestSend{
             var factory = new ConnectionFactory() { 
                 HostName = string.IsNullOrEmpty(config.MessageQueueHost) ? 
                     "localhost" :
-                    config.MessageQueueHost 
+                    config.MessageQueueHost,
+                    UserName = config.MessageQueueUserName,
+                    Password = config.MessageQueuePassword
             };
             using(var connection = factory.CreateConnection()){
                 using(var channel = connection.CreateModel())

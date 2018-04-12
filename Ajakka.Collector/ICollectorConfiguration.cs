@@ -4,6 +4,11 @@ namespace Ajakka.Collector{
        
         string MessageQueueExchangeName {get;}
 
-        string DALServerRpcQueueName{get;}
+        string DALServerRpcQueueName {get;}
+
+        string MessageQueueUserName {get;}
+
+        string MessageQueuePassword {get;}
+
     }
 }

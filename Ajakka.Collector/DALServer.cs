@@ -28,7 +28,7 @@ namespace Ajakka.Collector{
         }
 
         public void Start(){
-            var factory = new ConnectionFactory() { HostName = configuration.MessageQueueHost };
+            var factory = new ConnectionFactory() { HostName = configuration.MessageQueueHost, UserName = configuration.MessageQueueUserName, Password = configuration.MessageQueuePassword };
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
         

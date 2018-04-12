@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 
@@ -23,6 +24,16 @@ namespace Ajakka.TestSend{
         public string MessageQueueExchangeName{
             get{return configuration["messageQueueExchangeName"];}
         }
+
+        
+        public string MessageQueueUserName{
+            get{return Environment.GetEnvironmentVariable("AjakkaMqUser");}
+        }
+
+        public string MessageQueuePassword{
+            get{return Environment.GetEnvironmentVariable("AjakkaMqPassword");}
+        }
+
 
     }
 }

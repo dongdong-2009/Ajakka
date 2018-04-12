@@ -32,7 +32,7 @@ namespace Ajakka.Collector
         }
 
         public void Listen(){
-            var factory = new ConnectionFactory() { HostName = collectorConfiguration.MessageQueueHost };
+            var factory = new ConnectionFactory() { HostName = collectorConfiguration.MessageQueueHost, UserName = collectorConfiguration.MessageQueueUserName, Password = collectorConfiguration.MessageQueuePassword };
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
             

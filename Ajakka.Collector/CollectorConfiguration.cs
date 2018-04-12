@@ -30,5 +30,14 @@ namespace Ajakka.Collector{
         public string DALServerRpcQueueName{
             get{return configuration["dalServerRpcQueueName"];}
         }
+
+        public string MessageQueueUserName{
+            get{return Environment.GetEnvironmentVariable("AjakkaMqUser");}
+        }
+
+        public string MessageQueuePassword{
+            get{return Environment.GetEnvironmentVariable("AjakkaMqPassword");}
+        }
+
     }
 }
