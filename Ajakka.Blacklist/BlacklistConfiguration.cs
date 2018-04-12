@@ -31,12 +31,17 @@ namespace Ajakka.Blacklist{
             get{return configuration["commandProcessorRpcQueueName"];}
         }
 
-        public string AlertingRpcQueueName{
-            get{return configuration["alertingRpcQueueName"];}
-        }
-
         public string AlertingEventQueueName{
             get{return configuration["alertingEventQueueName"];}
         }
+
+        public string MessageQueueUserName{
+            get{return Environment.GetEnvironmentVariable("AjakkaMqUser");}
+        }
+
+        public string MessageQueuePassword{
+            get{return Environment.GetEnvironmentVariable("AjakkaMqPassword");}
+        }
+
     }
 }

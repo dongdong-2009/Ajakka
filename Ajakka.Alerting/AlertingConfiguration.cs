@@ -31,5 +31,14 @@ namespace Ajakka.Alerting{
             get{return configuration["eventListenerQueueName"];}
         }
 
+
+        public string MessageQueueUserName{
+            get{return Environment.GetEnvironmentVariable("AjakkaMqUser");}
+        }
+
+         public string MessageQueuePassword{
+            get{return Environment.GetEnvironmentVariable("AjakkaMqPassword");}
+        }
+
     }
 }

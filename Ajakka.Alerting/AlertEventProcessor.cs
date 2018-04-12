@@ -14,7 +14,7 @@ namespace Ajakka.Alerting{
         public AlertEventProcessor(IAlertingConfiguration config, IActionStore dal){
             this.dal = dal;
             configuration = config;
-            var factory = new ConnectionFactory() { HostName = configuration.MessageQueueHost };
+            var factory = new ConnectionFactory() { HostName = configuration.MessageQueueHost, UserName = configuration.MessageQueueUserName, Password = configuration.MessageQueuePassword };
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
 

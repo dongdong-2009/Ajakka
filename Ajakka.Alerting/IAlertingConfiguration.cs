@@ -5,5 +5,9 @@ namespace Ajakka.Alerting{
         string CommandProcessorRpcQueueName{get;}
 
         string EventListenerQueueName {get;}
+
+        string MessageQueueUserName {get;}
+
+        string MessageQueuePassword {get;}
     }
 }

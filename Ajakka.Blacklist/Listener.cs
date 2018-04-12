@@ -35,7 +35,7 @@ namespace Ajakka.Blacklist
         }
 
         public void Listen(){
-            var factory = new ConnectionFactory() { HostName = blacklistConfiguration.MessageQueueHost };
+            var factory = new ConnectionFactory() { HostName = blacklistConfiguration.MessageQueueHost, UserName = blacklistConfiguration.MessageQueueUserName, Password = blacklistConfiguration.MessageQueuePassword };
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
             
