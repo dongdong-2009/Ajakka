@@ -9,7 +9,7 @@ function generateUuid() {
 }
 
 function SendMessageToQueue(response, message, rpcQueue){
-    amqp.connect(configuration.messageQueueHostAddress, function(err, conn) {
+    amqp.connect(configuration.getMessageQueueHostAddress(), function(err, conn) {
         if(err){
             console.log('Failed to connect to the message queue host.');
             console.log(err);

@@ -175,18 +175,26 @@ export AjakkaWebMySql="mysql://user:pass@host/db"
 export AjakkaWebTestMySql="mysql://user:pass@host/db"
 ~~~~
 
-Message queue connection configuration is in /config/ajakkaConfiguration.js:
+Message queue server address is in /config/ajakkaConfiguration.js:
 
 ~~~~
-module.exports.messageQueueHostAddress= 'amqp://localhost';
+var rabbitMqHostAddress= 'localhost/';
+
 module.exports.collectorRpcQueue = 'collector_dal_rpc_queue';
 ~~~~
 
-*messageQueueHostAddress* - server hosting the message queue.
+*rabbitMqHostAddress* - server hosting the message queue.
 
 *collectorRpcQueue* - name of the queue the Collector uses for listening to RPC requests for information stored in the Collector database. This should match the value of dalServerRpcQueueName in Ajakka.Collector's configuration file.
 
-Start as:
+If RabbitMQ is running on localhost (relatively to Ajakka.Web), user name and password do not need to be set (Guest/guest is used). Otherwise, the following environment variables are expected:
+
+~~~~
+AjakkaMqUser
+AjakkaMqPassword
+~~~~
+
+Start the website using command:
 ~~~~
 npm run start
 ~~~~
